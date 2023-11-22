@@ -289,7 +289,7 @@ const message = {
         supervisor: 'Supervisor',
     },
     home: {
-        restart_1panel: 'Restart Panel',
+        restart_panelx: 'Restart Panel',
         restart_system: 'Restart Server',
         operationSuccess: 'Operation succeeded, rebooting, please refresh the browser manually later!',
         overview: 'Overview',
@@ -380,7 +380,7 @@ const message = {
 
         loadFromRemote: 'Load from server',
         loadFromRemoteHelper:
-            'This action will synchronize the database info on the server to 1Panel, do you want to continue?',
+            'This action will synchronize the database info on the server to PanelX, do you want to continue?',
         passwordHelper: 'Unable to retrieve, please modify',
         local: 'Local',
         remote: 'Remote',
@@ -691,7 +691,7 @@ const message = {
         fromChangeHelper: 'Switching the source will clear the current edited content. Do you want to continue?',
         composePathHelper: 'Config file save path: {0}',
         composeHelper:
-            'The composition created through 1Panel editor or template will be saved in the {0}/docker/compose directory.',
+            'The composition created through PanelX editor or template will be saved in the {0}/docker/compose directory.',
         deleteFile: 'Delete file',
         deleteComposeHelper:
             'Delete all files in the {0} directory, including persistent files in this directory. Please proceed with caution!',
@@ -709,7 +709,7 @@ const message = {
         down: 'Down',
         up: 'Up',
         composeDetailHelper:
-            'The compose is created external to 1Panel. The start and stop operations are not supported.',
+            'The compose is created external to PanelX. The start and stop operations are not supported.',
         composeOperatorHelper: '{1} operation will be performed on {0}. Do you want to continue?',
 
         setting: 'Setting',
@@ -759,7 +759,7 @@ const message = {
         shell: 'Shell script',
         log: 'Backup logs',
         logHelper: 'Backup system log',
-        ogHelper1: '1.1Panel System log ',
+        ogHelper1: '1.PanelX System log ',
         logHelper2: '2. SSH login log of the server ',
         logHelper3: '3. All site logs ',
         containerCheckBox: 'In container (no need to enter the container command)',
@@ -823,7 +823,7 @@ const message = {
         noLogs: 'No task output yet...',
         errPath: 'Backup path [{0}] error, cannot download!',
         cutWebsiteLog: 'cut website log',
-        cutWebsiteLogHelper: 'The cut log files will be backed up to the backup directory of 1Panel',
+        cutWebsiteLogHelper: 'The cut log files will be backed up to the backup directory of PanelX',
     },
     monitor: {
         monitor: 'Monitor',
@@ -1148,7 +1148,7 @@ const message = {
         timeZone: 'Time Zone',
         timeZoneChangeHelper: 'Changing the time zone requires restarting the service. Do you want to continue?',
         timeZoneHelper:
-            'Timezone modification depends on the system timedatectl service. take effect after restart the 1Panel service.',
+            'Timezone modification depends on the system timedatectl service. take effect after restart the PanelX service.',
         timeZoneCN: 'Bei Jing',
         timeZoneAM: 'Los Angeles',
         timeZoneNY: 'New York',
@@ -1241,18 +1241,18 @@ const message = {
         unBindDomainHelper:
             'The action of unbinding a domain name may cause system insecurity. Do you want to continue?',
         bindDomainHelper:
-            'After the domain binding, only the domain in the setting can be used to access 1Panel service',
+            'After the domain binding, only the domain in the setting can be used to access PanelX service',
         bindDomainHelper1: 'If the binding domain is empty, the binding of the domain is cancelled',
         bindDomainWarning:
-            'After domain binding, you will be logged out and can only access 1Panel service through the domain name specified in the settings. Do you want to continue?',
+            'After domain binding, you will be logged out and can only access PanelX service through the domain name specified in the settings. Do you want to continue?',
         allowIPs: 'Authorized IP',
         unAllowIPs: 'Unauthorized IP',
         unAllowIPsWarning:
             'Authorizing an empty IP will allow all IPs to access the system, which may cause system insecurity. Do you want to continue?',
         allowIPsHelper:
-            'After setting the authorized IP address, only the IP address in the setting can access the 1Panel service',
+            'After setting the authorized IP address, only the IP address in the setting can access the PanelX service',
         allowIPsWarning:
-            'After setting the authorized IP address, only the IP address in the setting can access the 1Panel service. Do you want to continue?',
+            'After setting the authorized IP address, only the IP address in the setting can access the PanelX service. Do you want to continue?',
         allowIPsHelper1: 'If the authorized IP address is empty, the authorized IP address is canceled',
         allowIPEgs:
             'If multiple ip authorizations exist, newlines need to be displayed. For example, \n172.16.10.111 \n172.16.10.0/24',
@@ -1260,7 +1260,7 @@ const message = {
         secret: 'Secret',
         mfaInterval: 'Refresh interval (s)',
         mfaTitleHelper:
-            'Used to differentiate between different 1Panel hosts. After modification, please rescan or manually add the key information!',
+            'Used to differentiate between different PanelX hosts. After modification, please rescan or manually add the key information!',
         mfaIntervalHelper: 'Please rescan or manually add key information after modifying the refresh time.',
         mfaAlert:
             'MFA password is generated based on the current time. Please ensure that the server time is synchronized.',
@@ -1288,12 +1288,12 @@ const message = {
 
         snapshot: 'Snapshot',
         status: 'Snapshot status',
-        panelInfo: 'Write 1Panel basic information',
-        panelBin: 'Backup 1Panel system files',
+        panelInfo: 'Write PanelX basic information',
+        panelBin: 'Backup PanelX system files',
         daemonJson: 'Backup Docker configuration file',
-        appData: 'Backup installed apps from 1Panel',
-        panelData: 'Backup 1Panel data directory',
-        backupData: 'Backup local backup directory for 1Panel',
+        appData: 'Backup installed apps from PanelX',
+        panelData: 'Backup PanelX data directory',
+        backupData: 'Backup local backup directory for PanelX',
         compress: 'Create snapshot file',
         upload: 'Upload snapshot file',
         thirdPartySupport: 'Only third-party accounts are supported',
@@ -1333,7 +1333,7 @@ const message = {
         issue: 'Feedback',
         doc: 'Official document',
         star: 'Star',
-        description: '1Panel, Modern, open source Linux server operation and maintenance management panel.',
+        description: 'PanelX, Modern, open source Linux server operation and maintenance management panel.',
         forum: 'Forum',
         doc2: 'Document',
         currentVersion: 'Version',
@@ -1642,11 +1642,11 @@ const message = {
         defaultServerHelper:
             'After setting the default site, all unbound domain names and IPs are directed to the default site\n which can effectively prevent malicious analysis',
         restoreHelper: 'Are you sure to restore using this backup?',
-        websiteDeploymentHelper: 'Create a website using an application deployed from 1Panel',
+        websiteDeploymentHelper: 'Create a website using an application deployed from PanelX',
         websiteStatictHelper: 'Create a website directory on the host',
         websiteProxyHelper:
             'The proxy has existing services, for example, the machine has installed the halo service using port 8080, then the proxy address is http://127.0.0.1:8080',
-        runtimeProxyHelper: 'Use runtime created from 1Panel',
+        runtimeProxyHelper: 'Use runtime created from PanelX',
         runtime: 'Runtime',
         deleteRuntimeHelper:
             'The Runtime application needs to be deleted together with the website, please handle it with caution',

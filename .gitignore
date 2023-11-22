@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-build/1panel
+build/panelx
 
 # Mac
 .DS_Store
@@ -48,7 +48,7 @@ frontend/components.d.ts
 .history/
 dist/
 1pctl
-1panel.service
+panelx.service
 install.sh
 quick_start.sh
 cmd/server/fileList.txt

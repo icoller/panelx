@@ -1,6 +1,14 @@
+<!--
+ * @Author: coller
+ * @Date: 2023-11-22 00:08:39
+ * @LastEditors: coller
+ * @LastEditTime: 2023-11-22 00:32:55
+ * @Copyright (c) 2023 by www.kuaiqin.com, All Rights Reserved. 
+ * @Desc:  
+-->
 <template>
     <div class="footer">
-        <a href="https://fit2cloud.com/" target="_blank">Copyright © 2014-2023 FIT2CLOUD 飞致云</a>
+        <a href="https://www.panelx.cn/" target="_blank">Copyright © 2023 PanelX 面板探索</a>
         <SystemUpgrade :footer="true" />
     </div>
 </template>

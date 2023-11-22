@@ -63,7 +63,7 @@
                         <template #default="{ row }">
                             <span v-if="row.createdBy === ''">{{ $t('container.local') }}</span>
                             <span v-if="row.createdBy === 'Apps'">{{ $t('container.apps') }}</span>
-                            <span v-if="row.createdBy === '1Panel'">1Panel</span>
+                            <span v-if="row.createdBy === 'PanelX'">PanelX</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -223,7 +223,7 @@ const buttons = [
             onDelete(row);
         },
         disabled: (row: any) => {
-            return row.createdBy !== '1Panel';
+            return row.createdBy !== 'PanelX';
         },
     },
 ];

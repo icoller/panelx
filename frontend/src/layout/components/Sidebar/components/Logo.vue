@@ -13,9 +13,9 @@ const globalStore = GlobalStore();
 const getLogoUrl = (isCollapse: boolean) => {
     const theme = globalStore.$state.themeConfig.theme || 'light';
     if (isCollapse) {
-        return new URL(`../../../../assets/images/1panel-logo-${theme}.png`, import.meta.url).href;
+        return new URL(`../../../../assets/images/panelx-logo-${theme}.png`, import.meta.url).href;
     } else {
-        return new URL(`../../../../assets/images/1panel-menu-${theme}.png`, import.meta.url).href;
+        return new URL(`../../../../assets/images/panelx-menu-${theme}.png`, import.meta.url).href;
     }
 };
 </script>

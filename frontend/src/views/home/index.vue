@@ -10,8 +10,8 @@
         >
             <template #route-button>
                 <div class="router-button">
-                    <el-button link type="primary" @click="onRestart('1panel')">
-                        {{ $t('home.restart_1panel') }}
+                    <el-button link type="primary" @click="onRestart('panelx')">
+                        {{ $t('home.restart_panelx') }}
                     </el-button>
                     <el-divider direction="vertical" />
                     <el-button link type="primary" @click="onRestart('system')">
