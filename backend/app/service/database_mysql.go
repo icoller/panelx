@@ -538,9 +538,9 @@ func (u *MysqlService) LoadDatabaseFile(req dto.OperationWithNameAndType) (strin
 	case "redis-conf":
 		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/redis/%s/conf/redis.conf", req.Name))
 	case "mysql-slow-logs":
-		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mysql/%s/data/PanelX-slow.log", req.Name))
+		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mysql/%s/data/panelx-slow.log", req.Name))
 	case "mariadb-slow-logs":
-		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mariadb/%s/db/data/PanelX-slow.log", req.Name))
+		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mariadb/%s/db/data/panelx-slow.log", req.Name))
 	}
 	if _, err := os.Stat(filePath); err != nil {
 		return "", buserr.New("ErrHttpReqNotFound")

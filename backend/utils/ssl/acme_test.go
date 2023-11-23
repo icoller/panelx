@@ -84,8 +84,8 @@ func getTagName(key string, tags []Tag) string {
 }
 
 func TestAppToV2(t *testing.T) {
-	oldDir := "/Users/wangzhengkun/projects/github.com/1Panel-dev/appstore/apps"
-	newDir := "/Users/wangzhengkun/projects/github.com/1Panel-dev/appstore/apps_new"
+	oldDir := "/Users/coller/projects/panelx/appstore/apps"
+	newDir := "/Users/coller/projects/panelx/appstore/apps_new"
 	listJsonDir := path.Join(oldDir, "list.json")
 	fileOp := files.NewFileOp()
 	content, err := fileOp.GetContent(listJsonDir)
