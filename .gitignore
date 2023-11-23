@@ -48,8 +48,10 @@ frontend/components.d.ts
 .history/
 dist/
 1pctl
+pxctl
 panelx.service
 install.sh
 quick_start.sh
 cmd/server/fileList.txt
 .fileList.txt
+.vscode/sftp.json
