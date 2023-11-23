@@ -58,6 +58,16 @@ const databaseRouter = {
                         requiresAuth: false,
                     },
                 },
+                {
+                    path: 'postgresql',
+                    name: 'PostgreSQL',
+                    component: () => import('@/views/database/postgresql/index.vue'),
+                    hidden: true,
+                    meta: {
+                        activeMenu: '/databases',
+                        requiresAuth: false,
+                    },
+                },
             ],
         },
     ],

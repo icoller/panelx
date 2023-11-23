@@ -106,7 +106,7 @@ const drawerVisible = ref();
 const formRef = ref();
 
 const form = reactive({
-    title: '1Panel',
+    title: 'PanelX',
     code: '',
     secret: '',
     interval: 30,
