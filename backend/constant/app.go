@@ -14,7 +14,7 @@ const (
 	SyncSuccess = "SyncSuccess"
 	SyncErr     = "SyncErr"
 
-	ContainerPrefix = "1Panel-"
+	ContainerPrefix = "PanelX-"
 
 	AppNormal   = "Normal"
 	AppTakeDown = "TakeDown"

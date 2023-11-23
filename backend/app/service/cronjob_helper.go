@@ -603,7 +603,7 @@ func (u *CronjobService) handleSystemLog(cronjob model.Cronjob, startTime time.T
 		return "", err
 	}
 
-	pathItem := path.Join(global.CONF.System.BaseDir, "1panel/tmp/log", startTime.Format("20060102150405"))
+	pathItem := path.Join(global.CONF.System.BaseDir, "panelx/tmp/log", startTime.Format("20060102150405"))
 	websites, err := websiteRepo.List()
 	if err != nil {
 		return "", err
@@ -643,7 +643,7 @@ func (u *CronjobService) handleSystemLog(cronjob model.Cronjob, startTime time.T
 		global.LOG.Debug("backup website log successful!")
 	}
 
-	systemLogDir := path.Join(global.CONF.System.BaseDir, "1panel/log")
+	systemLogDir := path.Join(global.CONF.System.BaseDir, "panelx/log")
 	systemDir := path.Join(pathItem, "system")
 	if _, err := os.Stat(systemDir); err != nil && os.IsNotExist(err) {
 		if err = os.MkdirAll(systemDir, os.ModePerm); err != nil {

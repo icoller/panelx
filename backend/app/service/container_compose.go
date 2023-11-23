@@ -84,7 +84,7 @@ func (u *ContainerService) PageCompose(req dto.SearchWithPage) (int64, interface
 				}
 				for i := 0; i < len(composeCreatedByLocal); i++ {
 					if composeCreatedByLocal[i].Name == name {
-						composeItem.CreatedBy = "1Panel"
+						composeItem.CreatedBy = "PanelX"
 						composeCreatedByLocal = append(composeCreatedByLocal[:i], composeCreatedByLocal[i+1:]...)
 						break
 					}

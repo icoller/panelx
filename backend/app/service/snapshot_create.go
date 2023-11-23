@@ -43,7 +43,7 @@ func snapPanel(snap snapHelper, targetDir string) {
 	defer snap.Wg.Done()
 	_ = snapshotRepo.UpdateStatus(snap.Status.ID, map[string]interface{}{"panel": constant.Running})
 	status := constant.StatusDone
-	if err := cpBinary([]string{"/usr/local/bin/1panel", "/usr/local/bin/1pctl", "/etc/systemd/system/1panel.service"}, targetDir); err != nil {
+	if err := cpBinary([]string{"/usr/local/bin/panelx", "/usr/local/bin/pxctl", "/etc/systemd/system/panelx.service"}, targetDir); err != nil {
 		status = err.Error()
 	}
 	snap.Status.Panel = status
@@ -121,7 +121,7 @@ func snapBackup(snap snapHelper, localDir, targetDir string) {
 	defer snap.Wg.Done()
 	_ = snapshotRepo.UpdateStatus(snap.Status.ID, map[string]interface{}{"backup_data": constant.Running})
 	status := constant.StatusDone
-	if err := handleSnapTar(localDir, targetDir, "1panel_backup.tar.gz", "./system;"); err != nil {
+	if err := handleSnapTar(localDir, targetDir, "panelx_backup.tar.gz", "./system;"); err != nil {
 		status = err.Error()
 	}
 	snap.Status.BackupData = status
@@ -132,14 +132,14 @@ func snapPanelData(snap snapHelper, localDir, targetDir string) {
 	defer snap.Wg.Done()
 	_ = snapshotRepo.UpdateStatus(snap.Status.ID, map[string]interface{}{"panel_data": constant.Running})
 	status := constant.StatusDone
-	dataDir := path.Join(global.CONF.System.BaseDir, "1panel")
+	dataDir := path.Join(global.CONF.System.BaseDir, "panelx")
 	exclusionRules := "./tmp;./log;./cache;"
 	if strings.Contains(localDir, dataDir) {
 		exclusionRules += ("." + strings.ReplaceAll(localDir, dataDir, "") + ";")
 	}
 
 	_ = snapshotRepo.Update(snap.SnapID, map[string]interface{}{"status": "OnSaveData"})
-	if err := handleSnapTar(dataDir, targetDir, "1panel_data.tar.gz", exclusionRules); err != nil {
+	if err := handleSnapTar(dataDir, targetDir, "panelx_data.tar.gz", exclusionRules); err != nil {
 		status = err.Error()
 	}
 	_ = snapshotRepo.Update(snap.SnapID, map[string]interface{}{"status": constant.StatusWaiting})

@@ -45,18 +45,18 @@ func (u *LogService) CreateLoginLog(operation model.LoginLog) error {
 }
 
 func (u *LogService) ListSystemLogFile() ([]string, error) {
-	logDir := path.Join(global.CONF.System.BaseDir, "1panel/log")
+	logDir := path.Join(global.CONF.System.BaseDir, "panelx/log")
 	var files []string
 	if err := filepath.Walk(logDir, func(pathItem string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() && strings.HasPrefix(info.Name(), "1Panel-") {
-			if info.Name() == "1Panel.log" {
+		if !info.IsDir() && strings.HasPrefix(info.Name(), "PanelX-") {
+			if info.Name() == "PanelX.log" {
 				files = append(files, time.Now().Format("2006-01-02"))
 				return nil
 			}
-			itemFileName := strings.TrimPrefix(info.Name(), "1Panel-")
+			itemFileName := strings.TrimPrefix(info.Name(), "PanelX-")
 			itemFileName = strings.TrimSuffix(itemFileName, ".gz")
 			itemFileName = strings.TrimSuffix(itemFileName, ".log")
 			files = append(files, itemFileName)
@@ -122,9 +122,9 @@ func (u *LogService) PageOperationLog(req dto.SearchOpLogWithPage) (int64, inter
 
 func (u *LogService) LoadSystemLog(name string) (string, error) {
 	if name == time.Now().Format("2006-01-02") {
-		name = "1Panel.log"
+		name = "PanelX.log"
 	} else {
-		name = "1Panel-" + name + ".log"
+		name = "PanelX-" + name + ".log"
 	}
 	filePath := path.Join(global.CONF.System.DataDir, "log", name)
 	if _, err := os.Stat(filePath); err != nil {

@@ -22,10 +22,10 @@ var resetCmd = &cobra.Command{
 
 var resetMFACmd = &cobra.Command{
 	Use:   "mfa",
-	Short: "取消 1Panel 两步验证",
+	Short: "取消 PanelX 两步验证",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl reset mfa 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl reset mfa 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()
@@ -38,10 +38,10 @@ var resetMFACmd = &cobra.Command{
 }
 var resetSSLCmd = &cobra.Command{
 	Use:   "https",
-	Short: "取消 1Panel https 方式登录",
+	Short: "取消 PanelX https 方式登录",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl reset https 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl reset https 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()
@@ -54,10 +54,10 @@ var resetSSLCmd = &cobra.Command{
 }
 var resetEntranceCmd = &cobra.Command{
 	Use:   "entrance",
-	Short: "取消 1Panel 安全入口",
+	Short: "取消 PanelX 安全入口",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl reset entrance 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl reset entrance 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()
@@ -70,10 +70,10 @@ var resetEntranceCmd = &cobra.Command{
 }
 var resetBindIpsCmd = &cobra.Command{
 	Use:   "ips",
-	Short: "取消 1Panel 授权 IP 限制",
+	Short: "取消 PanelX 授权 IP 限制",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl reset ips 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl reset ips 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()
@@ -86,10 +86,10 @@ var resetBindIpsCmd = &cobra.Command{
 }
 var resetDomainCmd = &cobra.Command{
 	Use:   "domain",
-	Short: "取消 1Panel 访问域名绑定",
+	Short: "取消 PanelX 访问域名绑定",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl reset domain 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl reset domain 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()

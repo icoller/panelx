@@ -24,7 +24,7 @@ const { toClipboard } = useClipboard();
 
 const onCopy = async () => {
     try {
-        await toClipboard('1pctl user-info');
+        await toClipboard('pxctl user-info');
         MsgSuccess(i18n.global.t('commons.msg.copySuccess'));
     } catch (e) {
         MsgError(i18n.global.t('commons.msg.copyFailed'));

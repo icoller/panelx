@@ -126,7 +126,7 @@ func (b *BaseApi) LoadFromCert(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Router /settings/ssl/download [post]
 func (b *BaseApi) DownloadSSL(c *gin.Context) {
-	pathItem := path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt")
+	pathItem := path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt")
 	if _, err := os.Stat(pathItem); err != nil {
 		helper.ErrorWithDetail(c, constant.CodeErrInternalServer, constant.ErrTypeInternalServer, err)
 		return

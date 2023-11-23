@@ -153,7 +153,7 @@ func (u *SettingService) UpdateBindInfo(req dto.BindInfo) error {
 		return err
 	}
 	go func() {
-		_, err := cmd.Exec("systemctl restart 1panel.service")
+		_, err := cmd.Exec("systemctl restart panelx.service")
 		if err != nil {
 			global.LOG.Errorf("restart system with new bind info failed, err: %v", err)
 		}
@@ -177,7 +177,7 @@ func (u *SettingService) UpdatePort(port uint) error {
 		return err
 	}
 	go func() {
-		_, err := cmd.Exec("systemctl restart 1panel.service")
+		_, err := cmd.Exec("systemctl restart panelx.service")
 		if err != nil {
 			global.LOG.Errorf("restart system port failed, err: %v", err)
 		}
@@ -186,7 +186,7 @@ func (u *SettingService) UpdatePort(port uint) error {
 }
 
 func (u *SettingService) UpdateSSL(c *gin.Context, req dto.SSLUpdate) error {
-	secretDir := path.Join(global.CONF.System.BaseDir, "1panel/secret")
+	secretDir := path.Join(global.CONF.System.BaseDir, "panelx/secret")
 	if req.SSL == "disable" {
 		if err := settingRepo.Update("SSL", "disable"); err != nil {
 			return err
@@ -197,7 +197,7 @@ func (u *SettingService) UpdateSSL(c *gin.Context, req dto.SSLUpdate) error {
 		_ = os.Remove(path.Join(secretDir, "server.crt"))
 		_ = os.Remove(path.Join(secretDir, "server.key"))
 		go func() {
-			_, err := cmd.Exec("systemctl restart 1panel.service")
+			_, err := cmd.Exec("systemctl restart panelx.service")
 			if err != nil {
 				global.LOG.Errorf("restart system failed, err: %v", err)
 			}
@@ -266,7 +266,7 @@ func (u *SettingService) UpdateSSL(c *gin.Context, req dto.SSLUpdate) error {
 		return err
 	}
 	go func() {
-		_, err := cmd.Exec("systemctl restart 1panel.service")
+		_, err := cmd.Exec("systemctl restart panelx.service")
 		if err != nil {
 			global.LOG.Errorf("restart system failed, err: %v", err)
 		}
@@ -292,16 +292,16 @@ func (u *SettingService) LoadFromCert() (*dto.SSLInfo, error) {
 	}
 	switch sslType.Value {
 	case "import":
-		if _, err := os.Stat(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt")); err != nil {
+		if _, err := os.Stat(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt")); err != nil {
 			return nil, fmt.Errorf("load server.crt file failed, err: %v", err)
 		}
-		certFile, _ := os.ReadFile(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt"))
+		certFile, _ := os.ReadFile(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt"))
 		data.Cert = string(certFile)
 
-		if _, err := os.Stat(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.key")); err != nil {
+		if _, err := os.Stat(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.key")); err != nil {
 			return nil, fmt.Errorf("load server.key file failed, err: %v", err)
 		}
-		keyFile, _ := os.ReadFile(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.key"))
+		keyFile, _ := os.ReadFile(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.key"))
 		data.Key = string(keyFile)
 	case "select":
 		sslID, err := settingRepo.Get(settingRepo.WithByKey("SSLID"))
@@ -355,7 +355,7 @@ func (u *SettingService) UpdatePassword(c *gin.Context, old, new string) error {
 
 func loadInfoFromCert() (*dto.SSLInfo, error) {
 	var info dto.SSLInfo
-	certFile := path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt")
+	certFile := path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt")
 	if _, err := os.Stat(certFile); err != nil {
 		return &info, err
 	}
@@ -383,16 +383,16 @@ func loadInfoFromCert() (*dto.SSLInfo, error) {
 	return &dto.SSLInfo{
 		Domain:   strings.Join(domains, ","),
 		Timeout:  certObj.NotAfter.Format("2006-01-02 15:04:05"),
-		RootPath: path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt"),
+		RootPath: path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt"),
 	}, nil
 }
 
 func checkCertValid(domain string) error {
-	certificate, err := os.ReadFile(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt.tmp"))
+	certificate, err := os.ReadFile(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt.tmp"))
 	if err != nil {
 		return err
 	}
-	key, err := os.ReadFile(path.Join(global.CONF.System.BaseDir, "1panel/secret/server.key.tmp"))
+	key, err := os.ReadFile(path.Join(global.CONF.System.BaseDir, "panelx/secret/server.key.tmp"))
 	if err != nil {
 		return err
 	}

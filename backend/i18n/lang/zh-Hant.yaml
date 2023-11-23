@@ -30,7 +30,7 @@ ErrPortInOtherApp: "{{ .port }} 端口已被應用 {{ .apps }} 佔用！"
 ErrDbUserNotValid: "儲存資料庫，用戶名密碼不匹配！"
 ErrDockerComposeNotValid: "docker-compose 文件格式錯誤"
 ErrUpdateBuWebsite: '應用更新成功，但是網站配置文件修改失敗，請檢查配置！'
-Err1PanelNetworkFailed: '默認容器網絡創建失敗！{{ .detail }}'
+ErrPanelXNetworkFailed: '默認容器網絡創建失敗！{{ .detail }}'
 ErrFileParse: '應用 docker-compose 文件解析失敗!'
 ErrInstallDirNotFound: '安裝目錄不存在'
 AppStoreIsUpToDate: '應用商店已經是最新版本'
@@ -41,7 +41,7 @@ ErrFileParseApp: '{{.name}} 文件解析失敗 {{.err}}'
 ErrAppDirNull: '版本資料夾不存在'
 LocalAppErr: "應用 {{.name}} 同步失敗！{{.err}}"
 ErrContainerName: "容器名稱已存在"
-ErrAppSystemRestart: "1Panel 重啟導致任務中斷"
+ErrAppSystemRestart: "PanelX 重啟導致任務中斷"
 ErrCreateHttpClient: "創建HTTP請求失敗 {{.err}}"
 ErrHttpReqTimeOut: "請求超時 {{.err}}"
 ErrHttpReqFailed: "請求失敗 {{.err}}"
@@ -52,7 +52,7 @@ ErrContainerNotFound: '{{ .name }} 容器不存在'
 ErrContainerMsg: '{{ .name }} 容器異常，具體請在容器頁面查看日誌'
 ErrAppBackup: '{{ .name }} 應用備份失敗 err {{.err}}'
 ErrImagePull: '{{ .name }} 鏡像拉取失敗 err {{.err}}'
-ErrVersionTooLow: '當前 1Panel 版本過低，無法更新應用商店，請升級版本之後操作'
+ErrVersionTooLow: '當前 PanelX 版本過低，無法更新應用商店，請升級版本之後操作'
 ErrAppNameExist: '應用名稱已存在'
 AppStoreIsSyncing: '應用程式商店正在同步中，請稍後再試'
 ErrGetCompose: "docker-compose.yml 檔案取得失敗！{{ .detail }}"

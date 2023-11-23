@@ -6,8 +6,7 @@ import (
 )
 
 func TestNginx(t *testing.T) {
-	//config, err := GetConfig("/opt/1Panel/data/apps/nginx/nginx-1/conf/conf.d/word-1.conf")
-	config, err := GetConfig("/opt/1Panel/data/apps/nginx/nginx-new/conf/conf.d/1panel.cloud.conf")
+	config, err := GetConfig("/opt/panelx/data/apps/nginx/nginx-new/conf/conf.d/panelx.cloud.conf")
 	if err != nil {
 		panic(err)
 	}

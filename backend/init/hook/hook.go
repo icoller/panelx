@@ -67,7 +67,7 @@ func Init() {
 		}
 
 		sudo := cmd.SudoHandleCmd()
-		_, _ = cmd.Execf("%s sed -i '/CHANGE_USER_INFO=true/d' /usr/local/bin/1pctl", sudo)
+		_, _ = cmd.Execf("%s sed -i '/CHANGE_USER_INFO=true/d' /usr/local/bin/pxctl", sudo)
 	}
 
 	handleSnapStatus()
@@ -81,7 +81,7 @@ func handleSnapStatus() {
 			_ = snapRepo.Update(snap.ID, map[string]interface{}{"status": constant.StatusSuccess})
 		}
 		if snap.Status == constant.StatusWaiting {
-			_ = snapRepo.Update(snap.ID, map[string]interface{}{"status": constant.StatusFailed, "message": "the task was interrupted due to the restart of the 1panel service"})
+			_ = snapRepo.Update(snap.ID, map[string]interface{}{"status": constant.StatusFailed, "message": "the task was interrupted due to the restart of the panelx service"})
 		}
 	}
 

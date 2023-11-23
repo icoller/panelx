@@ -234,7 +234,7 @@
                             :label="$t('setting.backupDir')"
                             prop="backupPath"
                         >
-                            <el-input clearable v-model.trim="dialogData.rowData!.backupPath" placeholder="/1panel" />
+                            <el-input clearable v-model.trim="dialogData.rowData!.backupPath" placeholder="/panelx" />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -348,7 +348,7 @@ function hasEndpoint(val: string) {
 }
 
 const toDoc = () => {
-    window.open('https://1panel.cn/docs/user_manual/settings/', '_blank', 'noopener,noreferrer');
+    window.open('https://www.panelx.cn/docs/user_manual/settings/', '_blank', 'noopener,noreferrer');
 };
 
 const getBuckets = async (formEl: FormInstance | undefined) => {

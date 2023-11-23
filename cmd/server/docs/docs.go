@@ -19918,7 +19918,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "1Panel",
+	Title:            "PanelX",
 	Description:      "开源Linux面板",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

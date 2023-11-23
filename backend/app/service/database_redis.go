@@ -224,10 +224,10 @@ func confSet(redisName string, changeConf []redisConfig) error {
 	startIndex, endIndex := 0, 0
 	var newFiles []string
 	for i := 0; i < len(files); i++ {
-		if files[i] == "# Redis configuration rewrite by 1Panel" {
+		if files[i] == "# Redis configuration rewrite by PanelX" {
 			startIndex = i
 		}
-		if files[i] == "# End Redis configuration rewrite by 1Panel" {
+		if files[i] == "# End Redis configuration rewrite by PanelX" {
 			endIndex = i
 			break
 		}
@@ -254,7 +254,7 @@ func confSet(redisName string, changeConf []redisConfig) error {
 			}
 		}
 	}
-	newFiles = append(newFiles, "# End Redis configuration rewrite by 1Panel")
+	newFiles = append(newFiles, "# End Redis configuration rewrite by PanelX")
 
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_TRUNC, 0666)
 	if err != nil {

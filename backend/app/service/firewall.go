@@ -439,7 +439,7 @@ func (u *FirewallService) loadPortByApp() []portOfApp {
 	if err != nil {
 		return datas
 	}
-	datas = append(datas, portOfApp{AppName: "1panel", HttpPort: systemPort.Value})
+	datas = append(datas, portOfApp{AppName: "panelx", HttpPort: systemPort.Value})
 
 	return datas
 }

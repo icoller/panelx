@@ -136,7 +136,7 @@ const message = {
             errorCaptcha: 'Captcha code error!',
             notSafe: 'Access Denied',
             safeEntrance1: 'The secure login has been enabled in the current environment',
-            safeEntrance2: 'Enter the following command on the SSH terminal to view the panel entry: 1pctl user-info',
+            safeEntrance2: 'Enter the following command on the SSH terminal to view the panel entry: pxctl user-info',
             errIP1: 'Authorized IP address access is enabled in the current environment',
             errDomain1: 'Access domain name binding is enabled in the current environment',
             errHelper: 'To reset the binding information, run the following command on the SSH terminal: ',
@@ -145,7 +145,7 @@ const message = {
             mfaCode: 'MFA verification code',
             title: 'Linux Server Management Panel',
             licenseHelper:
-                'Agree &laquo; <a href="https://www.fit2cloud.com/legal/licenses.html" target="_blank">Community License Agreement</a> &raquo;',
+                'Agree &laquo; <a href="https://www.panelx.cn/legal/licenses.html" target="_blank">License Agreement</a> &raquo;',
             errorAgree: 'Please click to agree to the Community Software License Agreement',
             logout: 'Logout',
         },
@@ -1199,7 +1199,7 @@ const message = {
             'Archival storage files cannot be downloaded directly and must first be restored through the corresponding cloud service provider`s website. Please use with caution!',
         domainHelper: 'The accelerated domain name must contain http:// or https://',
         backupAlert:
-            "In theory, as long as the cloud provider is compatible with the S3 protocol, existing Amazon S3 cloud storage can be used for backup. For specific configurations, please refer to the <a target=“_blank” href='https://1panel.cn/docs/user_manual/settings/#3'>official documentation.</a> ",
+            "In theory, as long as the cloud provider is compatible with the S3 protocol, existing Amazon S3 cloud storage can be used for backup. For specific configurations, please refer to the <a target=“_blank” href='https://www.panelx.cn/docs/user_manual/settings/#3'>official documentation.</a> ",
         domain: 'Accelerate domain',
         backupAccount: 'Backup account',
         loadBucket: 'Get bucket',
@@ -1308,10 +1308,10 @@ const message = {
         reDownload: 'Download the backup file again',
         recoverRecord: 'Recover record',
         recoverHelper:
-            'The recovery is about to start from snapshot {0}, and the recovery needs to restart docker and 1panel service, do you want to continue?',
+            'The recovery is about to start from snapshot {0}, and the recovery needs to restart docker and panelx service, do you want to continue?',
         rollback: 'Rollback',
         rollbackHelper:
-            'This recovery is about to be rolled back, which will replace all the files recovered this time. In the process, docker and 1panel services may need to be restarted. Do you want to continue?',
+            'This recovery is about to be rolled back, which will replace all the files recovered this time. In the process, docker and panelx services may need to be restarted. Do you want to continue?',
 
         upgrading: 'Please wait while the upgrade is underway...',
         upgradeHelper: 'The upgrade requires a service restart. Do you want to continue?',
@@ -1891,7 +1891,7 @@ const message = {
             'Extensions that do not exist in the list can be selected after manual input, for example: input sockets, and then select the first one in the drop-down list,',
         rebuildHelper: 'After editing the extension, you need to to rebuild the PHP application to take effect',
         phpPluginHelper:
-            '<a target="_blank" href="https://1panel.cn/docs/user_manual/websites/php/#php_1">View PHP extension list</a> ',
+            '<a target="_blank" href="https://www.panelx.cn/docs/user_manual/websites/php/#php_1">View PHP extension list</a> ',
         rebuild: 'Rebuild PHP App',
         source: 'PHP extension source',
         ustc: 'University of Science and Technology of China',
@@ -1975,7 +1975,7 @@ const message = {
             dir: 'Directory',
             numprocs: 'Numprocs',
             initWarn:
-                'The initialization operation needs to modify the [include] files parameter of the configuration file, the directory where the modified service configuration file is located: 1panel installation directory/1panel/tools/supervisord/supervisor.d/',
+                'The initialization operation needs to modify the [include] files parameter of the configuration file, the directory where the modified service configuration file is located: panelx installation directory/panelx/tools/supervisord/supervisor.d/',
             operatorHelper: 'Operation {1} will be performed on {0}, continue? ',
             uptime: 'running time',
             notStartWarn: 'Supervisor is not started, please start it first',

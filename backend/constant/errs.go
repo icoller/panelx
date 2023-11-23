@@ -54,7 +54,7 @@ var (
 	ErrPortInOtherApp      = "ErrPortInOtherApp"
 	ErrDbUserNotValid      = "ErrDbUserNotValid"
 	ErrUpdateBuWebsite     = "ErrUpdateBuWebsite"
-	Err1PanelNetworkFailed = "Err1PanelNetworkFailed"
+	ErrPanelXNetworkFailed = "ErrPanelXNetworkFailed"
 	ErrCmdTimeout          = "ErrCmdTimeout"
 	ErrFileParse           = "ErrFileParse"
 	ErrInstallDirNotFound  = "ErrInstallDirNotFound"

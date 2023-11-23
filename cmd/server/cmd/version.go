@@ -19,7 +19,7 @@ var versionCmd = &cobra.Command{
 	Short: "获取系统版本信息",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl version 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl version 或者切换到 root 用户")
 			return nil
 		}
 		db, err := loadDBConn()
@@ -28,7 +28,7 @@ var versionCmd = &cobra.Command{
 		}
 		version := getSettingByKey(db, "SystemVersion")
 
-		fmt.Printf("1panel version: %s\n", version)
+		fmt.Printf("panelx version: %s\n", version)
 		config := configs.ServerConfig{}
 		if err := yaml.Unmarshal(conf.AppYaml, &config); err != nil {
 			return fmt.Errorf("unmarshal conf.App.Yaml failed, errL %v", err)

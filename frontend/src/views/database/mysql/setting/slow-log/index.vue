@@ -146,7 +146,7 @@ const onSave = async () => {
     param.push({ param: 'slow_query_log', value: variables.slow_query_log });
     if (variables.slow_query_log === 'ON') {
         param.push({ param: 'long_query_time', value: variables.long_query_time + '' });
-        param.push({ param: 'slow_query_log_file', value: '/var/lib/mysql/1Panel-slow.log' });
+        param.push({ param: 'slow_query_log_file', value: '/var/lib/mysql/PanelX-slow.log' });
     }
     let params = {
         type: currentDB.type,

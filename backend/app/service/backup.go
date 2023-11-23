@@ -466,7 +466,7 @@ func (u *BackupService) checkBackupConn(backup *model.BackupAccount) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	fileItem := path.Join(global.CONF.System.TmpDir, "test", "1panel")
+	fileItem := path.Join(global.CONF.System.TmpDir, "test", "panelx")
 	if _, err := os.Stat(path.Dir(fileItem)); err != nil && os.IsNotExist(err) {
 		if err = os.MkdirAll(path.Dir(fileItem), os.ModePerm); err != nil {
 			return false, err
@@ -478,12 +478,12 @@ func (u *BackupService) checkBackupConn(backup *model.BackupAccount) (bool, erro
 	}
 	defer file.Close()
 	write := bufio.NewWriter(file)
-	_, _ = write.WriteString(string("1Panel 备份账号测试文件。\n"))
-	_, _ = write.WriteString(string("1Panel 備份賬號測試文件。\n"))
-	_, _ = write.WriteString(string("1Panel Backs up account test files.\n"))
-	_, _ = write.WriteString(string("1Panelアカウントのテストファイルをバックアップします。\n"))
+	_, _ = write.WriteString(string("PanelX 备份账号测试文件。\n"))
+	_, _ = write.WriteString(string("PanelX 備份賬號測試文件。\n"))
+	_, _ = write.WriteString(string("PanelX Backs up account test files.\n"))
+	_, _ = write.WriteString(string("PanelXアカウントのテストファイルをバックアップします。\n"))
 	write.Flush()
 
-	targetPath := strings.TrimPrefix(path.Join(backup.BackupPath, "test/1panel"), "/")
+	targetPath := strings.TrimPrefix(path.Join(backup.BackupPath, "test/panelx"), "/")
 	return client.Upload(fileItem, targetPath)
 }

@@ -74,7 +74,7 @@ func (u *SnapshotService) SnapshotImport(req dto.SnapshotImport) error {
 	for _, snap := range req.Names {
 		shortName := strings.TrimPrefix(snap, "snapshot_")
 		nameItems := strings.Split(shortName, "_")
-		if !strings.HasPrefix(shortName, "1panel_v") || !strings.HasSuffix(shortName, ".tar.gz") || len(nameItems) != 3 {
+		if !strings.HasPrefix(shortName, "panelx_v") || !strings.HasSuffix(shortName, ".tar.gz") || len(nameItems) != 3 {
 			return fmt.Errorf("incorrect snapshot name format of %s", shortName)
 		}
 		formatTime, err := time.Parse("20060102150405", strings.ReplaceAll(nameItems[2], ".tar.gz", ""))
@@ -216,13 +216,13 @@ func (u *SnapshotService) SnapshotRecover(req dto.SnapshotRecover) error {
 		if snap.InterruptStep == "Readjson" {
 			isReTry = false
 		}
-		u.OriginalPath = fmt.Sprintf("%s/1panel_original/original_%s", snapJson.BaseDir, snap.Name)
+		u.OriginalPath = fmt.Sprintf("%s/panelx_original/original_%s", snapJson.BaseDir, snap.Name)
 		_ = os.MkdirAll(u.OriginalPath, os.ModePerm)
 
 		snapJson.OldBaseDir = global.CONF.System.BaseDir
-		snapJson.OldPanelDataDir = path.Join(global.CONF.System.BaseDir, "1panel")
+		snapJson.OldPanelDataDir = path.Join(global.CONF.System.BaseDir, "panelx")
 		snapJson.OldBackupDataDir = localDir
-		recoverPanelDir := fmt.Sprintf("%s/%s/1panel", baseDir, snap.Name)
+		recoverPanelDir := fmt.Sprintf("%s/%s/panelx", baseDir, snap.Name)
 		liveRestore := false
 
 		if !isNewSnapshot {
@@ -270,39 +270,39 @@ func (u *SnapshotService) SnapshotRecover(req dto.SnapshotRecover) error {
 		}
 		_, _ = cmd.Exec("systemctl restart docker")
 
-		if !isReTry || snap.InterruptStep == "1PanelBinary" {
-			if err := u.handlePanelBinary(fileOp, operation, recoverPanelDir+"/1panel", u.OriginalPath+"/1panel"); err != nil {
-				updateRecoverStatus(snap.ID, "1PanelBinary", constant.StatusFailed, err.Error())
+		if !isReTry || snap.InterruptStep == "PanelXBinary" {
+			if err := u.handlePanelBinary(fileOp, operation, recoverPanelDir+"/panelx", u.OriginalPath+"/panelx"); err != nil {
+				updateRecoverStatus(snap.ID, "PanelXBinary", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
 		}
 		if !isReTry || snap.InterruptStep == "1PctlBinary" {
-			if err := u.handlePanelctlBinary(fileOp, operation, recoverPanelDir+"/1pctl", u.OriginalPath+"/1pctl"); err != nil {
+			if err := u.handlePanelctlBinary(fileOp, operation, recoverPanelDir+"/pxctl", u.OriginalPath+"/pxctl"); err != nil {
 				updateRecoverStatus(snap.ID, "1PctlBinary", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
 		}
-		if !isReTry || snap.InterruptStep == "1PanelService" {
-			if err := u.handlePanelService(fileOp, operation, recoverPanelDir+"/1panel.service", u.OriginalPath+"/1panel.service"); err != nil {
-				updateRecoverStatus(snap.ID, "1PanelService", constant.StatusFailed, err.Error())
+		if !isReTry || snap.InterruptStep == "PanelXService" {
+			if err := u.handlePanelService(fileOp, operation, recoverPanelDir+"/panelx.service", u.OriginalPath+"/panelx.service"); err != nil {
+				updateRecoverStatus(snap.ID, "PanelXService", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
 		}
 
-		if !isReTry || snap.InterruptStep == "1PanelBackups" {
+		if !isReTry || snap.InterruptStep == "PanelXBackups" {
 			if err := u.handleBackupDatas(fileOp, operation, rootDir, snapJson.BackupDataDir); err != nil {
-				updateRecoverStatus(snap.ID, "1PanelBackups", constant.StatusFailed, err.Error())
+				updateRecoverStatus(snap.ID, "PanelXBackups", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
 		}
 
-		if !isReTry || snap.InterruptStep == "1PanelData" {
+		if !isReTry || snap.InterruptStep == "PanelXData" {
 			if err := u.handlePanelDatas(snap.ID, fileOp, operation, rootDir, snapJson.PanelDataDir, localDir, snapJson.OldDockerDataDir); err != nil {
-				updateRecoverStatus(snap.ID, "1PanelData", constant.StatusFailed, err.Error())
+				updateRecoverStatus(snap.ID, "PanelXData", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
@@ -314,7 +314,7 @@ func (u *SnapshotService) SnapshotRecover(req dto.SnapshotRecover) error {
 
 		_ = os.RemoveAll(rootDir)
 		global.LOG.Info("recover successful")
-		_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart 1panel.service")
+		_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart panelx.service")
 	}()
 	return nil
 }
@@ -349,7 +349,7 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, fmt.Sprintf("decompress file failed, err: %v", err))
 			return
 		}
-		u.OriginalPath = fmt.Sprintf("%s/1panel_original/original_%s", snapJson.OldBaseDir, snap.Name)
+		u.OriginalPath = fmt.Sprintf("%s/panelx_original/original_%s", snapJson.OldBaseDir, snap.Name)
 		if _, err := os.Stat(u.OriginalPath); err != nil && os.IsNotExist(err) {
 			return
 		}
@@ -396,15 +396,15 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			return
 		}
 
-		if err := u.handlePanelBinary(fileOp, "rollback", u.OriginalPath+"/1panel", ""); err != nil {
+		if err := u.handlePanelBinary(fileOp, "rollback", u.OriginalPath+"/panelx", ""); err != nil {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
-		if snap.InterruptStep == "1PanelBinary" {
+		if snap.InterruptStep == "PanelXBinary" {
 			return
 		}
 
-		if err := u.handlePanelctlBinary(fileOp, "rollback", u.OriginalPath+"/1pctl", ""); err != nil {
+		if err := u.handlePanelctlBinary(fileOp, "rollback", u.OriginalPath+"/pxctl", ""); err != nil {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
@@ -412,12 +412,12 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			return
 		}
 
-		if err := u.handlePanelService(fileOp, "rollback", u.OriginalPath+"/1panel.service", ""); err != nil {
+		if err := u.handlePanelService(fileOp, "rollback", u.OriginalPath+"/panelx.service", ""); err != nil {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
-		if snap.InterruptStep == "1PanelService" {
-			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart 1panel.service")
+		if snap.InterruptStep == "PanelXService" {
+			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart panelx.service")
 			return
 		}
 
@@ -425,8 +425,8 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
-		if snap.InterruptStep == "1PanelBackups" {
-			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart 1panel.service")
+		if snap.InterruptStep == "PanelXBackups" {
+			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart panelx.service")
 			return
 		}
 
@@ -434,14 +434,14 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
-		if snap.InterruptStep == "1PanelData" {
-			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart 1panel.service")
+		if snap.InterruptStep == "PanelXData" {
+			_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart panelx.service")
 			return
 		}
 
 		_ = os.RemoveAll(rootDir)
 		global.LOG.Info("rollback successful")
-		_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart 1panel.service")
+		_, _ = cmd.Exec("systemctl daemon-reload && systemctl restart panelx.service")
 	}()
 	return nil
 }
@@ -482,9 +482,9 @@ func (u *SnapshotService) HandleSnapshot(isCronjob bool, req dto.SnapshotCreate,
 
 	if req.ID == 0 {
 		versionItem, _ := settingRepo.Get(settingRepo.WithByKey("SystemVersion"))
-		name := fmt.Sprintf("1panel_%s_%s", versionItem.Value, timeNow)
+		name := fmt.Sprintf("panelx_%s_%s", versionItem.Value, timeNow)
 		if isCronjob {
-			name = fmt.Sprintf("snapshot_1panel_%s_%s", versionItem.Value, timeNow)
+			name = fmt.Sprintf("snapshot_panelx_%s_%s", versionItem.Value, timeNow)
 		}
 		rootDir = path.Join(localDir, "system", name)
 
@@ -513,7 +513,7 @@ func (u *SnapshotService) HandleSnapshot(isCronjob bool, req dto.SnapshotCreate,
 
 	var wg sync.WaitGroup
 	itemHelper := snapHelper{SnapID: snap.ID, Status: &snapStatus, Wg: &wg, FileOp: files.NewFileOp(), Ctx: context.Background()}
-	backupPanelDir := path.Join(rootDir, "1panel")
+	backupPanelDir := path.Join(rootDir, "panelx")
 	_ = os.MkdirAll(backupPanelDir, os.ModePerm)
 	backupDockerDir := path.Join(rootDir, "docker")
 	_ = os.MkdirAll(backupDockerDir, os.ModePerm)
@@ -521,7 +521,7 @@ func (u *SnapshotService) HandleSnapshot(isCronjob bool, req dto.SnapshotCreate,
 	jsonItem := SnapshotJson{
 		BaseDir:       global.CONF.System.BaseDir,
 		BackupDataDir: localDir,
-		PanelDataDir:  path.Join(global.CONF.System.BaseDir, "1panel"),
+		PanelDataDir:  path.Join(global.CONF.System.BaseDir, "panelx"),
 	}
 
 	if snapStatus.PanelInfo != constant.StatusDone {
@@ -670,22 +670,22 @@ func (u *SnapshotService) handleDaemonJson(fileOp files.FileOp, operation string
 }
 
 func (u *SnapshotService) handlePanelBinary(fileOp files.FileOp, operation string, source, target string) error {
-	panelPath := "/usr/local/bin/1panel"
+	panelPath := "/usr/local/bin/panelx"
 	if operation == "snapshot" || operation == "recover" {
 		if _, err := os.Stat(panelPath); err != nil {
-			return fmt.Errorf("1panel binary is not found in %s, err: %v", panelPath, err)
+			return fmt.Errorf("panelx binary is not found in %s, err: %v", panelPath, err)
 		} else {
 			if err := cpBinary([]string{panelPath}, target); err != nil {
-				return fmt.Errorf("backup 1panel binary failed, err: %v", err)
+				return fmt.Errorf("backup panelx binary failed, err: %v", err)
 			}
 		}
 	}
 	if operation == "recover" || operation == "rollback" || operation == "re-recover" {
 		if _, err := os.Stat(source); err != nil {
-			return fmt.Errorf("1panel binary is not found in snapshot, err: %v", err)
+			return fmt.Errorf("panelx binary is not found in snapshot, err: %v", err)
 		} else {
-			if err := cpBinary([]string{source}, "/usr/local/bin/1panel"); err != nil {
-				return fmt.Errorf("recover 1panel binary failed, err: %v", err)
+			if err := cpBinary([]string{source}, "/usr/local/bin/panelx"); err != nil {
+				return fmt.Errorf("recover panelx binary failed, err: %v", err)
 			}
 		}
 	}
@@ -694,22 +694,22 @@ func (u *SnapshotService) handlePanelBinary(fileOp files.FileOp, operation strin
 }
 
 func (u *SnapshotService) handlePanelctlBinary(fileOp files.FileOp, operation string, source, target string) error {
-	panelctlPath := "/usr/local/bin/1pctl"
+	panelctlPath := "/usr/local/bin/pxctl"
 	if operation == "snapshot" || operation == "recover" {
 		if _, err := os.Stat(panelctlPath); err != nil {
-			return fmt.Errorf("1pctl binary is not found in %s, err: %v", panelctlPath, err)
+			return fmt.Errorf("pxctl binary is not found in %s, err: %v", panelctlPath, err)
 		} else {
 			if err := cpBinary([]string{panelctlPath}, target); err != nil {
-				return fmt.Errorf("backup 1pctl binary failed, err: %v", err)
+				return fmt.Errorf("backup pxctl binary failed, err: %v", err)
 			}
 		}
 	}
 	if operation == "recover" || operation == "rollback" || operation == "re-recover" {
 		if _, err := os.Stat(source); err != nil {
-			return fmt.Errorf("1pctl binary is not found in snapshot, err: %v", err)
+			return fmt.Errorf("pxctl binary is not found in snapshot, err: %v", err)
 		} else {
-			if err := cpBinary([]string{source}, "/usr/local/bin/1pctl"); err != nil {
-				return fmt.Errorf("recover 1pctl binary failed, err: %v", err)
+			if err := cpBinary([]string{source}, "/usr/local/bin/pxctl"); err != nil {
+				return fmt.Errorf("recover pxctl binary failed, err: %v", err)
 			}
 		}
 	}
@@ -718,22 +718,22 @@ func (u *SnapshotService) handlePanelctlBinary(fileOp files.FileOp, operation st
 }
 
 func (u *SnapshotService) handlePanelService(fileOp files.FileOp, operation string, source, target string) error {
-	panelServicePath := "/etc/systemd/system/1panel.service"
+	panelServicePath := "/etc/systemd/system/panelx.service"
 	if operation == "snapshot" || operation == "recover" {
 		if _, err := os.Stat(panelServicePath); err != nil {
-			return fmt.Errorf("1panel service is not found in %s, err: %v", panelServicePath, err)
+			return fmt.Errorf("panelx service is not found in %s, err: %v", panelServicePath, err)
 		} else {
 			if err := cpBinary([]string{panelServicePath}, target); err != nil {
-				return fmt.Errorf("backup 1panel service failed, err: %v", err)
+				return fmt.Errorf("backup panelx service failed, err: %v", err)
 			}
 		}
 	}
 	if operation == "recover" || operation == "rollback" || operation == "re-recover" {
 		if _, err := os.Stat(source); err != nil {
-			return fmt.Errorf("1panel service is not found in snapshot, err: %v", err)
+			return fmt.Errorf("panelx service is not found in snapshot, err: %v", err)
 		} else {
-			if err := cpBinary([]string{source}, "/etc/systemd/system/1panel.service"); err != nil {
-				return fmt.Errorf("recover 1panel service failed, err: %v", err)
+			if err := cpBinary([]string{source}, "/etc/systemd/system/panelx.service"); err != nil {
+				return fmt.Errorf("recover panelx service failed, err: %v", err)
 			}
 		}
 	}
@@ -744,18 +744,18 @@ func (u *SnapshotService) handlePanelService(fileOp files.FileOp, operation stri
 func (u *SnapshotService) handleBackupDatas(fileOp files.FileOp, operation string, source, target string) error {
 	switch operation {
 	case "recover":
-		if err := handleSnapTar(target, u.OriginalPath, "1panel_backup.tar.gz", "./system;"); err != nil {
+		if err := handleSnapTar(target, u.OriginalPath, "panelx_backup.tar.gz", "./system;"); err != nil {
 			return fmt.Errorf("restore original local backup dir data failed, err: %v", err)
 		}
-		if err := u.handleUnTar(source+"/1panel/1panel_backup.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx/panelx_backup.tar.gz", target); err != nil {
 			return fmt.Errorf("recover local backup dir data failed, err: %v", err)
 		}
 	case "re-recover":
-		if err := u.handleUnTar(source+"/1panel/1panel_backup.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx/panelx_backup.tar.gz", target); err != nil {
 			return fmt.Errorf("retry recover  local backup dir data failed, err: %v", err)
 		}
 	case "rollback":
-		if err := u.handleUnTar(source+"/1panel_backup.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx_backup.tar.gz", target); err != nil {
 			return fmt.Errorf("rollback local backup dir data failed, err: %v", err)
 		}
 	}
@@ -774,7 +774,7 @@ func (u *SnapshotService) handlePanelDatas(snapID uint, fileOp files.FileOp, ope
 			exclusionRules += ("." + strings.ReplaceAll(dockerDir, source, "") + ";")
 		}
 
-		if err := handleSnapTar(source, target, "1panel_data.tar.gz", exclusionRules); err != nil {
+		if err := handleSnapTar(source, target, "panelx_data.tar.gz", exclusionRules); err != nil {
 			return fmt.Errorf("backup panel data failed, err: %v", err)
 		}
 	case "recover":
@@ -787,23 +787,23 @@ func (u *SnapshotService) handlePanelDatas(snapID uint, fileOp files.FileOp, ope
 		}
 
 		_ = snapshotRepo.Update(snapID, map[string]interface{}{"recover_status": ""})
-		if err := handleSnapTar(target, u.OriginalPath, "1panel_data.tar.gz", exclusionRules); err != nil {
+		if err := handleSnapTar(target, u.OriginalPath, "panelx_data.tar.gz", exclusionRules); err != nil {
 			return fmt.Errorf("restore original panel data failed, err: %v", err)
 		}
 		_ = snapshotRepo.Update(snapID, map[string]interface{}{"recover_status": constant.StatusWaiting})
 
 		_ = fileOp.Fs.RemoveAll(path.Join(target, "apps"))
-		if err := u.handleUnTar(source+"/1panel/1panel_data.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx/panelx_data.tar.gz", target); err != nil {
 			return fmt.Errorf("recover panel data failed, err: %v", err)
 		}
 	case "re-recover":
 		_ = fileOp.Fs.RemoveAll(path.Join(target, "apps"))
-		if err := u.handleUnTar(source+"/1panel/1panel_data.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx/panelx_data.tar.gz", target); err != nil {
 			return fmt.Errorf("retry recover panel data failed, err: %v", err)
 		}
 	case "rollback":
 		_ = fileOp.Fs.RemoveAll(path.Join(target, "apps"))
-		if err := u.handleUnTar(source+"/1panel_data.tar.gz", target); err != nil {
+		if err := u.handleUnTar(source+"/panelx_data.tar.gz", target); err != nil {
 			return fmt.Errorf("rollback panel data failed, err: %v", err)
 		}
 	}
@@ -1056,12 +1056,12 @@ func checkIsAllDone(snapID uint) bool {
 
 func loadLogByStatus(status model.SnapshotStatus) string {
 	logs := ""
-	logs += fmt.Sprintf("Write 1Panel basic information: %s \n", status.PanelInfo)
-	logs += fmt.Sprintf("Backup 1Panel system files: %s \n", status.Panel)
+	logs += fmt.Sprintf("Write PanelX basic information: %s \n", status.PanelInfo)
+	logs += fmt.Sprintf("Backup PanelX system files: %s \n", status.Panel)
 	logs += fmt.Sprintf("Backup Docker configuration file: %s \n", status.DaemonJson)
-	logs += fmt.Sprintf("Backup installed apps from 1Panel: %s \n", status.AppData)
-	logs += fmt.Sprintf("Backup 1Panel data directory: %s \n", status.PanelData)
-	logs += fmt.Sprintf("Backup local backup directory for 1Panel: %s \n", status.BackupData)
+	logs += fmt.Sprintf("Backup installed apps from PanelX: %s \n", status.AppData)
+	logs += fmt.Sprintf("Backup PanelX data directory: %s \n", status.PanelData)
+	logs += fmt.Sprintf("Backup local backup directory for PanelX: %s \n", status.BackupData)
 	logs += fmt.Sprintf("Create snapshot file: %s \n", status.Compress)
 	logs += fmt.Sprintf("Snapshot size: %s \n", status.Size)
 	logs += fmt.Sprintf("Upload snapshot file: %s \n", status.Upload)

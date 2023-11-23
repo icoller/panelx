@@ -6,7 +6,7 @@
                     <div class="login-title">
                         <span>{{ $t('commons.login.title') }}</span>
                     </div>
-                    <img src="@/assets/images/1panel-login.png" alt="" v-if="screenWidth > 1110" />
+                    <img src="@/assets/images/panelx-login.png" alt="" v-if="screenWidth > 1110" />
                 </div>
                 <div :class="screenWidth > 1110 ? 'right inline-block' : ''">
                     <div class="login-container">
@@ -56,7 +56,7 @@ onMounted(() => {
 
 .login-backgroud {
     height: 100vh;
-    background: url(@/assets/images/1panel-login-bg.png) no-repeat,
+    background: url(@/assets/images/panelx-login-bg.png) no-repeat,
         radial-gradient(153.25% 257.2% at 118.99% 181.67%, rgba(50, 132, 255, 0.2) 0%, rgba(82, 120, 255, 0) 100%)
             /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
         radial-gradient(123.54% 204.83% at 25.87% 195.17%, rgba(111, 76, 253, 0.15) 0%, rgba(122, 76, 253, 0) 78.85%)

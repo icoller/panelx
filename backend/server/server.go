@@ -1,3 +1,11 @@
+/*
+ * @Author: coller
+ * @Date: 2023-11-22 00:08:39
+ * @LastEditors: coller
+ * @LastEditTime: 2023-11-23 19:55:44
+ * @Copyright (c) 2023 by www.kuaiqin.com, All Rights Reserved.
+ * @Desc:
+ */
 package server
 
 import (
@@ -63,8 +71,8 @@ func Start() {
 		*net.TCPListener
 	}
 	if global.CONF.System.SSL == "enable" {
-		certPath := path.Join(global.CONF.System.BaseDir, "1panel/secret/server.crt")
-		keyPath := path.Join(global.CONF.System.BaseDir, "1panel/secret/server.key")
+		certPath := path.Join(global.CONF.System.BaseDir, "panelx/secret/server.crt")
+		keyPath := path.Join(global.CONF.System.BaseDir, "panelx/secret/server.key")
 		certificate, err := os.ReadFile(certPath)
 		if err != nil {
 			panic(err)

@@ -34,7 +34,7 @@ var listenIpv6Cmd = &cobra.Command{
 
 func updateBindInfo(protocol string) error {
 	if !isRoot() {
-		fmt.Println("请使用 sudo 1pctl listen-ip ipv6 或者切换到 root 用户")
+		fmt.Println("请使用 sudo pxctl listen-ip ipv6 或者切换到 root 用户")
 		return nil
 	}
 	db, err := loadDBConn()

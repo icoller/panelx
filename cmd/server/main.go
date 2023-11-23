@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	_ "net/http/pprof"
+
 	"github.com/1Panel-dev/1Panel/cmd/server/cmd"
 	_ "github.com/1Panel-dev/1Panel/cmd/server/docs"
-	_ "net/http/pprof"
 )
 
-// @title 1Panel
+// @title PanelX
 // @version 1.0
 // @description  开源Linux面板
 // @termsOfService http://swagger.io/terms/

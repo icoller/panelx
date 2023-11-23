@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+
 	"github.com/1Panel-dev/1Panel/backend/global"
 
 	"github.com/docker/docker/api/types"
@@ -143,8 +144,8 @@ func CreateDefaultDockerNetwork() error {
 		global.LOG.Errorf("init docker client error %s", err.Error())
 		return err
 	}
-	if !cli.NetworkExist("1panel-network") {
-		if err := cli.CreateNetwork("1panel-network"); err != nil {
+	if !cli.NetworkExist("panelx-network") {
+		if err := cli.CreateNetwork("panelx-network"); err != nil {
 			global.LOG.Errorf("create default docker network  error %s", err.Error())
 			return err
 		}

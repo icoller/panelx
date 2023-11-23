@@ -196,7 +196,7 @@ const acceptParams = (props: EditProps) => {
     form.value.path = props.path;
     config.language = props.language;
     fileName.value = props.name;
-    // TODO Now,1panel only support liunux,so we can use LF.
+    // TODO Now,panelx only support liunux,so we can use LF.
     // better,We should rely on the actual line feed character of the file returned from the background
     config.eol = monaco.editor.EndOfLineSequence.LF;
     open.value = true;

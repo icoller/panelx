@@ -51,7 +51,7 @@
                     </el-table-column>
                     <el-table-column width="90">
                         <template #default="{ row }">
-                            <el-tag effect="dark" round v-if="row.isSystem || row.name === '1panel-network'">
+                            <el-tag effect="dark" round v-if="row.isSystem || row.name === 'panelx-network'">
                                 system
                             </el-tag>
                         </template>
