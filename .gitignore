@@ -46,6 +46,7 @@ frontend/auto-imports.d.ts
 frontend/components.d.ts
 
 .history/
+tmp
 dist/
 pxctl
 panelx.service

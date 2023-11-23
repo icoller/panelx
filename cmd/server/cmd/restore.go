@@ -22,10 +22,10 @@ var restoreCmd = &cobra.Command{
 	Short: "回滚 1Panel 服务及数据",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl restore 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl restore 或者切换到 root 用户")
 			return nil
 		}
-		stdout, err := cmdUtils.Exec("grep '^BASE_DIR=' /usr/bin/1pctl | cut -d'=' -f2")
+		stdout, err := cmdUtils.Exec("grep '^BASE_DIR=' /usr/bin/pxctl | cut -d'=' -f2")
 		if err != nil {
 			return fmt.Errorf("handle load `BASE_DIR` failed, err: %v", err)
 		}
@@ -43,22 +43,22 @@ var restoreCmd = &cobra.Command{
 		tmpPath = path.Join(upgradeDir, tmpPath, "original")
 		fmt.Printf("(0/4) 开始从 %s 目录回滚 1Panel 服务及数据... \n", tmpPath)
 
-		if err := cpBinary(path.Join(tmpPath, "1panel"), "/usr/local/bin/1panel"); err != nil {
+		if err := cpBinary(path.Join(tmpPath, "panelx"), "/usr/local/bin/panelx"); err != nil {
 			return err
 		}
-		fmt.Println("(1/4) 1panel 二进制回滚成功")
-		if err := cpBinary(path.Join(tmpPath, "1pctl"), "/usr/local/bin/1pctl"); err != nil {
+		fmt.Println("(1/4) panelx 二进制回滚成功")
+		if err := cpBinary(path.Join(tmpPath, "pxctl"), "/usr/local/bin/pxctl"); err != nil {
 			return err
 		}
-		fmt.Println("(2/4) 1panel 脚本回滚成功")
-		if err := cpBinary(path.Join(tmpPath, "1panel.service"), "/etc/systemd/system/1panel.service"); err != nil {
+		fmt.Println("(2/4) panelx 脚本回滚成功")
+		if err := cpBinary(path.Join(tmpPath, "panelx.service"), "/etc/systemd/system/panelx.service"); err != nil {
 			return err
 		}
-		fmt.Println("(3/4) 1panel 服务回滚成功")
-		if err := cpBinary(path.Join(tmpPath, "1Panel.db"), path.Join(baseDir, "1panel", "db", "1Panel.db")); err != nil {
+		fmt.Println("(3/4) panelx 服务回滚成功")
+		if err := cpBinary(path.Join(tmpPath, "panelx.db"), path.Join(baseDir, "panelx", "db", "panelx.db")); err != nil {
 			return err
 		}
-		fmt.Printf("(4/4) 1panel 数据回滚成功 \n\n")
+		fmt.Printf("(4/4) panelx 数据回滚成功 \n\n")
 
 		fmt.Println("回滚成功！正在重启服务，请稍候...")
 		return nil
