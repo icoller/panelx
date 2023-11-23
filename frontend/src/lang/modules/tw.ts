@@ -137,7 +137,7 @@ const message = {
             errorCaptcha: '驗證碼錯誤！',
             notSafe: '暫無權限訪問',
             safeEntrance1: '當前環境已經開啟了安全入口登錄',
-            safeEntrance2: '在 SSH 終端輸入以下命令來查看面板入口: 1pctl user-info',
+            safeEntrance2: '在 SSH 終端輸入以下命令來查看面板入口: pxctl user-info',
             errIP1: '當前環境已經開啟了授權 IP 訪問',
             errDomain1: '當前環境已經開啟了訪問域名綁定',
             errHelper: '可在 SSH 終端輸入以下命令來重置綁定信息: ',
@@ -146,7 +146,7 @@ const message = {
             mfaCode: 'MFA 驗證碼',
             title: 'Linux 服務器運維管理面板',
             licenseHelper:
-                '同意 &laquo; <a href="https://www.fit2cloud.com/legal/licenses.html" target="_blank"> 飛致雲社區軟件許可協議</a> &raquo;',
+                '同意 &laquo; <a href="https://www.panelx.cn/legal/licenses.html" target="_blank"> 許可協議</a> &raquo;',
             errorAgree: '請點擊同意社區軟件許可協議',
             logout: '退出登錄',
         },
@@ -1130,7 +1130,7 @@ const message = {
         archiveHelper: '歸檔存儲的文件無法直接下載，需要先在對應的雲服務商網站進行恢復操作，請謹慎使用！',
         domainHelper: '加速域名必須包含 http:// 或者 https://',
         backupAlert:
-            "理論上只要雲廠商兼容 S3 協議，就可以用現有的亞馬遜 S3 雲存儲來備份，具體配置參考 <a target=「_blank」 href='https://1panel.cn/docs/user_manual/settings/#3'>官方文檔</a> ",
+            "理論上只要雲廠商兼容 S3 協議，就可以用現有的亞馬遜 S3 雲存儲來備份，具體配置參考 <a target=「_blank」 href='https://www.panelx.cn/docs/user_manual/settings/#3'>官方文檔</a> ",
         domain: '加速域名',
         backupAccount: '備份賬號',
         loadBucket: '獲取桶',
@@ -1770,7 +1770,7 @@ const message = {
         extendHelper: '列表中不存在的擴展，可以手動輸入之後選擇，例:輸入 sockets ，然後在下拉列表中選擇第一個',
         rebuildHelper: '編輯擴展後需要【重建】PHP 應用之後才能生效',
         phpPluginHelper:
-            "<a target=“_blank” href='https://1panel.cn/docs/user_manual/websites/php/#php_1'>查看 PHP 擴展列表</a> ",
+            "<a target=“_blank” href='https://www.panelx.cn/docs/user_manual/websites/php/#php_1'>查看 PHP 擴展列表</a> ",
         rebuild: '重建 PHP 應用',
         source: 'PHP 擴展源',
         ustc: '中國科學技術大學',
@@ -1851,7 +1851,7 @@ const message = {
             dir: '運行目錄',
             numprocs: '進程數量',
             initWarn:
-                '初始化操作需要修改配置文件的 [include] files 參數，修改後的服務配置文件所在目錄: 1panel安裝目錄/1panel/tools/supervisord/supervisor.d/',
+                '初始化操作需要修改配置文件的 [include] files 參數，修改後的服務配置文件所在目錄: panelx安裝目錄/panelx/tools/supervisord/supervisor.d/',
             operatorHelper: '將對 {0} 進行 {1} 操作，是否繼續？ ',
             uptime: '運行時長',
             notStartWarn: 'Supervisor 未啟動，請先啟動',

@@ -291,7 +291,7 @@ func (a AppService) GetIgnoredApp() ([]response.IgnoredApp, error) {
 
 func (a AppService) Install(ctx context.Context, req request.AppInstallCreate) (appInstall *model.AppInstall, err error) {
 	if err = docker.CreateDefaultDockerNetwork(); err != nil {
-		err = buserr.WithDetail(constant.Err1PanelNetworkFailed, err.Error(), nil)
+		err = buserr.WithDetail(constant.ErrPanelXNetworkFailed, err.Error(), nil)
 		return
 	}
 	if list, _ := appInstallRepo.ListBy(commonRepo.WithByName(req.Name)); len(list) > 0 {
@@ -696,7 +696,7 @@ func (a AppService) GetAppUpdate() (*response.AppUpdateRes, error) {
 		CanUpdate: false,
 	}
 
-	versionUrl := fmt.Sprintf("%s/%s/1panel.json.version.txt", global.CONF.System.AppRepo, global.CONF.System.Mode)
+	versionUrl := fmt.Sprintf("%s/%s/panelx.json.version.txt", global.CONF.System.AppRepo, global.CONF.System.Mode)
 	versionRes, err := http2.GetHttpRes(versionUrl)
 	if err != nil {
 		return nil, err
@@ -757,10 +757,10 @@ func getAppFromRepo(downloadPath string) error {
 
 func getAppList() (*dto.AppList, error) {
 	list := &dto.AppList{}
-	if err := getAppFromRepo(fmt.Sprintf("%s/%s/1panel.json.zip", global.CONF.System.AppRepo, global.CONF.System.Mode)); err != nil {
+	if err := getAppFromRepo(fmt.Sprintf("%s/%s/panelx.json.zip", global.CONF.System.AppRepo, global.CONF.System.Mode)); err != nil {
 		return nil, err
 	}
-	listFile := path.Join(constant.ResourceDir, "1panel.json")
+	listFile := path.Join(constant.ResourceDir, "panelx.json")
 	content, err := os.ReadFile(listFile)
 	if err != nil {
 		return nil, err
@@ -824,7 +824,7 @@ func (a AppService) SyncAppListFromRemote() (err error) {
 		oldAppIds = append(oldAppIds, old.ID)
 	}
 
-	baseRemoteUrl := fmt.Sprintf("%s/%s/1panel", global.CONF.System.AppRepo, global.CONF.System.Mode)
+	baseRemoteUrl := fmt.Sprintf("%s/%s/panelx", global.CONF.System.AppRepo, global.CONF.System.Mode)
 	appsMap := getApps(oldApps, list.Apps)
 
 	global.LOG.Infof("Starting synchronization of application details...")

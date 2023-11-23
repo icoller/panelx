@@ -268,7 +268,7 @@ const quickJump = () => {
     router.push({ name: 'AppInstalled' });
 };
 const toDoc = () => {
-    window.open('https://1panel.cn/docs/user_manual/hosts/firewall/', '_blank', 'noopener,noreferrer');
+    window.open('https://www.panelx.cn/docs/user_manual/hosts/firewall/', '_blank', 'noopener,noreferrer');
 };
 
 const onChangeStatus = async (row: Host.RuleInfo, status: string) => {

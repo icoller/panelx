@@ -31,10 +31,10 @@ func NewIDashboardService() IDashboardService {
 }
 
 func (u *DashboardService) Restart(operation string) error {
-	if operation != "1panel" && operation != "system" {
+	if operation != "panelx" && operation != "system" {
 		return fmt.Errorf("handle restart operation %s failed, err: nonsupport such operation", operation)
 	}
-	itemCmd := fmt.Sprintf("%s 1pctl restart", cmd.SudoHandleCmd())
+	itemCmd := fmt.Sprintf("%s pxctl restart", cmd.SudoHandleCmd())
 	if operation == "system" {
 		itemCmd = fmt.Sprintf("%s reboot", cmd.SudoHandleCmd())
 	}

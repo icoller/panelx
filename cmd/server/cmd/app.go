@@ -33,7 +33,7 @@ var initCmd = &cobra.Command{
 	Short: "初始化应用",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl app init 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl app init 或者切换到 root 用户")
 			return nil
 		}
 		if len(args) > 0 {

@@ -137,7 +137,7 @@ const message = {
             errorCaptcha: '验证码错误！',
             notSafe: '暂无权限访问',
             safeEntrance1: '当前环境已经开启了安全入口登录',
-            safeEntrance2: '在 SSH 终端输入以下命令来查看面板入口: 1pctl user-info',
+            safeEntrance2: '在 SSH 终端输入以下命令来查看面板入口: pxctl user-info',
             errIP1: '当前环境已经开启了授权 IP 访问',
             errDomain1: '当前环境已经开启了访问域名绑定',
             errHelper: '可在 SSH 终端输入以下命令来重置绑定信息: ',
@@ -146,7 +146,7 @@ const message = {
             mfaCode: 'MFA 验证码',
             title: 'Linux 服务器运维管理面板',
             licenseHelper:
-                '同意 &laquo; <a href="https://www.fit2cloud.com/legal/licenses.html" target="_blank"> 飞致云社区软件许可协议</a> &raquo;',
+                '同意 &laquo; <a href="https://www.panelx.cn/legal/licenses.html" target="_blank">许可协议</a> &raquo;',
             errorAgree: '请点击同意社区软件许可协议',
             logout: '退出登录',
         },
@@ -1131,7 +1131,7 @@ const message = {
         archiveHelper: '归档存储的文件无法直接下载，需要先在对应的云服务商网站进行恢复操作，请谨慎使用！',
         domainHelper: '加速域名必须包含 http:// 或者 https://',
         backupAlert:
-            "理论上只要云厂商兼容 S3 协议，就可以用现有的亚马逊 S3 云存储来备份，具体配置参考 <a target=“_blank” href='https://1panel.cn/docs/user_manual/settings/#3'>官方文档</a> ",
+            "理论上只要云厂商兼容 S3 协议，就可以用现有的亚马逊 S3 云存储来备份，具体配置参考 <a target=“_blank” href='https://www.panelx.cn/docs/user_manual/settings/#3'>官方文档</a> ",
         domain: '加速域名',
         backupAccount: '备份账号',
         loadBucket: '获取桶',
@@ -1770,7 +1770,7 @@ const message = {
         extendHelper: '列表中不存在的扩展，可以手动输入之后选择，例:输入 sockets ，然后在下拉列表中选择第一个，',
         rebuildHelper: '编辑扩展后需要【重建】PHP 应用之后才能生效',
         phpPluginHelper:
-            "<a target=“_blank” href='https://1panel.cn/docs/user_manual/websites/php/#php_1'>查看 PHP 扩展列表</a> ",
+            "<a target=“_blank” href='https://www.panelx.cn/docs/user_manual/websites/php/#php_1'>查看 PHP 扩展列表</a> ",
         rebuild: '重建 PHP 应用',
         source: 'PHP 扩展源',
         ustc: '中国科学技术大学',
@@ -1851,7 +1851,7 @@ const message = {
             dir: '运行目录',
             numprocs: '进程数量',
             initWarn:
-                '初始化操作需要修改配置文件的 [include] files 参数，修改后的服务配置文件所在目录: 1panel安装目录/1panel/tools/supervisord/supervisor.d/',
+                '初始化操作需要修改配置文件的 [include] files 参数，修改后的服务配置文件所在目录: panelx安装目录/panelx/tools/supervisord/supervisor.d/',
             operatorHelper: '将对 {0} 进行 {1} 操作，是否继续？',
             uptime: '运行时长',
             notStartWarn: '当前未开启 Supervisor ，请先启动',

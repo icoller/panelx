@@ -8,13 +8,14 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+
 	"github.com/1Panel-dev/1Panel/backend/app/model"
 	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/go-acme/lego/v4/lego"
 	"github.com/go-acme/lego/v4/registration"
-	"io"
-	"net/http"
-	"net/url"
 )
 
 type domainError struct {
@@ -172,7 +173,7 @@ func newConfig(user *AcmeUser, accountType string) *lego.Config {
 		config.CADirURL = "https://dv.acme-v02.test-api.pki.goog/directory\""
 	}
 
-	config.UserAgent = "1Panel"
+	config.UserAgent = "PanelX"
 	config.Certificate.KeyType = certcrypto.RSA2048
 	return config
 }

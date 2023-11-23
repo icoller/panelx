@@ -66,7 +66,7 @@ func (u *UpgradeService) SearchUpgrade() (*dto.UpgradeInfo, error) {
 	if upgrade.NewVersion != "" {
 		itemVersion = upgrade.NewVersion
 	}
-	notes, err := u.loadReleaseNotes(fmt.Sprintf("%s/%s/%s/release/1panel-%s-release-notes", global.CONF.System.RepoUrl, global.CONF.System.Mode, itemVersion, itemVersion))
+	notes, err := u.loadReleaseNotes(fmt.Sprintf("%s/%s/%s/release/panelx-%s-release-notes", global.CONF.System.RepoUrl, global.CONF.System.Mode, itemVersion, itemVersion))
 
 	if err != nil {
 		return nil, fmt.Errorf("load releases-notes of version %s failed, err: %v", latestVersion, err)
@@ -76,7 +76,7 @@ func (u *UpgradeService) SearchUpgrade() (*dto.UpgradeInfo, error) {
 }
 
 func (u *UpgradeService) LoadNotes(req dto.Upgrade) (string, error) {
-	notes, err := u.loadReleaseNotes(fmt.Sprintf("%s/%s/%s/release/1panel-%s-release-notes", global.CONF.System.RepoUrl, global.CONF.System.Mode, req.Version, req.Version))
+	notes, err := u.loadReleaseNotes(fmt.Sprintf("%s/%s/%s/release/panelx-%s-release-notes", global.CONF.System.RepoUrl, global.CONF.System.Mode, req.Version, req.Version))
 	if err != nil {
 		return "", fmt.Errorf("load releases-notes of version %s failed, err: %v", req.Version, err)
 	}
@@ -101,7 +101,7 @@ func (u *UpgradeService) Upgrade(req dto.Upgrade) error {
 	}
 
 	downloadPath := fmt.Sprintf("%s/%s/%s/release", global.CONF.System.RepoUrl, global.CONF.System.Mode, req.Version)
-	fileName := fmt.Sprintf("1panel-%s-%s-%s.tar.gz", req.Version, "linux", itemArch)
+	fileName := fmt.Sprintf("panelx-%s-%s-%s.tar.gz", req.Version, "linux", itemArch)
 	_ = settingRepo.Update("SystemStatus", "Upgrading")
 	go func() {
 		_ = global.Cron.Stop()
@@ -131,25 +131,25 @@ func (u *UpgradeService) Upgrade(req dto.Upgrade) error {
 		}
 		global.LOG.Info("backup original data successful, now start to upgrade!")
 
-		if err := cpBinary([]string{tmpDir + "/1panel"}, "/usr/local/bin/1panel"); err != nil {
-			global.LOG.Errorf("upgrade 1panel failed, err: %v", err)
+		if err := cpBinary([]string{tmpDir + "/panelx"}, "/usr/local/bin/panelx"); err != nil {
+			global.LOG.Errorf("upgrade panelx failed, err: %v", err)
 			u.handleRollback(fileOp, originalDir, 1)
 			return
 		}
 
-		if err := cpBinary([]string{tmpDir + "/1pctl"}, "/usr/local/bin/1pctl"); err != nil {
-			global.LOG.Errorf("upgrade 1pctl failed, err: %v", err)
+		if err := cpBinary([]string{tmpDir + "/pxctl"}, "/usr/local/bin/pxctl"); err != nil {
+			global.LOG.Errorf("upgrade pxctl failed, err: %v", err)
 			u.handleRollback(fileOp, originalDir, 2)
 			return
 		}
-		if _, err := cmd.Execf("sed -i -e 's#BASE_DIR=.*#BASE_DIR=%s#g' /usr/local/bin/1pctl", global.CONF.System.BaseDir); err != nil {
-			global.LOG.Errorf("upgrade basedir in 1pctl failed, err: %v", err)
+		if _, err := cmd.Execf("sed -i -e 's#BASE_DIR=.*#BASE_DIR=%s#g' /usr/local/bin/pxctl", global.CONF.System.BaseDir); err != nil {
+			global.LOG.Errorf("upgrade basedir in pxctl failed, err: %v", err)
 			u.handleRollback(fileOp, originalDir, 2)
 			return
 		}
 
-		if err := cpBinary([]string{tmpDir + "/1panel.service"}, "/etc/systemd/system/1panel.service"); err != nil {
-			global.LOG.Errorf("upgrade 1panel.service failed, err: %v", err)
+		if err := cpBinary([]string{tmpDir + "/panelx.service"}, "/etc/systemd/system/panelx.service"); err != nil {
+			global.LOG.Errorf("upgrade panelx.service failed, err: %v", err)
 			u.handleRollback(fileOp, originalDir, 3)
 			return
 		}
@@ -158,19 +158,19 @@ func (u *UpgradeService) Upgrade(req dto.Upgrade) error {
 		go writeLogs(req.Version)
 		_ = settingRepo.Update("SystemVersion", req.Version)
 		_ = settingRepo.Update("SystemStatus", "Free")
-		_, _ = cmd.ExecWithTimeOut("systemctl daemon-reload && systemctl restart 1panel.service", 1*time.Minute)
+		_, _ = cmd.ExecWithTimeOut("systemctl daemon-reload && systemctl restart panelx.service", 1*time.Minute)
 	}()
 	return nil
 }
 
 func (u *UpgradeService) handleBackup(fileOp files.FileOp, originalDir string) error {
-	if err := fileOp.Copy("/usr/local/bin/1panel", originalDir); err != nil {
+	if err := fileOp.Copy("/usr/local/bin/panelx", originalDir); err != nil {
 		return err
 	}
-	if err := fileOp.Copy("/usr/local/bin/1pctl", originalDir); err != nil {
+	if err := fileOp.Copy("/usr/local/bin/pxctl", originalDir); err != nil {
 		return err
 	}
-	if err := fileOp.Copy("/etc/systemd/system/1panel.service", originalDir); err != nil {
+	if err := fileOp.Copy("/etc/systemd/system/panelx.service", originalDir); err != nil {
 		return err
 	}
 	dbPath := global.CONF.System.DbPath + "/" + global.CONF.System.DbFile
@@ -187,7 +187,7 @@ func (u *UpgradeService) handleRollback(fileOp files.FileOp, originalDir string,
 		global.LOG.Errorf("rollback panelx failed, err: %v", err)
 	}
 	if err := cpBinary([]string{originalDir + "/panelx"}, "/usr/local/bin/panelx"); err != nil {
-		global.LOG.Errorf("rollback 1pctl failed, err: %v", err)
+		global.LOG.Errorf("rollback pxctl failed, err: %v", err)
 	}
 	if errStep == 1 {
 		return

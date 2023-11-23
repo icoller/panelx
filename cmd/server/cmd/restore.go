@@ -19,7 +19,7 @@ func init() {
 
 var restoreCmd = &cobra.Command{
 	Use:   "restore",
-	Short: "回滚 1Panel 服务及数据",
+	Short: "回滚 PanelX 服务及数据",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
 			fmt.Println("请使用 sudo pxctl restore 或者切换到 root 用户")
@@ -30,7 +30,7 @@ var restoreCmd = &cobra.Command{
 			return fmt.Errorf("handle load `BASE_DIR` failed, err: %v", err)
 		}
 		baseDir := strings.ReplaceAll(stdout, "\n", "")
-		upgradeDir := path.Join(baseDir, "1panel", "tmp", "upgrade")
+		upgradeDir := path.Join(baseDir, "panelx", "tmp", "upgrade")
 
 		tmpPath, err := loadRestorePath(upgradeDir)
 		if err != nil {
@@ -41,7 +41,7 @@ var restoreCmd = &cobra.Command{
 			return nil
 		}
 		tmpPath = path.Join(upgradeDir, tmpPath, "original")
-		fmt.Printf("(0/4) 开始从 %s 目录回滚 1Panel 服务及数据... \n", tmpPath)
+		fmt.Printf("(0/4) 开始从 %s 目录回滚 PanelX 服务及数据... \n", tmpPath)
 
 		if err := cpBinary(path.Join(tmpPath, "panelx"), "/usr/local/bin/panelx"); err != nil {
 			return err

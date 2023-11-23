@@ -210,7 +210,7 @@ const onLoadList = async (type: string) => {
 };
 
 const toDoc = () => {
-    window.open('https://1panel.cn/docs/user_manual/toolbox/fail2ban/', '_blank', 'noopener,noreferrer');
+    window.open('https://www.panelx.cn/docs/user_manual/toolbox/fail2ban/', '_blank', 'noopener,noreferrer');
 };
 
 const onSaveFile = async () => {

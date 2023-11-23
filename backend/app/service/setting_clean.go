@@ -17,20 +17,20 @@ import (
 )
 
 const (
-	upgradePath      = "1panel/tmp/upgrade"
-	snapshotTmpPath  = "1panel/tmp/system"
-	rollbackPath     = "1panel/tmp"
-	cachePath        = "1panel/cache"
+	upgradePath      = "panelx/tmp/upgrade"
+	snapshotTmpPath  = "panelx/tmp/system"
+	rollbackPath     = "panelx/tmp"
+	cachePath        = "panelx/cache"
 	oldOriginalPath  = "original"
-	oldAppBackupPath = "1panel/resource/apps_bak"
-	oldDownloadPath  = "1panel/tmp/download"
-	oldUpgradePath   = "1panel/tmp"
-	tmpUploadPath    = "1panel/tmp/upload"
-	uploadPath       = "1panel/uploads"
-	downloadPath     = "1panel/download"
-	logPath          = "1panel/log"
-	dockerLogPath    = "1panel/tmp/docker_logs"
-	taskPath         = "1panel/task"
+	oldAppBackupPath = "panelx/resource/apps_bak"
+	oldDownloadPath  = "panelx/tmp/download"
+	oldUpgradePath   = "panelx/tmp"
+	tmpUploadPath    = "panelx/tmp/upload"
+	uploadPath       = "panelx/uploads"
+	downloadPath     = "panelx/download"
+	logPath          = "panelx/log"
+	dockerLogPath    = "panelx/tmp/docker_logs"
+	taskPath         = "panelx/task"
 )
 
 func (u *SettingService) SystemScan() dto.CleanData {
@@ -40,16 +40,16 @@ func (u *SettingService) SystemScan() dto.CleanData {
 	)
 	fileOp := fileUtils.NewFileOp()
 
-	originalPath := path.Join(global.CONF.System.BaseDir, "1panel_original")
+	originalPath := path.Join(global.CONF.System.BaseDir, "panelx_original")
 	originalSize, _ := fileOp.GetDirSize(originalPath)
 	treeData = append(treeData, dto.CleanTree{
 		ID:          uuid.NewString(),
-		Label:       "1panel_original",
+		Label:       "panelx_original",
 		Size:        uint64(originalSize),
 		IsCheck:     true,
 		IsRecommend: true,
-		Type:        "1panel_original",
-		Children:    loadTreeWithDir(true, "1panel_original", originalPath, fileOp),
+		Type:        "panelx_original",
+		Children:    loadTreeWithDir(true, "panelx_original", originalPath, fileOp),
 	})
 
 	upgradePath := path.Join(global.CONF.System.BaseDir, upgradePath)
@@ -139,8 +139,8 @@ func (u *SettingService) SystemClean(req []dto.Clean) {
 	for _, item := range req {
 		size += item.Size
 		switch item.TreeType {
-		case "1panel_original":
-			dropFileOrDir(path.Join(global.CONF.System.BaseDir, "1panel_original", item.Name))
+		case "panelx_original":
+			dropFileOrDir(path.Join(global.CONF.System.BaseDir, "panelx_original", item.Name))
 
 		case "upgrade":
 			dropFileOrDir(path.Join(global.CONF.System.BaseDir, upgradePath, item.Name))
@@ -268,7 +268,7 @@ func (u *SettingService) SystemClean(req []dto.Clean) {
 
 	if restart {
 		go func() {
-			_, err := cmd.Exec("systemctl restart 1panel.service")
+			_, err := cmd.Exec("systemctl restart panelx.service")
 			if err != nil {
 				global.LOG.Errorf("restart system port failed, err: %v", err)
 			}
@@ -280,7 +280,7 @@ func (u *SettingService) SystemCleanForCronjob() (string, error) {
 	logs := ""
 	size := int64(0)
 	fileCount := 0
-	dropFileOrDirWithLog(path.Join(global.CONF.System.BaseDir, "1panel_original"), &logs, &size, &fileCount)
+	dropFileOrDirWithLog(path.Join(global.CONF.System.BaseDir, "panelx_original"), &logs, &size, &fileCount)
 
 	upgradePath := path.Join(global.CONF.System.BaseDir, upgradePath)
 	upgradeFiles, _ := os.ReadDir(upgradePath)
@@ -321,7 +321,7 @@ func (u *SettingService) SystemCleanForCronjob() (string, error) {
 	logFiles, _ := os.ReadDir(logPath)
 	if len(logFiles) != 0 {
 		for i := 0; i < len(logFiles); i++ {
-			if logFiles[i].Name() != "1Panel.log" {
+			if logFiles[i].Name() != "PanelX.log" {
 				dropFileOrDirWithLog(path.Join(logPath, logFiles[i].Name()), &logs, &size, &fileCount)
 			}
 		}
@@ -541,7 +541,7 @@ func loadTreeWithAllFile(isCheck bool, originalPath, treeType, pathItem string, 
 		return lists
 	}
 	for _, file := range files {
-		if treeType == "system_log" && file.Name() == "1Panel.log" {
+		if treeType == "system_log" && file.Name() == "PanelX.log" {
 			continue
 		}
 		if (treeType == "upload" || treeType == "download") && file.IsDir() && (file.Name() == "app" || file.Name() == "database" || file.Name() == "website" || file.Name() == "directory") {

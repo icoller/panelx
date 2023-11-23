@@ -7,7 +7,7 @@ const (
 	AuthMethodJWT = "jwt"
 	JWTHeaderName = "PanelAuthorization"
 	JWTBufferTime = 3600
-	JWTIssuer     = "1Panel"
+	JWTIssuer     = "PanelX"
 
 	PasswordExpiredName = "expired"
 )

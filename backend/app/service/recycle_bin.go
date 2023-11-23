@@ -2,6 +2,13 @@ package service
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/1Panel-dev/1Panel/backend/app/dto"
 	"github.com/1Panel-dev/1Panel/backend/app/dto/request"
 	"github.com/1Panel-dev/1Panel/backend/app/dto/response"
@@ -9,12 +16,6 @@ import (
 	"github.com/1Panel-dev/1Panel/backend/constant"
 	"github.com/1Panel-dev/1Panel/backend/utils/files"
 	"github.com/shirou/gopsutil/v3/disk"
-	"os"
-	"path"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type RecycleBinService struct {
@@ -41,7 +42,7 @@ func (r RecycleBinService) Page(search dto.PageInfo) (int64, []response.RecycleB
 	}
 	op := files.NewFileOp()
 	for _, p := range partitions {
-		dir := path.Join(p.Mountpoint, ".1panel_clash")
+		dir := path.Join(p.Mountpoint, ".panelx_clash")
 		if !op.Stat(dir) {
 			continue
 		}
@@ -135,11 +136,11 @@ func (r RecycleBinService) Clear() error {
 	}
 	op := files.NewFileOp()
 	for _, p := range partitions {
-		dir := path.Join(p.Mountpoint, ".1panel_clash")
+		dir := path.Join(p.Mountpoint, ".panelx_clash")
 		if !op.Stat(dir) {
 			continue
 		}
-		newDir := path.Join(p.Mountpoint, "1panel_clash")
+		newDir := path.Join(p.Mountpoint, "panelx_clash")
 		if err := op.Rename(dir, newDir); err != nil {
 			return err
 		}
@@ -162,7 +163,7 @@ func getClashDir(realPath string) (string, error) {
 		}
 		for _, p := range partitions {
 			if p.Mountpoint == dir {
-				if err = createClashDir(path.Join(p.Mountpoint, ".1panel_clash")); err != nil {
+				if err = createClashDir(path.Join(p.Mountpoint, ".panelx_clash")); err != nil {
 					return "", err
 				}
 				return dir, nil

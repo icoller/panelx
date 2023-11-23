@@ -107,7 +107,7 @@ function checkFixedCidrV6(rule: any, value: any, callback: any) {
 }
 
 const toDoc = () => {
-    window.open('https://1panel.cn/docs/user_manual/containers/setting/', '_blank', 'noopener,noreferrer');
+    window.open('https://www.panelx.cn/docs/user_manual/containers/setting/', '_blank', 'noopener,noreferrer');
 };
 
 const emit = defineEmits<{ (e: 'search'): void }>();

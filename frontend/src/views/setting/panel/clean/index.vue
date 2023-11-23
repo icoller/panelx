@@ -469,7 +469,7 @@ function loadTag(node: any, data: any) {
 
 function load18n(label: string) {
     switch (label) {
-        case '1panel_original':
+        case 'panelx_original':
             return i18n.global.t('clean.panelOriginal');
         case 'upgrade':
             return i18n.global.t('clean.upgrade');

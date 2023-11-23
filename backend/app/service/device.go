@@ -90,7 +90,7 @@ func (u *DeviceService) Update(key, value string) error {
 			return err
 		}
 		go func() {
-			_, err := cmd.Exec("systemctl restart 1panel.service")
+			_, err := cmd.Exec("systemctl restart panelx.service")
 			if err != nil {
 				global.LOG.Errorf("restart system for new time zone failed, err: %v", err)
 			}

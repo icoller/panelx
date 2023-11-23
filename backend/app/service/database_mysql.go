@@ -236,7 +236,7 @@ func (u *MysqlService) Delete(ctx context.Context, req dto.MysqlDBDelete) error 
 	}
 
 	if req.DeleteBackup {
-		uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("1panel/uploads/database/%s/%s/%s", req.Type, req.Database, db.Name))
+		uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("panelx/uploads/database/%s/%s/%s", req.Type, req.Database, db.Name))
 		if _, err := os.Stat(uploadDir); err == nil {
 			_ = os.RemoveAll(uploadDir)
 		}
@@ -538,9 +538,9 @@ func (u *MysqlService) LoadDatabaseFile(req dto.OperationWithNameAndType) (strin
 	case "redis-conf":
 		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/redis/%s/conf/redis.conf", req.Name))
 	case "mysql-slow-logs":
-		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mysql/%s/data/1Panel-slow.log", req.Name))
+		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mysql/%s/data/PanelX-slow.log", req.Name))
 	case "mariadb-slow-logs":
-		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mariadb/%s/db/data/1Panel-slow.log", req.Name))
+		filePath = path.Join(global.CONF.System.DataDir, fmt.Sprintf("apps/mariadb/%s/db/data/PanelX-slow.log", req.Name))
 	}
 	if _, err := os.Stat(filePath); err != nil {
 		return "", buserr.New("ErrHttpReqNotFound")

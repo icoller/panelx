@@ -3,6 +3,12 @@ package service
 import (
 	"bytes"
 	"fmt"
+	"os/exec"
+	"os/user"
+	"path"
+	"strconv"
+	"strings"
+
 	"github.com/1Panel-dev/1Panel/backend/app/dto/request"
 	"github.com/1Panel-dev/1Panel/backend/app/dto/response"
 	"github.com/1Panel-dev/1Panel/backend/buserr"
@@ -14,11 +20,6 @@ import (
 	"github.com/1Panel-dev/1Panel/backend/utils/systemctl"
 	"github.com/pkg/errors"
 	"gopkg.in/ini.v1"
-	"os/exec"
-	"os/user"
-	"path"
-	"strconv"
-	"strings"
 )
 
 type HostToolService struct{}
@@ -151,7 +152,7 @@ func (h *HostToolService) CreateToolConfig(req request.HostToolCreate) error {
 				return err
 			}
 		}
-		supervisorDir := path.Join(global.CONF.System.BaseDir, "1panel", "tools", "supervisord")
+		supervisorDir := path.Join(global.CONF.System.BaseDir, "panelx", "tools", "supervisord")
 		includeDir := path.Join(supervisorDir, "supervisor.d")
 		if !fileOp.Stat(includeDir) {
 			if err = fileOp.CreateDir(includeDir, 0755); err != nil {
@@ -279,7 +280,7 @@ func (h *HostToolService) GetToolLog(req request.HostToolLogReq) (string, error)
 
 func (h *HostToolService) OperateSupervisorProcess(req request.SupervisorProcessConfig) error {
 	var (
-		supervisordDir = path.Join(global.CONF.System.BaseDir, "1panel", "tools", "supervisord")
+		supervisordDir = path.Join(global.CONF.System.BaseDir, "panelx", "tools", "supervisord")
 		logDir         = path.Join(supervisordDir, "log")
 		includeDir     = path.Join(supervisordDir, "supervisor.d")
 		outLog         = path.Join(logDir, fmt.Sprintf("%s.out.log", req.Name))
@@ -377,7 +378,7 @@ func (h *HostToolService) GetSupervisorProcessConfig() ([]response.SupervisorPro
 	var (
 		result []response.SupervisorProcessConfig
 	)
-	configDir := path.Join(global.CONF.System.BaseDir, "1panel", "tools", "supervisord", "supervisor.d")
+	configDir := path.Join(global.CONF.System.BaseDir, "panelx", "tools", "supervisord", "supervisor.d")
 	fileList, _ := NewIFileService().GetFileList(request.FileOption{FileOption: files.FileOption{Path: configDir, Expand: true, Page: 1, PageSize: 100}})
 	if len(fileList.Items) == 0 {
 		return result, nil
@@ -420,7 +421,7 @@ func (h *HostToolService) OperateSupervisorProcessFile(req request.SupervisorPro
 	var (
 		fileOp     = files.NewFileOp()
 		group      = fmt.Sprintf("program:%s", req.Name)
-		configPath = path.Join(global.CONF.System.BaseDir, "1panel", "tools", "supervisord", "supervisor.d", fmt.Sprintf("%s.ini", req.Name))
+		configPath = path.Join(global.CONF.System.BaseDir, "panelx", "tools", "supervisord", "supervisor.d", fmt.Sprintf("%s.ini", req.Name))
 	)
 	switch req.File {
 	case "err.log":
@@ -484,7 +485,7 @@ func (h *HostToolService) OperateSupervisorProcessFile(req request.SupervisorPro
 func operateSupervisorCtl(operate, name, group string) error {
 	processNames := []string{operate}
 	if name != "" {
-		includeDir := path.Join(global.CONF.System.BaseDir, "1panel", "tools", "supervisord", "supervisor.d")
+		includeDir := path.Join(global.CONF.System.BaseDir, "panelx", "tools", "supervisord", "supervisor.d")
 		f, err := ini.Load(path.Join(includeDir, fmt.Sprintf("%s.ini", name)))
 		if err != nil {
 			return err

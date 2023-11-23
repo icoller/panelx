@@ -30,7 +30,7 @@ ErrPortInOtherApp: "{{ .port }} port  already in use by app  {{ .apps }}"
 ErrDbUserNotValid: "Stock database, username and password do not match！"
 ErrDockerComposeNotValid: "docker-compose file format error!"
 ErrUpdateBuWebsite: 'The application was updated successfully, but the modification of the website configuration file failed, please check the configuration!'
-Err1PanelNetworkFailed: 'Default container network creation failed! {{ .detail }}'
+ErrPanelXNetworkFailed: 'Default container network creation failed! {{ .detail }}'
 ErrFileParse: 'Application docker-compose file parsing failed!'
 ErrInstallDirNotFound: 'installation directory does not exist'
 AppStoreIsUpToDate: 'The app store is already up to date！'
@@ -41,7 +41,7 @@ ErrFileParseApp: 'Failed to parse {{.name}} file {{.err}}'
 ErrAppDirNull: 'version folder does not exist'
 LocalAppErr: "App {{.name}} sync failed! {{.err}}"
 ErrContainerName: "ContainerName is already exist"
-ErrAppSystemRestart: "1Panel restart causes the task to terminate"
+ErrAppSystemRestart: "PanelX restart causes the task to terminate"
 ErrCreateHttpClient: "Failed to create HTTP request {{.err}}"
 ErrHttpReqTimeOut: "Request timed out {{.err}}"
 ErrHttpReqFailed: "Request failed {{.err}}"
@@ -52,7 +52,7 @@ ErrContainerNotFound: '{{ .name }} container does not exist'
 ErrContainerMsg: '{{ .name }} container is abnormal, please check the log on the container page for details'
 ErrAppBackup: '{{ .name }} application backup failed err {{.err}}'
 ErrImagePull: '{{ .name }} image pull failed err {{.err}}'
-ErrVersionTooLow: 'The current 1Panel version is too low to update the app store, please upgrade the version'
+ErrVersionTooLow: 'The current PanelX version is too low to update the app store, please upgrade the version'
 ErrAppNameExist: 'App name is already exist'
 AppStoreIsSyncing: 'The App Store is syncing, please try again later'
 ErrGetCompose: "Failed to obtain docker-compose.yml file! {{ .detail }}"

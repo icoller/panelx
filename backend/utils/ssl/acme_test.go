@@ -12,11 +12,12 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"github.com/go-acme/lego/v4/providers/dns/cloudflare"
 	"os"
 	"path"
 	"testing"
 	"time"
+
+	"github.com/go-acme/lego/v4/providers/dns/cloudflare"
 
 	"github.com/1Panel-dev/1Panel/backend/utils/files"
 	"gopkg.in/yaml.v3"
@@ -266,7 +267,7 @@ func TestSSL(t *testing.T) {
 	//}
 	//
 
-	//httpProvider, err := webroot.NewHTTPProvider("/opt/1Panel/data/apps/nginx/nginx-1/www/wwwroot")
+	//httpProvider, err := webroot.NewHTTPProvider("/opt/PanelX/data/apps/nginx/nginx-1/www/wwwroot")
 	//if err != nil {
 	//	panic(err)
 	//}
@@ -345,7 +346,7 @@ func generateCSR(privateKey crypto.PrivateKey, domain string) ([]byte, error) {
 
 func TestZeroSSL(t *testing.T) {
 
-	domain := "1panel.store"
+	domain := "panelx.store"
 	acmeServer := "https://acme.zerossl.com/v2/DV90"
 
 	//acmeServer = "https://api.test4.buypass.no/acme/directory"
@@ -362,7 +363,7 @@ func TestZeroSSL(t *testing.T) {
 		Key:   priKey,
 	}
 
-	//logFile, err := os.OpenFile("/opt/1panel/ssl.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	//logFile, err := os.OpenFile("/opt/panelx/ssl.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	//if err != nil {
 	//	log.Fatalf("Failed to open log file: %v", err)
 	//}

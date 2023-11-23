@@ -1,3 +1,11 @@
+<!--
+ * @Author: coller
+ * @Date: 2023-11-23 18:14:22
+ * @LastEditors: coller
+ * @LastEditTime: 2023-11-23 20:00:59
+ * @Copyright (c) 2023 by www.kuaiqin.com, All Rights Reserved. 
+ * @Desc:  
+-->
 <template>
     <div>
         <LayoutContent v-loading="loading" :title="$t('setting.about')" :divider="true">
@@ -56,7 +64,7 @@ const toIssue = () => {
     window.open('https://github.com/icoller/panelx/issues', '_blank', 'noopener,noreferrer');
 };
 const toGithubStar = () => {
-    window.open('https://github.com/icoller/panelx/1Panel', '_blank', 'noopener,noreferrer');
+    window.open('https://github.com/icoller/panelx', '_blank', 'noopener,noreferrer');
 };
 
 onMounted(() => {

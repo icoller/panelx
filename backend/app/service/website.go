@@ -441,7 +441,7 @@ func (w WebsiteService) DeleteWebsite(req request.WebsiteDelete) error {
 		}
 		global.LOG.Infof("delete website %s backups successful", website.Alias)
 	}
-	uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("1panel/uploads/website/%s", website.Alias))
+	uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("panelx/uploads/website/%s", website.Alias))
 	if _, err := os.Stat(uploadDir); err == nil {
 		_ = os.RemoveAll(uploadDir)
 	}

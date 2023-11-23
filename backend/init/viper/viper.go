@@ -33,9 +33,9 @@ func Init() {
 	if config.System.Mode != "" {
 		mode = config.System.Mode
 	}
-	if mode == "dev" && fileOp.Stat("/opt/1panel/conf/app.yaml") {
+	if mode == "dev" && fileOp.Stat("/opt/panelx/conf/app.yaml") {
 		v.SetConfigName("app")
-		v.AddConfigPath(path.Join("/opt/1panel/conf"))
+		v.AddConfigPath(path.Join("/opt/panelx/conf"))
 		if err := v.ReadInConfig(); err != nil {
 			panic(fmt.Errorf("Fatal error config file: %s \n", err))
 		}
@@ -61,7 +61,7 @@ func Init() {
 	if err := v.Unmarshal(&serverConfig); err != nil {
 		panic(err)
 	}
-	if mode == "dev" && fileOp.Stat("/opt/1panel/conf/app.yaml") {
+	if mode == "dev" && fileOp.Stat("/opt/panelx/conf/app.yaml") {
 		if serverConfig.System.BaseDir != "" {
 			baseDir = serverConfig.System.BaseDir
 		}
@@ -85,7 +85,7 @@ func Init() {
 	global.CONF = serverConfig
 	global.CONF.System.BaseDir = baseDir
 	global.CONF.System.IsDemo = v.GetBool("system.is_demo")
-	global.CONF.System.DataDir = path.Join(global.CONF.System.BaseDir, "1panel")
+	global.CONF.System.DataDir = path.Join(global.CONF.System.BaseDir, "panelx")
 	global.CONF.System.Cache = path.Join(global.CONF.System.DataDir, "cache")
 	global.CONF.System.Backup = path.Join(global.CONF.System.DataDir, "backup")
 	global.CONF.System.DbPath = path.Join(global.CONF.System.DataDir, "db")

@@ -138,7 +138,7 @@ func (u *DatabaseService) Delete(req dto.DatabaseDelete) error {
 	}
 
 	if req.DeleteBackup {
-		uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("1panel/uploads/database/%s/%s", db.Type, db.Name))
+		uploadDir := path.Join(global.CONF.System.BaseDir, fmt.Sprintf("panelx/uploads/database/%s/%s", db.Type, db.Name))
 		if _, err := os.Stat(uploadDir); err == nil {
 			_ = os.RemoveAll(uploadDir)
 		}
