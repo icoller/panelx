@@ -411,7 +411,7 @@ func (a *AppInstallService) SyncAll(systemInit bool) error {
 		if i.Status == constant.Installing || i.Status == constant.Upgrading {
 			if systemInit {
 				i.Status = constant.Error
-				i.Message = "1Panel restart causes the task to terminate"
+				i.Message = "PanelX restart causes the task to terminate"
 				_ = appInstallRepo.Save(context.Background(), &i)
 			}
 			continue

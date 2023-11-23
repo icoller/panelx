@@ -235,7 +235,7 @@ func (u *SettingService) SystemClean(req []dto.Clean) {
 					continue
 				}
 				for _, file := range files {
-					if file.Name() == "1Panel.log" {
+					if file.Name() == "panelx.log" {
 						continue
 					}
 					dropFileOrDir(path.Join(global.CONF.System.BaseDir, logPath, file.Name()))
