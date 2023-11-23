@@ -6,7 +6,7 @@ before:
     # - make build_web
     - chmod +x ./script.sh
     - ./script.sh
-    - sed -i 's@ORIGINAL_VERSION=.*@ORIGINAL_VERSION=v{{ .Version }}@g' 1pctl
+    - sed -i 's@ORIGINAL_VERSION=.*@ORIGINAL_VERSION=v{{ .Version }}@g' pxctl
     - go mod tidy
     
 builds:
