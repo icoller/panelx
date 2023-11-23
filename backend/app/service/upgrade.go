@@ -187,7 +187,11 @@ func (u *UpgradeService) handleRollback(fileOp files.FileOp, originalDir string,
 		global.LOG.Errorf("rollback panelx failed, err: %v", err)
 	}
 	if err := cpBinary([]string{originalDir + "/panelx"}, "/usr/local/bin/panelx"); err != nil {
+<<<<<<< HEAD
 		global.LOG.Errorf("rollback pxctl failed, err: %v", err)
+=======
+		global.LOG.Errorf("rollback 1pctl failed, err: %v", err)
+>>>>>>> fc712f61 (fix)
 	}
 	if errStep == 1 {
 		return
