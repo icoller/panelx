@@ -47,7 +47,6 @@ frontend/components.d.ts
 
 .history/
 dist/
-1pctl
 pxctl
 panelx.service
 install.sh
