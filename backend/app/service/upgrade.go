@@ -181,25 +181,25 @@ func (u *UpgradeService) handleBackup(fileOp files.FileOp, originalDir string) e
 }
 
 func (u *UpgradeService) handleRollback(fileOp files.FileOp, originalDir string, errStep int) {
-	dbPath := global.CONF.System.DbPath + "/1Panel.db"
+	dbPath := global.CONF.System.DbPath + "/panelx.db"
 	_ = settingRepo.Update("SystemStatus", "Free")
-	if err := cpBinary([]string{originalDir + "/1Panel.db"}, dbPath); err != nil {
-		global.LOG.Errorf("rollback 1panel failed, err: %v", err)
+	if err := cpBinary([]string{originalDir + "/panelx.db"}, dbPath); err != nil {
+		global.LOG.Errorf("rollback panelx failed, err: %v", err)
 	}
-	if err := cpBinary([]string{originalDir + "/1panel"}, "/usr/local/bin/1panel"); err != nil {
+	if err := cpBinary([]string{originalDir + "/panelx"}, "/usr/local/bin/panelx"); err != nil {
 		global.LOG.Errorf("rollback 1pctl failed, err: %v", err)
 	}
 	if errStep == 1 {
 		return
 	}
-	if err := cpBinary([]string{originalDir + "/1pctl"}, "/usr/local/bin/1pctl"); err != nil {
-		global.LOG.Errorf("rollback 1panel failed, err: %v", err)
+	if err := cpBinary([]string{originalDir + "/pxctl"}, "/usr/local/bin/pxctl"); err != nil {
+		global.LOG.Errorf("rollback panelx failed, err: %v", err)
 	}
 	if errStep == 2 {
 		return
 	}
-	if err := cpBinary([]string{originalDir + "/1panel.service"}, "/etc/systemd/system/1panel.service"); err != nil {
-		global.LOG.Errorf("rollback 1panel failed, err: %v", err)
+	if err := cpBinary([]string{originalDir + "/panelx.service"}, "/etc/systemd/system/panelx.service"); err != nil {
+		global.LOG.Errorf("rollback panelx failed, err: %v", err)
 	}
 }
 
