@@ -11,7 +11,7 @@ before:
     
 builds:
   - main: ./cmd/server/main.go
-    binary: 1panel
+    binary: panelx
     flags:
       - -trimpath
     ldflags:
@@ -31,11 +31,11 @@ builds:
 
 archives:
   - format: tar.gz
-    name_template: "1panel-v{{ .Version }}-{{ .Os }}-{{ .Arch }}{{- if .Arm }}v{{ .Arm }}{{ end }}"
+    name_template: "panelx-v{{ .Version }}-{{ .Os }}-{{ .Arch }}{{- if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: true
     files:
-      - 1pctl
-      - 1panel.service
+      - pxctl
+      - panelx.service
       - install.sh
       - README.md
       - LICENSE

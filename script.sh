@@ -6,15 +6,15 @@ command -v wget >/dev/null || {
 }
 
 if [ ! -f "pxctl" ]; then 
-  wget https://github.com/icoller/installer/raw/main/pxctl
+  wget http://resources.panelx.cn/installer/pxctl
 fi
 
 if [ ! -f "panelx.service" ]; then 
-  wget https://github.com/icoller/installer/raw/main/panelx.service
+  wget http://resources.panelx.cn/installer/panelx.service
 fi
 
 if [ ! -f "install.sh" ]; then 
-  wget https://github.com/icoller/installer/raw/main/install.sh
+  wget http://resources.panelx.cn/installer/install.sh
 fi
 
 chmod 755 pxctl install.sh
