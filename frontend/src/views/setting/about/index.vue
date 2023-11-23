@@ -4,7 +4,7 @@
             <template #main>
                 <div style="text-align: center; margin-top: 20px">
                     <div style="justify-self: center">
-                        <img style="width: 80px" src="@/assets/images/1panel-logo-light.png" />
+                        <img style="width: 80px" src="@/assets/images/panelx-logo-light.png" />
                     </div>
                     <h3>{{ $t('setting.description') }}</h3>
                     <h3>
@@ -47,13 +47,13 @@ const search = async () => {
 };
 
 const toDoc = () => {
-    window.open('https://1panel.cn/docs/', '_blank', 'noopener,noreferrer');
+    window.open('https://www.panelx.cn/docs/', '_blank', 'noopener,noreferrer');
 };
 const toGithub = () => {
-    window.open('https://github.com/1Panel-dev/1Panel', '_blank', 'noopener,noreferrer');
+    window.open('https://github.com/icoller/panelx', '_blank', 'noopener,noreferrer');
 };
 const toIssue = () => {
-    window.open('https://github.com/1Panel-dev/1Panel/issues', '_blank', 'noopener,noreferrer');
+    window.open('https://github.com/icoller/panelx/issues', '_blank', 'noopener,noreferrer');
 };
 const toGithubStar = () => {
     window.open('https://github.com/icoller/panelx', '_blank', 'noopener,noreferrer');
