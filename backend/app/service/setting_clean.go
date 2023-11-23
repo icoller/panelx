@@ -321,7 +321,7 @@ func (u *SettingService) SystemCleanForCronjob() (string, error) {
 	logFiles, _ := os.ReadDir(logPath)
 	if len(logFiles) != 0 {
 		for i := 0; i < len(logFiles); i++ {
-			if logFiles[i].Name() != "PanelX.log" {
+			if logFiles[i].Name() != "panelx.log" {
 				dropFileOrDirWithLog(path.Join(logPath, logFiles[i].Name()), &logs, &size, &fileCount)
 			}
 		}
@@ -541,7 +541,7 @@ func loadTreeWithAllFile(isCheck bool, originalPath, treeType, pathItem string, 
 		return lists
 	}
 	for _, file := range files {
-		if treeType == "system_log" && file.Name() == "PanelX.log" {
+		if treeType == "system_log" && file.Name() == "panelx.log" {
 			continue
 		}
 		if (treeType == "upload" || treeType == "download") && file.IsDir() && (file.Name() == "app" || file.Name() == "database" || file.Name() == "website" || file.Name() == "directory") {

@@ -329,9 +329,9 @@ func (f *FileService) ReadLogByLine(req request.FileReadByLineReq) (*response.Fi
 	case constant.TypeSystem:
 		fileName := ""
 		if req.Name == time.Now().Format("2006-01-02") {
-			fileName = "PanelX.log"
+			fileName = "panelx.log"
 		} else {
-			fileName = "PanelX-" + req.Name + ".log"
+			fileName = "panelx-" + req.Name + ".log"
 		}
 		logFilePath = path.Join(global.CONF.System.DataDir, "log", fileName)
 		if _, err := os.Stat(logFilePath); err != nil {

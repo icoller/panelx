@@ -51,12 +51,12 @@ func (u *LogService) ListSystemLogFile() ([]string, error) {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() && strings.HasPrefix(info.Name(), "PanelX-") {
-			if info.Name() == "PanelX.log" {
+		if !info.IsDir() && strings.HasPrefix(info.Name(), "panelx-") {
+			if info.Name() == "panelx.log" {
 				files = append(files, time.Now().Format("2006-01-02"))
 				return nil
 			}
-			itemFileName := strings.TrimPrefix(info.Name(), "PanelX-")
+			itemFileName := strings.TrimPrefix(info.Name(), "panelx-")
 			itemFileName = strings.TrimSuffix(itemFileName, ".gz")
 			itemFileName = strings.TrimSuffix(itemFileName, ".log")
 			files = append(files, itemFileName)
@@ -122,9 +122,9 @@ func (u *LogService) PageOperationLog(req dto.SearchOpLogWithPage) (int64, inter
 
 func (u *LogService) LoadSystemLog(name string) (string, error) {
 	if name == time.Now().Format("2006-01-02") {
-		name = "PanelX.log"
+		name = "panelx.log"
 	} else {
-		name = "PanelX-" + name + ".log"
+		name = "panelx-" + name + ".log"
 	}
 	filePath := path.Join(global.CONF.System.DataDir, "log", name)
 	if _, err := os.Stat(filePath); err != nil {
