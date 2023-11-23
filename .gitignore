@@ -55,3 +55,4 @@ quick_start.sh
 cmd/server/fileList.txt
 .fileList.txt
 .vscode/sftp.json
+.vscode/sftp-lc.json
