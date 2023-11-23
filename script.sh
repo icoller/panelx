@@ -5,16 +5,16 @@ command -v wget >/dev/null || {
   exit 1
 }
 
-if [ ! -f "1pctl" ]; then 
-  wget https://github.com/1Panel-dev/installer/raw/main/1pctl
+if [ ! -f "pxctl" ]; then 
+  wget https://github.com/icoller/installer/raw/main/pxctl
 fi
 
-if [ ! -f "1panel.service" ]; then 
-  wget https://github.com/1Panel-dev/installer/raw/main/1panel.service
+if [ ! -f "panelx.service" ]; then 
+  wget https://github.com/icoller/installer/raw/main/panelx.service
 fi
 
 if [ ! -f "install.sh" ]; then 
-  wget https://github.com/1Panel-dev/installer/raw/main/install.sh
+  wget https://github.com/icoller/installer/raw/main/install.sh
 fi
 
-chmod 755 1pctl install.sh
+chmod 755 pxctl install.sh
