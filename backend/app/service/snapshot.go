@@ -277,9 +277,9 @@ func (u *SnapshotService) SnapshotRecover(req dto.SnapshotRecover) error {
 			}
 			isReTry = false
 		}
-		if !isReTry || snap.InterruptStep == "1PctlBinary" {
+		if !isReTry || snap.InterruptStep == "PxctlBinary" {
 			if err := u.handlePanelctlBinary(fileOp, operation, recoverPanelDir+"/pxctl", u.OriginalPath+"/pxctl"); err != nil {
-				updateRecoverStatus(snap.ID, "1PctlBinary", constant.StatusFailed, err.Error())
+				updateRecoverStatus(snap.ID, "PxctlBinary", constant.StatusFailed, err.Error())
 				return
 			}
 			isReTry = false
@@ -408,7 +408,7 @@ func (u *SnapshotService) SnapshotRollback(req dto.SnapshotRecover) error {
 			updateRollbackStatus(snap.ID, constant.StatusFailed, err.Error())
 			return
 		}
-		if snap.InterruptStep == "1PctlBinary" {
+		if snap.InterruptStep == "PxctlBinary" {
 			return
 		}
 

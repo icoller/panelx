@@ -39,7 +39,7 @@ var userinfoCmd = &cobra.Command{
 		fmt.Printf("面板地址: %s://%s:%s/%s \n", protocol, address, port, entrance)
 		fmt.Println("面板用户: ", user)
 		fmt.Println("面板密码: ", "********")
-		fmt.Println("提示：修改密码可执行命令：1pctl update password")
+		fmt.Println("提示：修改密码可执行命令：pxctl update password")
 		return nil
 	},
 }

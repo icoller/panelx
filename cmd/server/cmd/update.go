@@ -33,7 +33,7 @@ var updateUserName = &cobra.Command{
 	Short: "修改面板用户",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl update username 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl update username 或者切换到 root 用户")
 			return nil
 		}
 		username()
@@ -45,7 +45,7 @@ var updatePassword = &cobra.Command{
 	Short: "修改面板密码",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl update password 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl update password 或者切换到 root 用户")
 			return nil
 		}
 		password()
@@ -57,7 +57,7 @@ var updatePort = &cobra.Command{
 	Short: "修改面板端口",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !isRoot() {
-			fmt.Println("请使用 sudo 1pctl update port 或者切换到 root 用户")
+			fmt.Println("请使用 sudo pxctl update port 或者切换到 root 用户")
 			return nil
 		}
 		port()
@@ -189,7 +189,7 @@ func port() {
 	fmt.Printf("修改成功！\n\n")
 	fmt.Printf("面板端口：%s\n", newPortStr)
 
-	std, err := cmd.Exec("1pctl restart")
+	std, err := cmd.Exec("pxctl restart")
 	if err != nil {
 		fmt.Println(std)
 	}
