@@ -328,12 +328,13 @@ func (f *FileService) ReadLogByLine(req request.FileReadByLineReq) (*response.Fi
 		logFilePath = ssl.GetLogPath()
 	case constant.TypeSystem:
 		fileName := ""
-		if req.Name == time.Now().Format("2006-01-02") {
+		if req.Name == time.Now().Format("2006-01-02") || req.Name == "" {
 			fileName = "panelx.log"
 		} else {
 			fileName = "panelx-" + req.Name + ".log"
 		}
 		logFilePath = path.Join(global.CONF.System.DataDir, "log", fileName)
+		fmt.Println(req.Name)
 		if _, err := os.Stat(logFilePath); err != nil {
 			fileGzPath := path.Join(global.CONF.System.DataDir, "log", fileName+".gz")
 			if _, err := os.Stat(fileGzPath); err != nil {

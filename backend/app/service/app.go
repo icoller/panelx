@@ -696,7 +696,7 @@ func (a AppService) GetAppUpdate() (*response.AppUpdateRes, error) {
 		CanUpdate: false,
 	}
 
-	versionUrl := fmt.Sprintf("%s/%s/panelx.json.version.txt", global.CONF.System.AppRepo, global.CONF.System.Mode)
+	versionUrl := fmt.Sprintf("%s/%s/1panel.json.version.txt", global.CONF.System.AppRepo, global.CONF.System.Mode)
 	versionRes, err := http2.GetHttpRes(versionUrl)
 	if err != nil {
 		return nil, err
@@ -757,10 +757,10 @@ func getAppFromRepo(downloadPath string) error {
 
 func getAppList() (*dto.AppList, error) {
 	list := &dto.AppList{}
-	if err := getAppFromRepo(fmt.Sprintf("%s/%s/panelx.json.zip", global.CONF.System.AppRepo, global.CONF.System.Mode)); err != nil {
+	if err := getAppFromRepo(fmt.Sprintf("%s/%s/1panel.json.zip", global.CONF.System.AppRepo, global.CONF.System.Mode)); err != nil {
 		return nil, err
 	}
-	listFile := path.Join(constant.ResourceDir, "panelx.json")
+	listFile := path.Join(constant.ResourceDir, "1panel.json")
 	content, err := os.ReadFile(listFile)
 	if err != nil {
 		return nil, err

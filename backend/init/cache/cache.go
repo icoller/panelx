@@ -52,4 +52,6 @@ func Init() {
 
 	global.CACHE = badger_db.NewCacheDB(cache)
 	global.LOG.Info("init cache successfully")
+
+	
 }
