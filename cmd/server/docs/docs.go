@@ -5919,6 +5919,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/files/recycle/status": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取回收站状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "File"
+                ],
+                "summary": "Get RecycleBin status",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/files/rename": {
             "post": {
                 "security": [
@@ -9190,49 +9212,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/settings/clean": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "清理系统垃圾文件",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "System Setting"
-                ],
-                "summary": "System clean",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.Clean"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "x-panel-log": {
-                    "BeforeFunctions": [],
-                    "bodyKeys": [],
-                    "formatEN": "Clean system junk files",
-                    "formatZH": "清理系统垃圾文件",
-                    "paramKeys": []
-                }
-            }
-        },
         "/settings/expired/handle": {
             "post": {
                 "security": [
@@ -9475,32 +9454,6 @@ const docTemplate = `{
                     ],
                     "formatEN": "update system port =\u003e [serverPort]",
                     "formatZH": "修改系统端口 =\u003e [serverPort]",
-                    "paramKeys": []
-                }
-            }
-        },
-        "/settings/scan": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "扫描系统垃圾文件",
-                "tags": [
-                    "System Setting"
-                ],
-                "summary": "Scan system",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "x-panel-log": {
-                    "BeforeFunctions": [],
-                    "bodyKeys": [],
-                    "formatEN": "scan System Junk Files",
-                    "formatZH": "扫描系统垃圾文件",
                     "paramKeys": []
                 }
             }
@@ -10105,6 +10058,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/toolbox/clean": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "清理系统垃圾文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Clean system",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.Clean"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [],
+                    "bodyKeys": [],
+                    "formatEN": "Clean system junk files",
+                    "formatZH": "清理系统垃圾文件",
+                    "paramKeys": []
+                }
+            }
+        },
         "/toolbox/device/base": {
             "get": {
                 "security": [
@@ -10331,6 +10327,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/toolbox/device/update/swap": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "修改系统 Swap",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Update device swap",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SwapHelper"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [],
+                    "bodyKeys": [
+                        "operate",
+                        "path"
+                    ],
+                    "formatEN": "[operate] device swap [path]",
+                    "formatZH": "[operate] 主机 swap [path]",
+                    "paramKeys": []
+                }
+            }
+        },
         "/toolbox/device/zone/options": {
             "get": {
                 "security": [
@@ -10363,9 +10402,9 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "获取 Fail2Ban 基础信息",
+                "description": "获取 Fail2ban 基础信息",
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Load fail2ban base info",
                 "responses": {
@@ -10390,7 +10429,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Load fail2ban conf",
                 "responses": {
@@ -10407,12 +10446,12 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "修改 Fail2Ban 状态",
+                "description": "修改 Fail2ban 状态",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Operate fail2ban",
                 "parameters": [
@@ -10432,8 +10471,8 @@ const docTemplate = `{
                     "bodyKeys": [
                         "operation"
                     ],
-                    "formatEN": "[operation] Fail2Ban",
-                    "formatZH": "[operation] Fail2Ban",
+                    "formatEN": "[operation] Fail2ban",
+                    "formatZH": "[operation] Fail2ban",
                     "paramKeys": []
                 }
             }
@@ -10450,7 +10489,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Operate sshd of fail2ban",
                 "parameters": [
@@ -10474,12 +10513,12 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "获取 Fail2Ban ip",
+                "description": "获取 Fail2ban ip",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Page fail2ban ip list",
                 "parameters": [
@@ -10510,12 +10549,12 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "修改 Fail2Ban 配置",
+                "description": "修改 Fail2ban 配置",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Update fail2ban conf",
                 "parameters": [
@@ -10541,7 +10580,7 @@ const docTemplate = `{
                         "value"
                     ],
                     "formatEN": "update fail2ban conf [key] =\u003e [value]",
-                    "formatZH": "修改 Fail2Ban 配置 [key] =\u003e [value]",
+                    "formatZH": "修改 Fail2ban 配置 [key] =\u003e [value]",
                     "paramKeys": []
                 }
             }
@@ -10558,7 +10597,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Fail2Ban"
+                    "Fail2ban"
                 ],
                 "summary": "Update fail2ban conf by file",
                 "parameters": [
@@ -10576,6 +10615,32 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     }
+                }
+            }
+        },
+        "/toolbox/scan": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "扫描系统垃圾文件",
+                "tags": [
+                    "Device"
+                ],
+                "summary": "Scan system",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [],
+                    "bodyKeys": [],
+                    "formatEN": "scan System Junk Files",
+                    "formatZH": "扫描系统垃圾文件",
+                    "paramKeys": []
                 }
             }
         },
@@ -10969,6 +11034,223 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    }
+                }
+            }
+        },
+        "/websites/ca": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建网站 ca",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website CA"
+                ],
+                "summary": "Create website ca",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.WebsiteCACreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/request.WebsiteCACreate"
+                        }
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [],
+                    "bodyKeys": [
+                        "name"
+                    ],
+                    "formatEN": "Create website ca [name]",
+                    "formatZH": "创建网站 ca [name]",
+                    "paramKeys": []
+                }
+            }
+        },
+        "/websites/ca/del": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除网站 ca",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website CA"
+                ],
+                "summary": "Delete website ca",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.WebsiteCommonReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [
+                        {
+                            "db": "website_cas",
+                            "input_column": "id",
+                            "input_value": "id",
+                            "isList": false,
+                            "output_column": "name",
+                            "output_value": "name"
+                        }
+                    ],
+                    "bodyKeys": [
+                        "id"
+                    ],
+                    "formatEN": "Delete website ca [name]",
+                    "formatZH": "删除网站 ca [name]",
+                    "paramKeys": []
+                }
+            }
+        },
+        "/websites/ca/obtain": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "续签 SSL 证书",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website CA"
+                ],
+                "summary": "Obtain SSL",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.WebsiteCAObtain"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [
+                        {
+                            "db": "website_cas",
+                            "input_column": "id",
+                            "input_value": "id",
+                            "isList": false,
+                            "output_column": "name",
+                            "output_value": "name"
+                        }
+                    ],
+                    "bodyKeys": [
+                        "id"
+                    ],
+                    "formatEN": "Obtain SSL [name]",
+                    "formatZH": "自签 SSL 证书 [name]",
+                    "paramKeys": []
+                }
+            }
+        },
+        "/websites/ca/search": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取网站 ca 列表分页",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website CA"
+                ],
+                "summary": "Page website ca",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.WebsiteCASearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PageResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/websites/ca/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取网站 ca",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website CA"
+                ],
+                "summary": "Get website ca",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.WebsiteCADTO"
+                        }
                     }
                 }
             }
@@ -12590,6 +12872,57 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "$ref": "#/definitions/request.WebsiteBatchDelReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-panel-log": {
+                    "BeforeFunctions": [
+                        {
+                            "db": "website_ssls",
+                            "input_column": "id",
+                            "input_value": "ids",
+                            "isList": true,
+                            "output_column": "primary_domain",
+                            "output_value": "domain"
+                        }
+                    ],
+                    "bodyKeys": [
+                        "ids"
+                    ],
+                    "formatEN": "Delete ssl [domain]",
+                    "formatZH": "删除 ssl [domain]",
+                    "paramKeys": []
+                }
+            }
+        },
+        "/websites/ssl/download": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "下载证书文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Website SSL"
+                ],
+                "summary": "Download SSL  file",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
                             "$ref": "#/definitions/request.WebsiteResourceReq"
                         }
                     }
@@ -12613,8 +12946,8 @@ const docTemplate = `{
                     "bodyKeys": [
                         "id"
                     ],
-                    "formatEN": "Delete ssl [domain]",
-                    "formatZH": "删除 ssl [domain]",
+                    "formatEN": "download ssl file [domain]",
+                    "formatZH": "下载证书文件 [domain]",
                     "paramKeys": []
                 }
             }
@@ -12666,57 +12999,6 @@ const docTemplate = `{
                     ],
                     "formatEN": "apply ssl [domain]",
                     "formatZH": "申请证书  [domain]",
-                    "paramKeys": []
-                }
-            }
-        },
-        "/websites/ssl/renew": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "重置网站 ssl",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Website SSL"
-                ],
-                "summary": "Reset website ssl",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.WebsiteSSLRenew"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "x-panel-log": {
-                    "BeforeFunctions": [
-                        {
-                            "db": "website_ssls",
-                            "input_column": "id",
-                            "input_value": "SSLId",
-                            "isList": false,
-                            "output_column": "primary_domain",
-                            "output_value": "domain"
-                        }
-                    ],
-                    "bodyKeys": [
-                        "SSLId"
-                    ],
-                    "formatEN": "Renew ssl [domain]",
-                    "formatZH": "重置 ssl [domain]",
                     "paramKeys": []
                 }
             }
@@ -13246,6 +13528,9 @@ const docTemplate = `{
                 "names"
             ],
             "properties": {
+                "force": {
+                    "type": "boolean"
+                },
                 "names": {
                     "type": "array",
                     "items": {
@@ -13509,7 +13794,8 @@ const docTemplate = `{
                         "LOCAL",
                         "COS",
                         "KODO",
-                        "OneDrive"
+                        "OneDrive",
+                        "WebDAV"
                     ]
                 },
                 "type": {
@@ -13746,6 +14032,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "openStdin": {
+                    "type": "boolean"
+                },
+                "privileged": {
                     "type": "boolean"
                 },
                 "publishAllPorts": {
@@ -14323,6 +14612,12 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "clientCert": {
+                    "type": "string"
+                },
+                "clientKey": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -14342,6 +14637,15 @@ const docTemplate = `{
                 },
                 "port": {
                     "type": "integer"
+                },
+                "rootCert": {
+                    "type": "string"
+                },
+                "skipVerify": {
+                    "type": "boolean"
+                },
+                "ssl": {
+                    "type": "boolean"
                 },
                 "type": {
                     "type": "string"
@@ -14377,6 +14681,12 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "clientCert": {
+                    "type": "string"
+                },
+                "clientKey": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -14398,6 +14708,15 @@ const docTemplate = `{
                 },
                 "port": {
                     "type": "integer"
+                },
+                "rootCert": {
+                    "type": "string"
+                },
+                "skipVerify": {
+                    "type": "boolean"
+                },
+                "ssl": {
+                    "type": "boolean"
                 },
                 "type": {
                     "type": "string"
@@ -14472,6 +14791,12 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "clientCert": {
+                    "type": "string"
+                },
+                "clientKey": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -14483,6 +14808,15 @@ const docTemplate = `{
                 },
                 "port": {
                     "type": "integer"
+                },
+                "rootCert": {
+                    "type": "string"
+                },
+                "skipVerify": {
+                    "type": "boolean"
+                },
+                "ssl": {
+                    "type": "boolean"
                 },
                 "type": {
                     "type": "string"
@@ -14516,8 +14850,26 @@ const docTemplate = `{
                 "localTime": {
                     "type": "string"
                 },
+                "maxSize": {
+                    "type": "integer"
+                },
                 "ntp": {
                     "type": "string"
+                },
+                "swapDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.SwapHelper"
+                    }
+                },
+                "swapMemoryAvailable": {
+                    "type": "integer"
+                },
+                "swapMemoryTotal": {
+                    "type": "integer"
+                },
+                "swapMemoryUsed": {
+                    "type": "integer"
                 },
                 "timeZone": {
                     "type": "string"
@@ -14605,7 +14957,8 @@ const docTemplate = `{
                         "LOCAL",
                         "COS",
                         "KODO",
-                        "OneDrive"
+                        "OneDrive",
+                        "WebDAV"
                     ]
                 }
             }
@@ -16482,6 +16835,9 @@ const docTemplate = `{
                 "dingVars": {
                     "type": "string"
                 },
+                "dockerSockPath": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -16492,6 +16848,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "expirationTime": {
+                    "type": "string"
+                },
+                "fileRecycleBin": {
                     "type": "string"
                 },
                 "ipv6": {
@@ -16610,7 +16969,8 @@ const docTemplate = `{
                         "MINIO",
                         "COS",
                         "KODO",
-                        "OneDrive"
+                        "OneDrive",
+                        "WebDAV"
                     ]
                 },
                 "id": {
@@ -16650,6 +17010,26 @@ const docTemplate = `{
                 },
                 "reDownload": {
                     "type": "boolean"
+                }
+            }
+        },
+        "dto.SwapHelper": {
+            "type": "object",
+            "required": [
+                "path"
+            ],
+            "properties": {
+                "isNew": {
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "used": {
+                    "type": "string"
                 }
             }
         },
@@ -17164,6 +17544,26 @@ const docTemplate = `{
                 }
             }
         },
+        "model.WebsiteDnsAccount": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "model.WebsiteDomain": {
             "type": "object",
             "properties": {
@@ -17199,11 +17599,23 @@ const docTemplate = `{
                 "autoRenew": {
                     "type": "boolean"
                 },
+                "caId": {
+                    "type": "integer"
+                },
                 "certURL": {
                     "type": "string"
                 },
                 "createdAt": {
                     "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dir": {
+                    "type": "string"
+                },
+                "dnsAccount": {
+                    "$ref": "#/definitions/model.WebsiteDnsAccount"
                 },
                 "dnsAccountId": {
                     "type": "integer"
@@ -17237,6 +17649,9 @@ const docTemplate = `{
                 },
                 "provider": {
                     "type": "string"
+                },
+                "pushDir": {
+                    "type": "boolean"
                 },
                 "startDate": {
                     "type": "string"
@@ -18580,6 +18995,132 @@ const docTemplate = `{
                 }
             }
         },
+        "request.WebsiteBatchDelReq": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "request.WebsiteCACreate": {
+            "type": "object",
+            "required": [
+                "commonName",
+                "country",
+                "keyType",
+                "name",
+                "organization"
+            ],
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "commonName": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "keyType": {
+                    "type": "string",
+                    "enum": [
+                        "P256",
+                        "P384",
+                        "2048",
+                        "3072",
+                        "4096",
+                        "8192"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "organizationUint": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.WebsiteCAObtain": {
+            "type": "object",
+            "required": [
+                "domains",
+                "id",
+                "keyType",
+                "time",
+                "unit"
+            ],
+            "properties": {
+                "autoRenew": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "dir": {
+                    "type": "string"
+                },
+                "domains": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "keyType": {
+                    "type": "string",
+                    "enum": [
+                        "P256",
+                        "P384",
+                        "2048",
+                        "3072",
+                        "4096",
+                        "8192"
+                    ]
+                },
+                "pushDir": {
+                    "type": "boolean"
+                },
+                "renew": {
+                    "type": "boolean"
+                },
+                "sslID": {
+                    "type": "integer"
+                },
+                "time": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.WebsiteCASearch": {
+            "type": "object",
+            "required": [
+                "page",
+                "pageSize"
+            ],
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.WebsiteCommonReq": {
             "type": "object",
             "required": [
@@ -19069,7 +19610,16 @@ const docTemplate = `{
                 "autoRenew": {
                     "type": "boolean"
                 },
+                "description": {
+                    "type": "string"
+                },
+                "dir": {
+                    "type": "string"
+                },
                 "dnsAccountId": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "keyType": {
@@ -19083,17 +19633,9 @@ const docTemplate = `{
                 },
                 "provider": {
                     "type": "string"
-                }
-            }
-        },
-        "request.WebsiteSSLRenew": {
-            "type": "object",
-            "required": [
-                "SSLId"
-            ],
-            "properties": {
-                "SSLId": {
-                    "type": "integer"
+                },
+                "pushDir": {
+                    "type": "boolean"
                 }
             }
         },
@@ -19124,6 +19666,9 @@ const docTemplate = `{
                 "autoRenew": {
                     "type": "boolean"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 }
@@ -19141,11 +19686,17 @@ const docTemplate = `{
                 "certificatePath": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "privateKey": {
                     "type": "string"
                 },
                 "privateKeyPath": {
                     "type": "string"
+                },
+                "sslID": {
+                    "type": "integer"
                 },
                 "type": {
                     "type": "string",
@@ -19702,6 +20253,50 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.WebsiteCADTO": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "commonName": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "csr": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "keyType": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "organizationUint": {
+                    "type": "string"
+                },
+                "privateKey": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

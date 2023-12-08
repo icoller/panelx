@@ -11,7 +11,7 @@ import (
 	"github.com/1Panel-dev/1Panel/backend/utils/systemctl"
 )
 
-type Fail2Ban struct{}
+type Fail2ban struct{}
 
 const defaultPath = "/etc/fail2ban/jail.local"
 
@@ -22,24 +22,24 @@ type FirewallClient interface {
 	OperateSSHD(operate, ip string) error
 }
 
-func NewFail2Ban() (*Fail2Ban, error) {
+func NewFail2Ban() (*Fail2ban, error) {
 	isExist, _ := systemctl.IsExist("fail2ban.service")
 	if isExist {
 		if _, err := os.Stat(defaultPath); err != nil {
 			if err := initLocalFile(); err != nil {
 				return nil, err
 			}
-			stdout, err := cmd.Exec("fail2ban-client reload")
+			stdout, err := cmd.Exec("systemctl restart fail2ban.service")
 			if err != nil {
-				global.LOG.Errorf("reload fail2ban failed, err: %s", stdout)
+				global.LOG.Errorf("restart fail2ban failed, err: %s", stdout)
 				return nil, err
 			}
 		}
 	}
-	return &Fail2Ban{}, nil
+	return &Fail2ban{}, nil
 }
 
-func (f *Fail2Ban) Status() (bool, bool, bool) {
+func (f *Fail2ban) Status() (bool, bool, bool) {
 	isEnable, _ := systemctl.IsEnable("fail2ban.service")
 	isActive, _ := systemctl.IsActive("fail2ban.service")
 	isExist, _ := systemctl.IsExist("fail2ban.service")
@@ -47,7 +47,7 @@ func (f *Fail2Ban) Status() (bool, bool, bool) {
 	return isEnable, isActive, isExist
 }
 
-func (f *Fail2Ban) Version() string {
+func (f *Fail2ban) Version() string {
 	stdout, err := cmd.Exec("fail2ban-client version")
 	if err != nil {
 		global.LOG.Errorf("load the fail2ban version failed, err: %s", stdout)
@@ -56,7 +56,7 @@ func (f *Fail2Ban) Version() string {
 	return strings.ReplaceAll(stdout, "\n", "")
 }
 
-func (f *Fail2Ban) Operate(operate string) error {
+func (f *Fail2ban) Operate(operate string) error {
 	switch operate {
 	case "start", "restart", "stop", "enable", "disable":
 		stdout, err := cmd.Execf("systemctl %s fail2ban.service", operate)
@@ -75,7 +75,7 @@ func (f *Fail2Ban) Operate(operate string) error {
 	}
 }
 
-func (f *Fail2Ban) ReBanIPs(ips []string) error {
+func (f *Fail2ban) ReBanIPs(ips []string) error {
 	ipItems, _ := f.ListBanned()
 	stdout, err := cmd.Execf("fail2ban-client unban --all")
 	if err != nil {
@@ -92,9 +92,9 @@ func (f *Fail2Ban) ReBanIPs(ips []string) error {
 	return nil
 }
 
-func (f *Fail2Ban) ListBanned() ([]string, error) {
+func (f *Fail2ban) ListBanned() ([]string, error) {
 	var lists []string
-	stdout, err := cmd.Exec("fail2ban-client get sshd banned")
+	stdout, err := cmd.Exec("fail2ban-client get sshd banip")
 	if err != nil {
 		return lists, err
 	}
@@ -106,7 +106,7 @@ func (f *Fail2Ban) ListBanned() ([]string, error) {
 	return lists, nil
 }
 
-func (f *Fail2Ban) ListIgnore() ([]string, error) {
+func (f *Fail2ban) ListIgnore() ([]string, error) {
 	var lists []string
 	stdout, err := cmd.Exec("fail2ban-client get sshd ignoreip")
 	if err != nil {
@@ -134,7 +134,7 @@ func initLocalFile() error {
 bantime = 600
 findtime = 300
 maxretry = 5
-banaction = firewallcmd-ipset
+banaction = $banaction
 action = %(action_mwl)s
 #DEFAULT-END
 
@@ -147,7 +147,25 @@ maxretry = 5
 findtime = 300
 bantime = 600
 action = %(action_mwl)s
-logpath = /var/log/secure`
+logpath = $logpath`
+
+	banaction := ""
+	if active, _ := systemctl.IsActive("firewalld"); active {
+		banaction = "firewallcmd-ipset"
+	} else if active, _ := systemctl.IsActive("ufw"); active {
+		banaction = "ufw"
+	} else {
+		banaction = "iptables-allports"
+	}
+	initFile = strings.ReplaceAll(initFile, "$banaction", banaction)
+
+	logPath := ""
+	if _, err := os.Stat("/var/log/secure"); err == nil {
+		logPath = "/var/log/secure"
+	} else {
+		logPath = "/var/log/auth.log"
+	}
+	initFile = strings.ReplaceAll(initFile, "$logpath", logPath)
 	if err := os.WriteFile(defaultPath, []byte(initFile), 0640); err != nil {
 		return err
 	}

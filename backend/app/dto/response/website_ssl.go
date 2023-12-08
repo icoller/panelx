@@ -22,3 +22,13 @@ type WebsiteDnsAccountDTO struct {
 	model.WebsiteDnsAccount
 	Authorization map[string]string `json:"authorization"`
 }
+
+type WebsiteCADTO struct {
+	model.WebsiteCA
+	CommonName       string `json:"commonName" `
+	Country          string `json:"country"`
+	Organization     string `json:"organization"`
+	OrganizationUint string `json:"organizationUint"`
+	Province         string `json:"province" `
+	City             string `json:"city"`
+}

@@ -15,8 +15,18 @@
             <span>{{ $t('ssl.dnsResolveHelper') }}</span>
             <el-table :data="dnsResolve" border :table-layout="'auto'">
                 <el-table-column prop="domain" :label="$t('website.domain')" />
-                <el-table-column prop="resolve" :label="$t('ssl.resolveDomain')" />
-                <el-table-column prop="value" :label="$t('ssl.value')" />
+                <el-table-column prop="resolve" :label="$t('ssl.resolveDomain')">
+                    <template #default="{ row }">
+                        <span>{{ row.resolve }}</span>
+                        <CopyButton :content="row.value" type="icon" />
+                    </template>
+                </el-table-column>
+                <el-table-column prop="value" :label="$t('ssl.value')">
+                    <template #default="{ row }">
+                        <span>{{ row.value }}</span>
+                        <CopyButton :content="row.value" type="icon" />
+                    </template>
+                </el-table-column>
                 <el-table-column :label="$t('commons.table.type')">TXT</el-table-column>
             </el-table>
         </div>
@@ -47,7 +57,7 @@ const open = ref(false);
 const loading = ref(false);
 const dnsResolve = ref<Website.DNSResolve[]>([]);
 const sslID = ref(0);
-const em = defineEmits(['close']);
+const em = defineEmits(['close', 'submit']);
 const handleClose = () => {
     open.value = false;
     em('close', false);
@@ -83,6 +93,7 @@ const submit = () => {
         .then(() => {
             MsgSuccess(i18n.global.t('ssl.applyStart'));
             handleClose();
+            em('submit', sslID.value);
         })
         .finally(() => {});
 };

@@ -1,4 +1,8 @@
+import { AcmeAccountTypes, DNSTypes, KeyTypes } from '@/global/mimetype';
 import i18n from '@/lang';
+import useClipboard from 'vue-clipboard3';
+const { toClipboard } = useClipboard();
+import { MsgError, MsgSuccess } from '@/utils/message';
 
 export function deepCopy<T>(obj: any): T {
     let newObj: any;
@@ -134,10 +138,25 @@ export function loadZero(i: number) {
 export function computeSize(size: number): string {
     const num = 1024.0;
     if (size < num) return size + ' B';
-    if (size < Math.pow(num, 2)) return (size / num).toFixed(2) + ' KB';
-    if (size < Math.pow(num, 3)) return (size / Math.pow(num, 2)).toFixed(2) + ' MB';
-    if (size < Math.pow(num, 4)) return (size / Math.pow(num, 3)).toFixed(2) + ' GB';
-    return (size / Math.pow(num, 4)).toFixed(2) + ' TB';
+    if (size < Math.pow(num, 2)) return formattedNumber((size / num).toFixed(2)) + ' KB';
+    if (size < Math.pow(num, 3)) return formattedNumber((size / Math.pow(num, 2)).toFixed(2)) + ' MB';
+    if (size < Math.pow(num, 4)) return formattedNumber((size / Math.pow(num, 3)).toFixed(2)) + ' GB';
+    return formattedNumber((size / Math.pow(num, 4)).toFixed(2)) + ' TB';
+}
+
+export function splitSize(size: number): any {
+    const num = 1024.0;
+    if (size < num) return { size: Number(size), unit: 'B' };
+    if (size < Math.pow(num, 2)) return { size: formattedNumber((size / num).toFixed(2)), unit: 'KB' };
+    if (size < Math.pow(num, 3))
+        return { size: formattedNumber((size / Number(Math.pow(num, 2).toFixed(2))).toFixed(2)), unit: 'MB' };
+    if (size < Math.pow(num, 4))
+        return { size: formattedNumber((size / Number(Math.pow(num, 3))).toFixed(2)), unit: 'GB' };
+    return { size: formattedNumber((size / Number(Math.pow(num, 4))).toFixed(2)), unit: 'TB' };
+}
+
+export function formattedNumber(num: string) {
+    return num.endsWith('.00') ? Number(num.slice(0, -3)) : Number(num);
 }
 
 export function computeSizeFromMB(size: number): string {
@@ -307,6 +326,8 @@ export function getProvider(provider: string): string {
             return i18n.global.t('website.dnsManual');
         case 'http':
             return 'HTTP';
+        case 'selfSigned':
+            return i18n.global.t('ssl.selfSigned');
         default:
             return i18n.global.t('ssl.manualCreate');
     }
@@ -421,4 +442,40 @@ export function getDateStr() {
     }-${minutes < 10 ? '0' + minutes : minutes}-${seconds < 10 ? '0' + seconds : seconds}`;
 
     return timestamp;
+}
+
+export function getAccountName(type: string) {
+    for (const i of AcmeAccountTypes) {
+        if (i.value === type) {
+            return i.label;
+        }
+    }
+    return '';
+}
+
+export function getKeyName(type: string) {
+    for (const i of KeyTypes) {
+        if (i.value === type) {
+            return i.label;
+        }
+    }
+    return '';
+}
+
+export function getDNSName(type: string) {
+    for (const i of DNSTypes) {
+        if (i.value === type) {
+            return i.label;
+        }
+    }
+    return '';
+}
+
+export async function copyText(content: string) {
+    try {
+        await toClipboard(content);
+        MsgSuccess(i18n.global.t('commons.msg.copySuccess'));
+    } catch (e) {
+        MsgError(i18n.global.t('commons.msg.copyFailed'));
+    }
 }

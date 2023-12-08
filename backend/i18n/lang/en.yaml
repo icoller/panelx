@@ -20,6 +20,9 @@ TYPE_RUNTIME: "Runtime environment"
 TYPE_DOMAIN: "Domain name"
 ErrTypePort: 'Port {{ .name }} format error'
 ErrTypePortRange: 'Port range needs to be between 1-65535'
+Success: "Success"
+Failed: "Failed"
+SystemRestart: "System restart causes task interruption"
 
 #app
 ErrPortInUsed: "{{ .detail }} port already in use"
@@ -83,7 +86,7 @@ ErrDomainIsUsed: "Domain is already used by website {{ .name }}"
 ErrDomainFormat: "{{ .name }} domain format error"
 
 #ssl
-ErrSSLCannotDelete: "The certificate is being used by the website and cannot be removed"
+ErrSSLCannotDelete: "The certificate {{ .name }} is being used by the website and cannot be removed"
 ErrAccountCannotDelete: "The certificate associated with the account cannot be deleted"
 ErrSSLApply: "The certificate continues to be signed successfully, but openresty reload fails, please check the configuration！"
 ErrEmailIsExist: 'Email is already exist'
@@ -100,7 +103,13 @@ http: "HTTP"
 ApplySSLFailed: 'Application for [{{ .domain }}] certificate failed, {{.detail}} '
 ApplySSLSuccess: 'Application for [{{ .domain }}] certificate successful! ! '
 DNSAccountName: 'DNS account [{{ .name }}] manufacturer [{{.type}}]'
-
+PushDirLog: 'Certificate pushed to directory [{{ .path }}] {{ .status }}'
+ErrDeleteCAWithSSL: "There is an issued certificate under the current organization and cannot be deleted"
+ErrDeleteWithPanelSSL: "Panel SSL configuration uses this certificate and cannot be deleted"
+ErrDefaultCA: "The default organization cannot be deleted"
+ApplyWebSiteSSLLog: "Start updating {{ .name }} website certificate"
+ErrUpdateWebsiteSSL: "{{ .name }} website failed to update certificate: {{ .err }}"
+ApplyWebSiteSSLSuccess: "Update website certificate successfully"
 
 #mysql
 ErrUserIsExist: "The current user already exists. Please enter a new user"
@@ -148,3 +157,6 @@ ErrFirewall: "No firewalld or ufw service is detected. Please check and try agai
 
 #cronjob
 ErrBashExecute: "Script execution error, please check the specific information in the task output text area."
+
+#toolbox
+ErrNotExistUser: "The current user does not exist. Please modify and retry!"

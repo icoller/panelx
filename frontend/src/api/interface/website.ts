@@ -165,10 +165,11 @@ export namespace Website {
         autoRenew: boolean;
         acmeAccountId?: number;
         status: string;
+        domains: string;
+        description: string;
     }
 
     export interface SSLDTO extends SSL {
-        domains: string;
         logPath: string;
     }
 
@@ -178,6 +179,8 @@ export namespace Website {
         provider: string;
         acmeAccountId: number;
         dnsAccountId: number;
+        id?: number;
+        description: string;
     }
 
     export interface SSLApply {
@@ -192,6 +195,7 @@ export namespace Website {
     export interface SSLUpdate {
         id: number;
         autoRenew: boolean;
+        description: string;
     }
 
     export interface AcmeAccount extends CommonModel {
@@ -451,9 +455,56 @@ export namespace Website {
         privateKeyPath: string;
         certificatePath: string;
         type: string;
+        sslID: number;
     }
 
     export interface SSLObtain {
         ID: number;
+    }
+
+    export interface CA extends CommonModel {
+        name: string;
+        csr: string;
+        privateKey: string;
+        keyType: string;
+    }
+
+    export interface CACreate {
+        name: string;
+        commonName: string;
+        country: string;
+        organization: string;
+        organizationUint: string;
+        keyType: string;
+        province: string;
+        city: string;
+    }
+
+    export interface CADTO extends CA {
+        commonName: string;
+        country: string;
+        organization: string;
+        organizationUint: string;
+        province: string;
+        city: string;
+    }
+
+    export interface SSLObtainByCA {
+        id: number;
+        domains: string;
+        keyType: string;
+        time: number;
+        unit: string;
+        pushDir: boolean;
+        dir: string;
+        description: string;
+    }
+
+    export interface RenewSSLByCA {
+        SSLID: number;
+    }
+
+    export interface SSLDownload {
+        id: number;
     }
 }

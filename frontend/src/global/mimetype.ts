@@ -88,6 +88,7 @@ export const Rewrites = [
     'typecho',
     'typecho2',
     'thinkphp',
+    'yii2',
     'laravel5',
     'discuz',
     'discuzx',
@@ -136,4 +137,35 @@ export const KeyTypes = [
     { label: 'RSA 2048', value: '2048' },
     { label: 'RSA 3072', value: '3072' },
     { label: 'RSA 4096', value: '4096' },
+];
+
+export const DNSTypes = [
+    {
+        label: i18n.global.t('website.aliyun'),
+        value: 'AliYun',
+    },
+    {
+        label: 'DNSPod',
+        value: 'DnsPod',
+    },
+    {
+        label: 'CloudFlare',
+        value: 'CloudFlare',
+    },
+    {
+        label: 'NameSilo',
+        value: 'NameSilo',
+    },
+    {
+        label: 'NameCheap',
+        value: 'NameCheap',
+    },
+    {
+        label: 'Name.com',
+        value: 'NameCom',
+    },
+    {
+        label: 'GoDaddy',
+        value: 'Godaddy',
+    },
 ];

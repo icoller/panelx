@@ -3,7 +3,9 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/1Panel-dev/1Panel/backend/app/dto"
@@ -179,7 +181,7 @@ type diskInfo struct {
 
 func loadDiskInfo() []dto.DiskInfo {
 	var datas []dto.DiskInfo
-	stdout, err := cmd.Exec("df -hT -P|grep '/'|grep -v tmpfs|grep -v 'snap/core'|grep -v udev")
+	stdout, err := cmd.ExecWithTimeOut("df -hT -P|grep '/'|grep -v tmpfs|grep -v 'snap/core'|grep -v udev", 2*time.Second)
 	if err != nil {
 		return datas
 	}
@@ -213,24 +215,52 @@ func loadDiskInfo() []dto.DiskInfo {
 		mounts = append(mounts, diskInfo{Type: fields[1], Device: fields[0], Mount: fields[6]})
 	}
 
+	var (
+		wg sync.WaitGroup
+		mu sync.Mutex
+	)
+	wg.Add(len(mounts))
 	for i := 0; i < len(mounts); i++ {
-		state, err := disk.Usage(mounts[i].Mount)
-		if err != nil {
-			continue
-		}
-		var itemData dto.DiskInfo
-		itemData.Path = mounts[i].Mount
-		itemData.Type = mounts[i].Type
-		itemData.Device = mounts[i].Device
-		itemData.Total = state.Total
-		itemData.Free = state.Free
-		itemData.Used = state.Used
-		itemData.UsedPercent = state.UsedPercent
-		itemData.InodesTotal = state.InodesTotal
-		itemData.InodesUsed = state.InodesUsed
-		itemData.InodesFree = state.InodesFree
-		itemData.InodesUsedPercent = state.InodesUsedPercent
-		datas = append(datas, itemData)
+		go func(timeoutCh <-chan time.Time, mount diskInfo) {
+			defer wg.Done()
+
+			var itemData dto.DiskInfo
+			itemData.Path = mount.Mount
+			itemData.Type = mount.Type
+			itemData.Device = mount.Device
+			select {
+			case <-timeoutCh:
+				mu.Lock()
+				datas = append(datas, itemData)
+				mu.Unlock()
+				global.LOG.Errorf("load disk info from %s failed, err: timeout", mount.Mount)
+			default:
+				state, err := disk.Usage(mount.Mount)
+				if err != nil {
+					mu.Lock()
+					datas = append(datas, itemData)
+					mu.Unlock()
+					global.LOG.Errorf("load disk info from %s failed, err: %v", mount.Mount, err)
+					return
+				}
+				itemData.Total = state.Total
+				itemData.Free = state.Free
+				itemData.Used = state.Used
+				itemData.UsedPercent = state.UsedPercent
+				itemData.InodesTotal = state.InodesTotal
+				itemData.InodesUsed = state.InodesUsed
+				itemData.InodesFree = state.InodesFree
+				itemData.InodesUsedPercent = state.InodesUsedPercent
+				mu.Lock()
+				datas = append(datas, itemData)
+				mu.Unlock()
+			}
+		}(time.After(5*time.Second), mounts[i])
 	}
+	wg.Wait()
+
+	sort.Slice(datas, func(i, j int) bool {
+		return datas[i].Path < datas[j].Path
+	})
 	return datas
 }

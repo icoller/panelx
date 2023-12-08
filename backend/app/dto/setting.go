@@ -3,10 +3,11 @@ package dto
 import "time"
 
 type SettingInfo struct {
-	UserName      string `json:"userName"`
-	Email         string `json:"email"`
-	SystemIP      string `json:"systemIP"`
-	SystemVersion string `json:"systemVersion"`
+	UserName       string `json:"userName"`
+	Email          string `json:"email"`
+	SystemIP       string `json:"systemIP"`
+	SystemVersion  string `json:"systemVersion"`
+	DockerSockPath string `json:"dockerSockPath"`
 
 	SessionTimeout string `json:"sessionTimeout"`
 	LocalTime      string `json:"localTime"`
@@ -49,6 +50,8 @@ type SettingInfo struct {
 	AppStoreVersion      string `json:"appStoreVersion"`
 	AppStoreLastModified string `json:"appStoreLastModified"`
 	AppStoreSyncStatus   string `json:"appStoreSyncStatus"`
+
+	FileRecycleBin string `json:"fileRecycleBin"`
 }
 
 type SettingUpdate struct {
@@ -57,7 +60,7 @@ type SettingUpdate struct {
 }
 
 type SSLUpdate struct {
-	SSLType string `json:"sslType"`
+	SSLType string `json:"sslType" validate:"required,oneof=self select import-paste import-local"`
 	Domain  string `json:"domain"`
 	SSL     string `json:"ssl" validate:"required,oneof=enable disable"`
 	Cert    string `json:"cert"`
@@ -97,7 +100,7 @@ type SnapshotStatus struct {
 
 type SnapshotCreate struct {
 	ID          uint   `json:"id"`
-	From        string `json:"from" validate:"required,oneof=OSS S3 SFTP MINIO COS KODO OneDrive"`
+	From        string `json:"from" validate:"required,oneof=OSS S3 SFTP MINIO COS KODO OneDrive WebDAV"`
 	Description string `json:"description" validate:"max=256"`
 }
 type SnapshotRecover struct {

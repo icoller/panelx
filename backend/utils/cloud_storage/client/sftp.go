@@ -6,71 +6,68 @@ import (
 	"net"
 	"os"
 	"path"
-	"strconv"
 	"time"
 
-	"github.com/1Panel-dev/1Panel/backend/constant"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 )
 
 type sftpClient struct {
-	Vars map[string]interface{}
+	bucket   string
+	connInfo string
+	config   *ssh.ClientConfig
 }
 
 func NewSftpClient(vars map[string]interface{}) (*sftpClient, error) {
-	if _, ok := vars["address"]; !ok {
-		return nil, constant.ErrInvalidParams
+	address := loadParamFromVars("address", true, vars)
+	port := loadParamFromVars("port", false, vars)
+	password := loadParamFromVars("password", true, vars)
+	username := loadParamFromVars("username", true, vars)
+	bucket := loadParamFromVars("bucket", true, vars)
+
+	auth := []ssh.AuthMethod{ssh.Password(password)}
+	clientConfig := &ssh.ClientConfig{
+		User:    username,
+		Auth:    auth,
+		Timeout: 30 * time.Second,
+		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
+			return nil
+		},
 	}
-	if _, ok := vars["port"].(float64); !ok {
-		return nil, constant.ErrInvalidParams
-	}
-	if _, ok := vars["password"]; !ok {
-		return nil, constant.ErrInvalidParams
-	}
-	if _, ok := vars["username"]; !ok {
-		return nil, constant.ErrInvalidParams
-	}
-	return &sftpClient{
-		Vars: vars,
-	}, nil
+
+	return &sftpClient{bucket: bucket, connInfo: fmt.Sprintf("%s:%s", address, port), config: clientConfig}, nil
 }
 
 func (s sftpClient) Upload(src, target string) (bool, error) {
-	bucket, err := s.getBucket()
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
 	if err != nil {
 		return false, err
 	}
-	port, err := strconv.Atoi(strconv.FormatFloat(s.Vars["port"].(float64), 'G', -1, 64))
+	client, err := sftp.NewClient(sshClient)
 	if err != nil {
 		return false, err
 	}
-	sftpC, err := connect(s.Vars["username"].(string), s.Vars["password"].(string), s.Vars["address"].(string), port)
-	if err != nil {
-		return false, err
-	}
-	defer sftpC.Close()
+	defer client.Close()
+	defer sshClient.Close()
+
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return false, err
 	}
 	defer srcFile.Close()
 
-	targetFilePath := bucket + "/" + target
-	remotePath, _ := path.Split(targetFilePath)
-	_, err = sftpC.Stat(remotePath)
-	if err != nil {
+	targetFilePath := s.bucket + "/" + target
+	targetDir, _ := path.Split(targetFilePath)
+	if _, err = client.Stat(targetDir); err != nil {
 		if os.IsNotExist(err) {
-			err = sftpC.MkdirAll(remotePath)
-			if err != nil {
+			if err = client.MkdirAll(targetDir); err != nil {
 				return false, err
 			}
 		} else {
 			return false, err
 		}
 	}
-
-	dstFile, err := sftpC.Create(targetFilePath)
+	dstFile, err := client.Create(targetFilePath)
 	if err != nil {
 		return false, err
 	}
@@ -96,20 +93,17 @@ func (s sftpClient) ListBuckets() ([]interface{}, error) {
 }
 
 func (s sftpClient) Download(src, target string) (bool, error) {
-	bucket, err := s.getBucket()
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
 	if err != nil {
 		return false, err
 	}
-	port, err := strconv.Atoi(strconv.FormatFloat(s.Vars["port"].(float64), 'G', -1, 64))
+	client, err := sftp.NewClient(sshClient)
 	if err != nil {
 		return false, err
 	}
-	sftpC, err := connect(s.Vars["username"].(string), s.Vars["password"].(string), s.Vars["address"].(string), port)
-	if err != nil {
-		return false, err
-	}
-	defer sftpC.Close()
-	srcFile, err := sftpC.Open(bucket + "/" + src)
+	defer client.Close()
+	defer sshClient.Close()
+	srcFile, err := client.Open(s.bucket + "/" + src)
 	if err != nil {
 		return false, err
 	}
@@ -128,20 +122,18 @@ func (s sftpClient) Download(src, target string) (bool, error) {
 }
 
 func (s sftpClient) Exist(path string) (bool, error) {
-	bucket, err := s.getBucket()
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
 	if err != nil {
 		return false, err
 	}
-	port, err := strconv.Atoi(strconv.FormatFloat(s.Vars["port"].(float64), 'G', -1, 64))
+	client, err := sftp.NewClient(sshClient)
 	if err != nil {
 		return false, err
 	}
-	sftpC, err := connect(s.Vars["username"].(string), s.Vars["password"].(string), s.Vars["address"].(string), port)
-	if err != nil {
-		return false, err
-	}
-	defer sftpC.Close()
-	srcFile, err := sftpC.Open(bucket + "/" + path)
+	defer client.Close()
+	defer sshClient.Close()
+
+	srcFile, err := client.Open(s.bucket + "/" + path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return false, nil
@@ -153,86 +145,57 @@ func (s sftpClient) Exist(path string) (bool, error) {
 	return true, err
 }
 
+func (s sftpClient) Size(path string) (int64, error) {
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
+	if err != nil {
+		return 0, err
+	}
+	client, err := sftp.NewClient(sshClient)
+	if err != nil {
+		return 0, err
+	}
+	defer client.Close()
+	defer sshClient.Close()
+
+	files, err := client.Stat(s.bucket + "/" + path)
+	if err != nil {
+		return 0, err
+	}
+	return files.Size(), nil
+}
+
 func (s sftpClient) Delete(filePath string) (bool, error) {
-	bucket, err := s.getBucket()
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
 	if err != nil {
 		return false, err
 	}
-	port, err := strconv.Atoi(strconv.FormatFloat(s.Vars["port"].(float64), 'G', -1, 64))
+	client, err := sftp.NewClient(sshClient)
 	if err != nil {
 		return false, err
 	}
-	sftpC, err := connect(s.Vars["username"].(string), s.Vars["password"].(string), s.Vars["address"].(string), port)
-	if err != nil {
+	defer client.Close()
+	defer sshClient.Close()
+
+	targetFilePath := s.bucket + "/" + filePath
+	if err := client.Remove(targetFilePath); err != nil {
 		return false, err
-	}
-	defer sftpC.Close()
-	targetFilePath := bucket + "/" + filePath
-	err = sftpC.Remove(targetFilePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return true, nil
-		} else {
-			return false, err
-		}
 	}
 	return true, nil
 }
 
-func connect(user, password, host string, port int) (*sftp.Client, error) {
-
-	var (
-		auth         []ssh.AuthMethod
-		addr         string
-		clientConfig *ssh.ClientConfig
-		sshClient    *ssh.Client
-		sftpClient   *sftp.Client
-		err          error
-	)
-	auth = make([]ssh.AuthMethod, 0)
-	auth = append(auth, ssh.Password(password))
-	clientConfig = &ssh.ClientConfig{
-		User:    user,
-		Auth:    auth,
-		Timeout: 30 * time.Second,
-		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
-			return nil
-		},
-	}
-	addr = fmt.Sprintf("%s:%d", host, port)
-
-	if sshClient, err = ssh.Dial("tcp", addr, clientConfig); err != nil {
-		return nil, err
-	}
-	if sftpClient, err = sftp.NewClient(sshClient); err != nil {
-		return nil, err
-	}
-	return sftpClient, nil
-}
-
-func (s sftpClient) getBucket() (string, error) {
-	if _, ok := s.Vars["bucket"]; ok {
-		return s.Vars["bucket"].(string), nil
-	} else {
-		return "", constant.ErrInvalidParams
-	}
-}
-
 func (s sftpClient) ListObjects(prefix string) ([]string, error) {
-	bucket, err := s.getBucket()
+	sshClient, err := ssh.Dial("tcp", s.connInfo, s.config)
 	if err != nil {
 		return nil, err
 	}
-	port, err := strconv.Atoi(strconv.FormatFloat(s.Vars["port"].(float64), 'G', -1, 64))
+	client, err := sftp.NewClient(sshClient)
 	if err != nil {
 		return nil, err
 	}
-	sftpC, err := connect(s.Vars["username"].(string), s.Vars["password"].(string), s.Vars["address"].(string), port)
-	if err != nil {
-		return nil, err
-	}
-	defer sftpC.Close()
-	files, err := sftpC.ReadDir(bucket + "/" + prefix)
+	defer client.Close()
+	defer sshClient.Close()
+
+	files, err := client.ReadDir(s.bucket + "/" + prefix)
 	if err != nil {
 		return nil, err
 	}

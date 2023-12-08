@@ -95,6 +95,8 @@ definitions:
     type: object
   dto.BatchDelete:
     properties:
+      force:
+        type: boolean
       names:
         items:
           type: string
@@ -273,6 +275,7 @@ definitions:
         - COS
         - KODO
         - OneDrive
+        - WebDAV
         type: string
       type:
         enum:
@@ -432,6 +435,8 @@ definitions:
       network:
         type: string
       openStdin:
+        type: boolean
+      privileged:
         type: boolean
       publishAllPorts:
         type: boolean
@@ -816,6 +821,10 @@ definitions:
     properties:
       address:
         type: string
+      clientCert:
+        type: string
+      clientKey:
+        type: string
       description:
         type: string
       from:
@@ -830,6 +839,12 @@ definitions:
         type: string
       port:
         type: integer
+      rootCert:
+        type: string
+      skipVerify:
+        type: boolean
+      ssl:
+        type: boolean
       type:
         type: string
       username:
@@ -859,6 +874,10 @@ definitions:
     properties:
       address:
         type: string
+      clientCert:
+        type: string
+      clientKey:
+        type: string
       createdAt:
         type: string
       description:
@@ -874,6 +893,12 @@ definitions:
         type: string
       port:
         type: integer
+      rootCert:
+        type: string
+      skipVerify:
+        type: boolean
+      ssl:
+        type: boolean
       type:
         type: string
       username:
@@ -918,6 +943,10 @@ definitions:
     properties:
       address:
         type: string
+      clientCert:
+        type: string
+      clientKey:
+        type: string
       description:
         type: string
       id:
@@ -926,6 +955,12 @@ definitions:
         type: string
       port:
         type: integer
+      rootCert:
+        type: string
+      skipVerify:
+        type: boolean
+      ssl:
+        type: boolean
       type:
         type: string
       username:
@@ -952,8 +987,20 @@ definitions:
         type: array
       localTime:
         type: string
+      maxSize:
+        type: integer
       ntp:
         type: string
+      swapDetails:
+        items:
+          $ref: '#/definitions/dto.SwapHelper'
+        type: array
+      swapMemoryAvailable:
+        type: integer
+      swapMemoryTotal:
+        type: integer
+      swapMemoryUsed:
+        type: integer
       timeZone:
         type: string
       user:
@@ -1011,6 +1058,7 @@ definitions:
         - COS
         - KODO
         - OneDrive
+        - WebDAV
         type: string
     required:
     - fileDir
@@ -2280,6 +2328,8 @@ definitions:
         type: string
       dingVars:
         type: string
+      dockerSockPath:
+        type: string
       email:
         type: string
       emailVars:
@@ -2287,6 +2337,8 @@ definitions:
       expirationDays:
         type: string
       expirationTime:
+        type: string
+      fileRecycleBin:
         type: string
       ipv6:
         type: string
@@ -2366,6 +2418,7 @@ definitions:
         - COS
         - KODO
         - OneDrive
+        - WebDAV
         type: string
       id:
         type: integer
@@ -2394,6 +2447,19 @@ definitions:
         type: boolean
     required:
     - id
+    type: object
+  dto.SwapHelper:
+    properties:
+      isNew:
+        type: boolean
+      path:
+        type: string
+      size:
+        type: integer
+      used:
+        type: string
+    required:
+    - path
     type: object
   dto.TreeChild:
     properties:
@@ -2731,6 +2797,19 @@ definitions:
       url:
         type: string
     type: object
+  model.WebsiteDnsAccount:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   model.WebsiteDomain:
     properties:
       createdAt:
@@ -2754,10 +2833,18 @@ definitions:
         type: integer
       autoRenew:
         type: boolean
+      caId:
+        type: integer
       certURL:
         type: string
       createdAt:
         type: string
+      description:
+        type: string
+      dir:
+        type: string
+      dnsAccount:
+        $ref: '#/definitions/model.WebsiteDnsAccount'
       dnsAccountId:
         type: integer
       domains:
@@ -2780,6 +2867,8 @@ definitions:
         type: string
       provider:
         type: string
+      pushDir:
+        type: boolean
       startDate:
         type: string
       status:
@@ -3680,6 +3769,95 @@ definitions:
     - keyType
     - type
     type: object
+  request.WebsiteBatchDelReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    required:
+    - ids
+    type: object
+  request.WebsiteCACreate:
+    properties:
+      city:
+        type: string
+      commonName:
+        type: string
+      country:
+        type: string
+      keyType:
+        enum:
+        - P256
+        - P384
+        - "2048"
+        - "3072"
+        - "4096"
+        - "8192"
+        type: string
+      name:
+        type: string
+      organization:
+        type: string
+      organizationUint:
+        type: string
+      province:
+        type: string
+    required:
+    - commonName
+    - country
+    - keyType
+    - name
+    - organization
+    type: object
+  request.WebsiteCAObtain:
+    properties:
+      autoRenew:
+        type: boolean
+      description:
+        type: string
+      dir:
+        type: string
+      domains:
+        type: string
+      id:
+        type: integer
+      keyType:
+        enum:
+        - P256
+        - P384
+        - "2048"
+        - "3072"
+        - "4096"
+        - "8192"
+        type: string
+      pushDir:
+        type: boolean
+      renew:
+        type: boolean
+      sslID:
+        type: integer
+      time:
+        type: integer
+      unit:
+        type: string
+    required:
+    - domains
+    - id
+    - keyType
+    - time
+    - unit
+    type: object
+  request.WebsiteCASearch:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+    required:
+    - page
+    - pageSize
+    type: object
   request.WebsiteCommonReq:
     properties:
       id:
@@ -4005,7 +4183,13 @@ definitions:
         type: boolean
       autoRenew:
         type: boolean
+      description:
+        type: string
+      dir:
+        type: string
       dnsAccountId:
+        type: integer
+      id:
         type: integer
       keyType:
         type: string
@@ -4015,17 +4199,12 @@ definitions:
         type: string
       provider:
         type: string
+      pushDir:
+        type: boolean
     required:
     - acmeAccountId
     - primaryDomain
     - provider
-    type: object
-  request.WebsiteSSLRenew:
-    properties:
-      SSLId:
-        type: integer
-    required:
-    - SSLId
     type: object
   request.WebsiteSSLSearch:
     properties:
@@ -4043,6 +4222,8 @@ definitions:
     properties:
       autoRenew:
         type: boolean
+      description:
+        type: string
       id:
         type: integer
     required:
@@ -4054,10 +4235,14 @@ definitions:
         type: string
       certificatePath:
         type: string
+      description:
+        type: string
       privateKey:
         type: string
       privateKeyPath:
         type: string
+      sslID:
+        type: integer
       type:
         enum:
         - paste
@@ -4429,6 +4614,35 @@ definitions:
       updatedAt:
         type: string
       url:
+        type: string
+    type: object
+  response.WebsiteCADTO:
+    properties:
+      city:
+        type: string
+      commonName:
+        type: string
+      country:
+        type: string
+      createdAt:
+        type: string
+      csr:
+        type: string
+      id:
+        type: integer
+      keyType:
+        type: string
+      name:
+        type: string
+      organization:
+        type: string
+      organizationUint:
+        type: string
+      privateKey:
+        type: string
+      province:
+        type: string
+      updatedAt:
         type: string
     type: object
   response.WebsiteDNSRes:
@@ -8318,6 +8532,19 @@ paths:
       summary: List RecycleBin files
       tags:
       - File
+  /files/recycle/status:
+    get:
+      consumes:
+      - application/json
+      description: 获取回收站状态
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Get RecycleBin status
+      tags:
+      - File
   /files/rename:
     post:
       consumes:
@@ -10385,34 +10612,6 @@ paths:
         formatEN: 'update system bind info => ipv6: [ipv6], 监听 IP: [bindAddress]'
         formatZH: '修改系统监听信息 => ipv6: [ipv6], 监听 IP: [bindAddress]'
         paramKeys: []
-  /settings/clean:
-    post:
-      consumes:
-      - application/json
-      description: 清理系统垃圾文件
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/dto.Clean'
-          type: array
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: System clean
-      tags:
-      - System Setting
-      x-panel-log:
-        BeforeFunctions: []
-        bodyKeys: []
-        formatEN: Clean system junk files
-        formatZH: 清理系统垃圾文件
-        paramKeys: []
   /settings/expired/handle:
     post:
       consumes:
@@ -10569,23 +10768,6 @@ paths:
         - serverPort
         formatEN: update system port => [serverPort]
         formatZH: 修改系统端口 => [serverPort]
-        paramKeys: []
-  /settings/scan:
-    post:
-      description: 扫描系统垃圾文件
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Scan system
-      tags:
-      - System Setting
-      x-panel-log:
-        BeforeFunctions: []
-        bodyKeys: []
-        formatEN: scan System Junk Files
-        formatZH: 扫描系统垃圾文件
         paramKeys: []
   /settings/search:
     post:
@@ -10967,6 +11149,34 @@ paths:
         formatEN: upgrade service => [version]
         formatZH: 更新系统 => [version]
         paramKeys: []
+  /toolbox/clean:
+    post:
+      consumes:
+      - application/json
+      description: 清理系统垃圾文件
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/dto.Clean'
+          type: array
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Clean system
+      tags:
+      - Device
+      x-panel-log:
+        BeforeFunctions: []
+        bodyKeys: []
+        formatEN: Clean system junk files
+        formatZH: 清理系统垃圾文件
+        paramKeys: []
   /toolbox/device/base:
     get:
       description: 获取设备基础信息
@@ -11107,6 +11317,34 @@ paths:
       summary: Update device passwd
       tags:
       - Device
+  /toolbox/device/update/swap:
+    post:
+      consumes:
+      - application/json
+      description: 修改系统 Swap
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SwapHelper'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Update device swap
+      tags:
+      - Device
+      x-panel-log:
+        BeforeFunctions: []
+        bodyKeys:
+        - operate
+        - path
+        formatEN: '[operate] device swap [path]'
+        formatZH: '[operate] 主机 swap [path]'
+        paramKeys: []
   /toolbox/device/zone/options:
     get:
       consumes:
@@ -11124,7 +11362,7 @@ paths:
       - Device
   /toolbox/fail2ban/base:
     get:
-      description: 获取 Fail2Ban 基础信息
+      description: 获取 Fail2ban 基础信息
       responses:
         "200":
           description: OK
@@ -11134,7 +11372,7 @@ paths:
       - ApiKeyAuth: []
       summary: Load fail2ban base info
       tags:
-      - Fail2Ban
+      - Fail2ban
   /toolbox/fail2ban/load/conf:
     get:
       consumes:
@@ -11147,12 +11385,12 @@ paths:
       - ApiKeyAuth: []
       summary: Load fail2ban conf
       tags:
-      - Fail2Ban
+      - Fail2ban
   /toolbox/fail2ban/operate:
     post:
       consumes:
       - application/json
-      description: 修改 Fail2Ban 状态
+      description: 修改 Fail2ban 状态
       parameters:
       - description: request
         in: body
@@ -11165,13 +11403,13 @@ paths:
       - ApiKeyAuth: []
       summary: Operate fail2ban
       tags:
-      - Fail2Ban
+      - Fail2ban
       x-panel-log:
         BeforeFunctions: []
         bodyKeys:
         - operation
-        formatEN: '[operation] Fail2Ban'
-        formatZH: '[operation] Fail2Ban'
+        formatEN: '[operation] Fail2ban'
+        formatZH: '[operation] Fail2ban'
         paramKeys: []
   /toolbox/fail2ban/operate/sshd:
     post:
@@ -11190,12 +11428,12 @@ paths:
       - ApiKeyAuth: []
       summary: Operate sshd of fail2ban
       tags:
-      - Fail2Ban
+      - Fail2ban
   /toolbox/fail2ban/search:
     post:
       consumes:
       - application/json
-      description: 获取 Fail2Ban ip
+      description: 获取 Fail2ban ip
       parameters:
       - description: request
         in: body
@@ -11212,12 +11450,12 @@ paths:
       - ApiKeyAuth: []
       summary: Page fail2ban ip list
       tags:
-      - Fail2Ban
+      - Fail2ban
   /toolbox/fail2ban/update:
     post:
       consumes:
       - application/json
-      description: 修改 Fail2Ban 配置
+      description: 修改 Fail2ban 配置
       parameters:
       - description: request
         in: body
@@ -11232,14 +11470,14 @@ paths:
       - ApiKeyAuth: []
       summary: Update fail2ban conf
       tags:
-      - Fail2Ban
+      - Fail2ban
       x-panel-log:
         BeforeFunctions: []
         bodyKeys:
         - key
         - value
         formatEN: update fail2ban conf [key] => [value]
-        formatZH: 修改 Fail2Ban 配置 [key] => [value]
+        formatZH: 修改 Fail2ban 配置 [key] => [value]
         paramKeys: []
   /toolbox/fail2ban/update/byconf:
     post:
@@ -11260,7 +11498,24 @@ paths:
       - ApiKeyAuth: []
       summary: Update fail2ban conf by file
       tags:
-      - Fail2Ban
+      - Fail2ban
+  /toolbox/scan:
+    post:
+      description: 扫描系统垃圾文件
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Scan system
+      tags:
+      - Device
+      x-panel-log:
+        BeforeFunctions: []
+        bodyKeys: []
+        formatEN: scan System Junk Files
+        formatZH: 扫描系统垃圾文件
+        paramKeys: []
   /websites:
     post:
       consumes:
@@ -11509,6 +11764,144 @@ paths:
       summary: Get AuthBasic conf
       tags:
       - Website
+  /websites/ca:
+    post:
+      consumes:
+      - application/json
+      description: 创建网站 ca
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.WebsiteCACreate'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/request.WebsiteCACreate'
+      security:
+      - ApiKeyAuth: []
+      summary: Create website ca
+      tags:
+      - Website CA
+      x-panel-log:
+        BeforeFunctions: []
+        bodyKeys:
+        - name
+        formatEN: Create website ca [name]
+        formatZH: 创建网站 ca [name]
+        paramKeys: []
+  /websites/ca/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取网站 ca
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WebsiteCADTO'
+      security:
+      - ApiKeyAuth: []
+      summary: Get website ca
+      tags:
+      - Website CA
+  /websites/ca/del:
+    post:
+      consumes:
+      - application/json
+      description: 删除网站 ca
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.WebsiteCommonReq'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Delete website ca
+      tags:
+      - Website CA
+      x-panel-log:
+        BeforeFunctions:
+        - db: website_cas
+          input_column: id
+          input_value: id
+          isList: false
+          output_column: name
+          output_value: name
+        bodyKeys:
+        - id
+        formatEN: Delete website ca [name]
+        formatZH: 删除网站 ca [name]
+        paramKeys: []
+  /websites/ca/obtain:
+    post:
+      consumes:
+      - application/json
+      description: 续签 SSL 证书
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.WebsiteCAObtain'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Obtain SSL
+      tags:
+      - Website CA
+      x-panel-log:
+        BeforeFunctions:
+        - db: website_cas
+          input_column: id
+          input_value: id
+          isList: false
+          output_column: name
+          output_value: name
+        bodyKeys:
+        - id
+        formatEN: Obtain SSL [name]
+        formatZH: 自签 SSL 证书 [name]
+        paramKeys: []
+  /websites/ca/search:
+    post:
+      consumes:
+      - application/json
+      description: 获取网站 ca 列表分页
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.WebsiteCASearch'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PageResult'
+      security:
+      - ApiKeyAuth: []
+      summary: Page website ca
+      tags:
+      - Website CA
   /websites/check:
     post:
       consumes:
@@ -12534,7 +12927,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.WebsiteResourceReq'
+          $ref: '#/definitions/request.WebsiteBatchDelReq'
       responses:
         "200":
           description: OK
@@ -12547,14 +12940,47 @@ paths:
         BeforeFunctions:
         - db: website_ssls
           input_column: id
+          input_value: ids
+          isList: true
+          output_column: primary_domain
+          output_value: domain
+        bodyKeys:
+        - ids
+        formatEN: Delete ssl [domain]
+        formatZH: 删除 ssl [domain]
+        paramKeys: []
+  /websites/ssl/download:
+    post:
+      consumes:
+      - application/json
+      description: 下载证书文件
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.WebsiteResourceReq'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Download SSL  file
+      tags:
+      - Website SSL
+      x-panel-log:
+        BeforeFunctions:
+        - db: website_ssls
+          input_column: id
           input_value: id
           isList: false
           output_column: primary_domain
           output_value: domain
         bodyKeys:
         - id
-        formatEN: Delete ssl [domain]
-        formatZH: 删除 ssl [domain]
+        formatEN: download ssl file [domain]
+        formatZH: 下载证书文件 [domain]
         paramKeys: []
   /websites/ssl/obtain:
     post:
@@ -12588,39 +13014,6 @@ paths:
         - ID
         formatEN: apply ssl [domain]
         formatZH: 申请证书  [domain]
-        paramKeys: []
-  /websites/ssl/renew:
-    post:
-      consumes:
-      - application/json
-      description: 重置网站 ssl
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/request.WebsiteSSLRenew'
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Reset website ssl
-      tags:
-      - Website SSL
-      x-panel-log:
-        BeforeFunctions:
-        - db: website_ssls
-          input_column: id
-          input_value: SSLId
-          isList: false
-          output_column: primary_domain
-          output_value: domain
-        bodyKeys:
-        - SSLId
-        formatEN: Renew ssl [domain]
-        formatZH: 重置 ssl [domain]
         paramKeys: []
   /websites/ssl/resolve:
     post:

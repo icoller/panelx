@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -261,6 +262,8 @@ func (a *AppInstallService) Operate(req request.AppInstalledOperate) error {
 		return syncByID(install.ID)
 	case constant.Upgrade:
 		return upgradeInstall(install.ID, req.DetailId, req.Backup)
+	case constant.Reload:
+		return opNginx(install.ContainerName, constant.NginxReload)
 	default:
 		return errors.New("operate not support")
 	}
@@ -505,6 +508,9 @@ func (a *AppInstallService) GetUpdateVersions(installId uint) ([]dto.AppVersion,
 			})
 		}
 	}
+	sort.Slice(versions, func(i, j int) bool {
+		return common.CompareVersion(versions[i].Version, versions[j].Version)
+	})
 	return versions, nil
 }
 

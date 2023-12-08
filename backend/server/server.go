@@ -40,9 +40,9 @@ import (
 func Start() {
 	viper.Init()
 	log.Init()
-	app.Init()
 	db.Init()
 	migration.Init()
+	app.Init()
 	validator.Init()
 	gob.Register(psession.SessionUser{})
 	cache.Init()
@@ -94,6 +94,7 @@ func Start() {
 			panic(err)
 		}
 	} else {
+		global.LOG.Infof("listen at http://%s:%s [%s]", global.CONF.System.BindAddress, global.CONF.System.Port, tcpItem)
 		if err := server.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)}); err != nil {
 			panic(err)
 		}

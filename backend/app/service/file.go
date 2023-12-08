@@ -136,6 +136,10 @@ func (f *FileService) Create(op request.FileCreate) error {
 
 func (f *FileService) Delete(op request.FileDelete) error {
 	fo := files.NewFileOp()
+	recycleBinStatus, _ := settingRepo.Get(settingRepo.WithByKey("FileRecycleBin"))
+	if recycleBinStatus.Value == "disable" {
+		op.ForceDelete = true
+	}
 	if op.ForceDelete {
 		if op.IsDir {
 			return fo.DeleteDir(op.Path)
@@ -247,8 +251,11 @@ func (f *FileService) MvFile(m request.FileMove) error {
 	if !fo.Stat(m.NewPath) {
 		return buserr.New(constant.ErrPathNotFound)
 	}
-	for _, path := range m.OldPaths {
-		if path == m.NewPath || strings.Contains(m.NewPath, filepath.Clean(path)+"/") {
+	for _, oldPath := range m.OldPaths {
+		if !fo.Stat(oldPath) {
+			return buserr.WithName(constant.ErrFileNotFound, oldPath)
+		}
+		if oldPath == m.NewPath || strings.Contains(m.NewPath, filepath.Clean(oldPath)+"/") {
 			return buserr.New(constant.ErrMovePathFailed)
 		}
 	}

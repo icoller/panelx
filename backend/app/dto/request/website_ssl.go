@@ -16,6 +16,10 @@ type WebsiteSSLCreate struct {
 	AutoRenew     bool   `json:"autoRenew"`
 	KeyType       string `json:"keyType"`
 	Apply         bool   `json:"apply"`
+	PushDir       bool   `json:"pushDir"`
+	Dir           string `json:"dir"`
+	ID            uint   `json:"id"`
+	Description   string `json:"description"`
 }
 
 type WebsiteDNSReq struct {
@@ -56,9 +60,14 @@ type WebsiteResourceReq struct {
 	ID uint `json:"id" validate:"required"`
 }
 
+type WebsiteBatchDelReq struct {
+	IDs []uint `json:"ids" validate:"required"`
+}
+
 type WebsiteSSLUpdate struct {
-	ID        uint `json:"id" validate:"required"`
-	AutoRenew bool `json:"autoRenew"`
+	ID          uint   `json:"id" validate:"required"`
+	AutoRenew   bool   `json:"autoRenew"`
+	Description string `json:"description"`
 }
 
 type WebsiteSSLUpload struct {
@@ -67,4 +76,39 @@ type WebsiteSSLUpload struct {
 	PrivateKeyPath  string `json:"privateKeyPath"`
 	CertificatePath string `json:"certificatePath"`
 	Type            string `json:"type" validate:"required,oneof=paste local"`
+	SSLID           uint   `json:"sslID"`
+	Description     string `json:"description"`
+}
+
+type WebsiteCASearch struct {
+	dto.PageInfo
+}
+
+type WebsiteCACreate struct {
+	CommonName       string `json:"commonName" validate:"required"`
+	Country          string `json:"country" validate:"required"`
+	Organization     string `json:"organization" validate:"required"`
+	OrganizationUint string `json:"organizationUint"`
+	Name             string `json:"name" validate:"required"`
+	KeyType          string `json:"keyType" validate:"required,oneof=P256 P384 2048 3072 4096 8192"`
+	Province         string `json:"province" `
+	City             string `json:"city"`
+}
+
+type WebsiteCAObtain struct {
+	ID          uint   `json:"id" validate:"required"`
+	Domains     string `json:"domains" validate:"required"`
+	KeyType     string `json:"keyType" validate:"required,oneof=P256 P384 2048 3072 4096 8192"`
+	Time        int    `json:"time" validate:"required"`
+	Unit        string `json:"unit" validate:"required"`
+	PushDir     bool   `json:"pushDir"`
+	Dir         string `json:"dir"`
+	AutoRenew   bool   `json:"autoRenew"`
+	Renew       bool   `json:"renew"`
+	SSLID       uint   `json:"sslID"`
+	Description string `json:"description"`
+}
+
+type WebsiteCARenew struct {
+	SSLID uint `json:"SSLID" validate:"required"`
 }

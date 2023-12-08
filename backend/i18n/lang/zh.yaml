@@ -20,6 +20,9 @@ TYPE_RUNTIME: "运行环境"
 TYPE_DOMAIN: "域名"
 ErrTypePort: '端口 {{ .name }} 格式错误'
 ErrTypePortRange: '端口范围需要在 1-65535 之间'
+Success: "成功"
+Failed: "失败"
+SystemRestart: "系统重启导致任务中断"
 
 #app
 ErrPortInUsed: "{{ .detail }} 端口已被占用！"
@@ -83,7 +86,7 @@ ErrDomainIsUsed: "域名已被网站【{{ .name }}】使用"
 ErrDomainFormat: "{{ .name }} 域名格式不正确"
 
 #ssl
-ErrSSLCannotDelete: "证书正在被网站使用，无法删除"
+ErrSSLCannotDelete: "{{ .name }} 证书正在被网站使用，无法删除"
 ErrAccountCannotDelete: "账号关联证书，无法删除"
 ErrSSLApply: "证书续签成功，openresty reload失败，请检查配置！"
 ErrEmailIsExist: '邮箱已存在'
@@ -100,6 +103,13 @@ http: "HTTP"
 ApplySSLFailed: '申请  [{{ .domain }}] 证书失败, {{.detail}} '
 ApplySSLSuccess: '申请 [{{ .domain }}] 证书成功！！'
 DNSAccountName: 'DNS 账号 [{{ .name }}] 厂商 [{{.type}}]'
+PushDirLog: '证书推送到目录 [{{ .path }}] {{ .status }}'
+ErrDeleteCAWithSSL: "当前机构下存在已签发证书，无法删除"
+ErrDeleteWithPanelSSL: "面板 SSL 配置使用此证书，无法删除"
+ErrDefaultCA: "默认机构不能删除"
+ApplyWebSiteSSLLog: "开始更新 {{ .name }} 网站证书"
+ErrUpdateWebsiteSSL: "{{ .name }} 网站更新证书失败: {{ .err }}"
+ApplyWebSiteSSLSuccess: "更新网站证书成功"
 
 #mysql
 ErrUserIsExist: "当前用户已存在，请重新输入"
@@ -147,3 +157,6 @@ ErrFirewall: "当前未检测到系统 firewalld 或 ufw 服务，请检查后�
 
 #cronjob
 ErrBashExecute: "脚本执行错误，请在任务输出文本域中查看具体信息。"
+
+#toolbox
+ErrNotExistUser: "当前用户不存在，请修改后重试！"

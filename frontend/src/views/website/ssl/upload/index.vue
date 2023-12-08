@@ -36,6 +36,9 @@
                             </el-input>
                         </el-form-item>
                     </div>
+                    <el-form-item :label="$t('website.remark')" prop="description">
+                        <el-input v-model="ssl.description"></el-input>
+                    </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
@@ -58,6 +61,7 @@ import i18n from '@/lang';
 import { FormInstance } from 'element-plus';
 import { ref } from 'vue';
 import { MsgSuccess } from '@/utils/message';
+import { Website } from '@/api/interface/website';
 
 const open = ref(false);
 const loading = ref(false);
@@ -70,13 +74,16 @@ const rules = ref({
     certificatePath: [Rules.requiredInput],
     type: [Rules.requiredSelect],
 });
-const ssl = ref({
+const initData = () => ({
     privateKey: '',
     certificate: '',
     privateKeyPath: '',
     certificatePath: '',
     type: 'paste',
+    sslID: 0,
+    description: '',
 });
+const ssl = ref(initData());
 
 const em = defineEmits(['close']);
 const handleClose = () => {
@@ -86,17 +93,15 @@ const handleClose = () => {
 };
 const resetForm = () => {
     sslForm.value?.resetFields();
-    ssl.value = {
-        privateKey: '',
-        certificate: '',
-        privateKeyPath: '',
-        certificatePath: '',
-        type: 'paste',
-    };
+    ssl.value = initData();
 };
 
-const acceptParams = () => {
+const acceptParams = (websiteSSL: Website.SSLDTO) => {
     resetForm();
+    if (websiteSSL && websiteSSL.id > 0) {
+        ssl.value.sslID = websiteSSL.id;
+        ssl.value.description = websiteSSL.description;
+    }
     open.value = true;
 };
 

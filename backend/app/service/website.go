@@ -173,9 +173,6 @@ func (w WebsiteService) CreateWebsite(create request.WebsiteCreate) (err error) 
 	primaryDomainArray := strings.Split(create.PrimaryDomain, ":")
 	primaryDomain := primaryDomainArray[0]
 
-	if exist, _ := websiteRepo.GetBy(websiteRepo.WithDomain(primaryDomain)); len(exist) > 0 {
-		return buserr.New(constant.ErrDomainIsExist)
-	}
 	if exist, _ := websiteRepo.GetBy(websiteRepo.WithAlias(create.Alias)); len(exist) > 0 {
 		return buserr.New(constant.ErrAliasIsExist)
 	}
@@ -619,7 +616,7 @@ func (w WebsiteService) GetWebsiteHTTPS(websiteId uint) (response.WebsiteHTTPS, 
 	if err != nil {
 		return response.WebsiteHTTPS{}, err
 	}
-	res.SSL = websiteSSL
+	res.SSL = *websiteSSL
 	res.Enable = true
 	if website.HttpConfig != "" {
 		res.HttpConfig = website.HttpConfig
@@ -648,7 +645,7 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 	}
 	var (
 		res        response.WebsiteHTTPS
-		websiteSSL model.WebsiteSSL
+		websiteSSL *model.WebsiteSSL
 	)
 	res.Enable = req.Enable
 	res.SSLProtocol = req.SSLProtocol
@@ -698,7 +695,7 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 			return nil, err
 		}
 		website.WebsiteSSLID = websiteSSL.ID
-		res.SSL = websiteSSL
+		res.SSL = *websiteSSL
 	}
 	if req.Type == constant.SSLManual {
 		var (
@@ -758,16 +755,16 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 		websiteSSL.PrivateKey = privateKey
 		websiteSSL.Pem = certificate
 
-		res.SSL = websiteSSL
+		res.SSL = *websiteSSL
 	}
 	website.Protocol = constant.ProtocolHTTPS
-	if err := applySSL(website, websiteSSL, req); err != nil {
+	if err := applySSL(website, *websiteSSL, req); err != nil {
 		return nil, err
 	}
 	website.HttpConfig = req.HttpConfig
 
 	if websiteSSL.ID == 0 {
-		if err := websiteSSLRepo.Create(ctx, &websiteSSL); err != nil {
+		if err := websiteSSLRepo.Create(ctx, websiteSSL); err != nil {
 			return nil, err
 		}
 		website.WebsiteSSLID = websiteSSL.ID
@@ -2093,15 +2090,8 @@ func (w WebsiteService) OperateRedirect(req request.NginxRedirectReq) (err error
 			})
 		}
 	case "404":
-		if req.KeepPath && !req.RedirectRoot {
-			target = req.Target + "$request_uri"
-		}
 		if req.RedirectRoot {
 			target = "/"
-		} else {
-			if req.KeepPath {
-				target = req.Target + "$request_uri"
-			}
 		}
 		block = &components.Block{
 			Directives: []components.IDirective{
@@ -2116,7 +2106,7 @@ func (w WebsiteService) OperateRedirect(req request.NginxRedirectReq) (err error
 						Directives: []components.IDirective{
 							&components.Directive{
 								Name:       "return",
-								Parameters: []string{"301", target},
+								Parameters: []string{req.Redirect, target},
 							},
 						},
 					},

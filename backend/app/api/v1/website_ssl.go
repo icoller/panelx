@@ -1,7 +1,10 @@
 package v1
 
 import (
+	"net/http"
+	"net/url"
 	"reflect"
+	"strconv"
 
 	"github.com/1Panel-dev/1Panel/backend/app/api/v1/helper"
 	"github.com/1Panel-dev/1Panel/backend/app/dto"
@@ -66,27 +69,6 @@ func (b *BaseApi) CreateWebsiteSSL(c *gin.Context) {
 }
 
 // @Tags Website SSL
-// @Summary Reset website ssl
-// @Description 重置网站 ssl
-// @Accept json
-// @Param request body request.WebsiteSSLRenew true "request"
-// @Success 200
-// @Security ApiKeyAuth
-// @Router /websites/ssl/renew [post]
-// @x-panel-log {"bodyKeys":["SSLId"],"paramKeys":[],"BeforeFunctions":[{"input_column":"id","input_value":"SSLId","isList":false,"db":"website_ssls","output_column":"primary_domain","output_value":"domain"}],"formatZH":"重置 ssl [domain]","formatEN":"Renew ssl [domain]"}
-func (b *BaseApi) RenewWebsiteSSL(c *gin.Context) {
-	var req request.WebsiteSSLRenew
-	if err := helper.CheckBindAndValidate(&req, c); err != nil {
-		return
-	}
-	if err := websiteSSLService.Renew(req.SSLID); err != nil {
-		helper.ErrorWithDetail(c, constant.CodeErrInternalServer, constant.ErrTypeInternalServer, err)
-		return
-	}
-	helper.SuccessWithData(c, nil)
-}
-
-// @Tags Website SSL
 // @Summary Apply  ssl
 // @Description 申请证书
 // @Accept json
@@ -132,17 +114,17 @@ func (b *BaseApi) GetDNSResolve(c *gin.Context) {
 // @Summary Delete website ssl
 // @Description 删除网站 ssl
 // @Accept json
-// @Param request body request.WebsiteResourceReq true "request"
+// @Param request body request.WebsiteBatchDelReq true "request"
 // @Success 200
 // @Security ApiKeyAuth
 // @Router /websites/ssl/del [post]
-// @x-panel-log {"bodyKeys":["id"],"paramKeys":[],"BeforeFunctions":[{"input_column":"id","input_value":"id","isList":false,"db":"website_ssls","output_column":"primary_domain","output_value":"domain"}],"formatZH":"删除 ssl [domain]","formatEN":"Delete ssl [domain]"}
+// @x-panel-log {"bodyKeys":["ids"],"paramKeys":[],"BeforeFunctions":[{"input_column":"id","input_value":"ids","isList":true,"db":"website_ssls","output_column":"primary_domain","output_value":"domain"}],"formatZH":"删除 ssl [domain]","formatEN":"Delete ssl [domain]"}
 func (b *BaseApi) DeleteWebsiteSSL(c *gin.Context) {
-	var req request.WebsiteResourceReq
+	var req request.WebsiteBatchDelReq
 	if err := helper.CheckBindAndValidate(&req, c); err != nil {
 		return
 	}
-	if err := websiteSSLService.Delete(req.ID); err != nil {
+	if err := websiteSSLService.Delete(req.IDs); err != nil {
 		helper.ErrorWithDetail(c, constant.CodeErrInternalServer, constant.ErrTypeInternalServer, err)
 		return
 	}
@@ -233,4 +215,33 @@ func (b *BaseApi) UploadWebsiteSSL(c *gin.Context) {
 		return
 	}
 	helper.SuccessWithData(c, nil)
+}
+
+// @Tags Website SSL
+// @Summary Download SSL  file
+// @Description 下载证书文件
+// @Accept json
+// @Param request body request.WebsiteResourceReq true "request"
+// @Success 200
+// @Security ApiKeyAuth
+// @Router  /websites/ssl/download [post]
+// @x-panel-log {"bodyKeys":["id"],"paramKeys":[],"BeforeFunctions":[{"input_column":"id","input_value":"id","isList":false,"db":"website_ssls","output_column":"primary_domain","output_value":"domain"}],"formatZH":"下载证书文件 [domain]","formatEN":"download ssl file [domain]"}
+func (b *BaseApi) DownloadWebsiteSSL(c *gin.Context) {
+	var req request.WebsiteResourceReq
+	if err := helper.CheckBindAndValidate(&req, c); err != nil {
+		return
+	}
+	file, err := websiteSSLService.DownloadFile(req.ID)
+	if err != nil {
+		helper.ErrorWithDetail(c, constant.CodeErrInternalServer, constant.ErrTypeInternalServer, err)
+		return
+	}
+	info, err := file.Stat()
+	if err != nil {
+		helper.ErrorWithDetail(c, constant.CodeErrInternalServer, constant.ErrTypeInternalServer, err)
+		return
+	}
+	c.Header("Content-Length", strconv.FormatInt(info.Size(), 10))
+	c.Header("Content-Disposition", "attachment; filename*=utf-8''"+url.PathEscape(info.Name()))
+	http.ServeContent(c.Writer, c.Request, info.Name(), info.ModTime(), file)
 }

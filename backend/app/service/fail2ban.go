@@ -35,7 +35,7 @@ func (u *Fail2BanService) LoadBaseInfo() (dto.Fail2BanBaseInfo, error) {
 		return baseInfo, err
 	}
 	baseInfo.IsEnable, baseInfo.IsActive, baseInfo.IsExist = client.Status()
-	if !baseInfo.IsExist {
+	if !baseInfo.IsActive {
 		baseInfo.Version = "-"
 		return baseInfo, nil
 	}
@@ -120,7 +120,7 @@ func (u *Fail2BanService) UpdateConf(req dto.Fail2BanUpdate) error {
 			newFile += fmt.Sprintf("%s = %s\n", req.Key, req.Value)
 			continue
 		}
-		if strings.HasPrefix(line, "[") || index != len(lines)-1 {
+		if strings.HasPrefix(line, "[") || index == len(lines)-1 {
 			isEnd = true
 			if !hasKey {
 				newFile += fmt.Sprintf("%s = %s\n", req.Key, req.Value)
@@ -207,5 +207,10 @@ func loadFailValue(line string, baseInfo *dto.Fail2BanBaseInfo) {
 		itemValue := strings.ReplaceAll(line, "banaction", "")
 		itemValue = strings.ReplaceAll(itemValue, "=", "")
 		baseInfo.BanAction = strings.TrimSpace(itemValue)
+	}
+	if strings.HasPrefix(line, "logpath") {
+		itemValue := strings.ReplaceAll(line, "logpath", "")
+		itemValue = strings.ReplaceAll(itemValue, "=", "")
+		baseInfo.LogPath = strings.TrimSpace(itemValue)
 	}
 }

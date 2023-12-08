@@ -20,6 +20,9 @@ TYPE_RUNTIME: "運作環境"
 TYPE_DOMAIN: "網域名稱"
 ErrTypePort: '埠 {{ .name }} 格式錯誤'
 ErrTypePortRange: '連接埠範圍需要在 1-65535 之間'
+Success: "成功"
+Failed: "失敗"
+SystemRestart: "系統重啟導致任務中斷"
 
 #app
 ErrPortInUsed: "{{ .detail }} 端口已被佔用！"
@@ -83,7 +86,7 @@ ErrDomainIsUsed: "域名已被網站【{{ .name }}】使用"
 ErrDomainFormat: "{{ .name }} 域名格式不正確"
 
 #ssl
-ErrSSLCannotDelete: "證書正在被網站使用，無法刪除"
+ErrSSLCannotDelete: "{{ .name }} 證書正在被網站使用，無法刪除"
 ErrAccountCannotDelete: "帳號關聯證書，無法刪除"
 ErrSSLApply: "證書續簽成功，openresty reload失敗，請檢查配置！"
 ErrEmailIsExist: '郵箱已存在'
@@ -100,6 +103,14 @@ http: "HTTP"
 ApplySSLFailed: '申請 [{{ .domain }}] 憑證失敗, {{.detail}} '
 ApplySSLSuccess: '申請 [{{ .domain }}] 憑證成功！ ！ '
 DNSAccountName: 'DNS 帳號 [{{ .name }}] 廠商 [{{.type}}]'
+PushDirLog: '憑證推送到目錄 [{{ .path }}] {{ .status }}'
+ErrDeleteCAWithSSL: "目前機構下存在已簽發證書，無法刪除"
+ErrDeleteWithPanelSSL: "面板 SSL 配置使用此證書，無法刪除"
+ErrDefaultCA: "默認機構不能刪除"
+ApplyWebSiteSSLLog: "開始更新 {{ .name }} 網站憑證"
+ErrUpdateWebsiteSSL: "{{ .name }} 網站更新憑證失敗: {{ .err }}"
+ApplyWebSiteSSLSuccess: "更新網站憑證成功"
+
 
 #mysql
 ErrUserIsExist: "當前用戶已存在，請重新輸入"
@@ -147,3 +158,6 @@ ErrFirewall: "當前未檢測到系統 firewalld 或 ufw 服務，請檢查後�
 
 #cronjob
 ErrBashExecute: "腳本執行錯誤，請在任務輸出文本域中查看具體信息。"
+
+#toolbox
+ErrNotExistUser: "當前使用者不存在，請修改後重試！"

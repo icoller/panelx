@@ -6,8 +6,8 @@
             <h4>{{ $t('commons.login.safeEntrance1') }}</h4>
             <div>
                 <h4>{{ $t('commons.login.safeEntrance2') }}</h4>
-                <div style="cursor: pointer; float: left">
-                    <el-icon color="#409EFC" style="margin-left: 5px; margin-top: 33px" :size="18" @click="onCopy()">
+                <div class="float-left cursor-pointer">
+                    <el-icon color="#409EFC" class="ml-1.5 mt-8" :size="18" @click="copyText('1pctl user-info')">
                         <DocumentCopy />
                     </el-icon>
                 </div>

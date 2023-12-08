@@ -156,14 +156,14 @@ const message = {
             requiredInput: 'Please enter the required fields',
             requiredSelect: 'Please select the required fields',
             illegalInput: 'There are illegal characters in the input box.',
-            commonName: 'Support English, Chinese, numbers, .-, and _ length 1-30',
+            commonName: 'Support English, Chinese, numbers, .-, and _ length 1-128',
             userName: 'Support English, Chinese, numbers and _ length 3-30',
-            simpleName: 'Support English, numbers and _ length 1-30',
+            simpleName: 'Supports non-underscore starting, English, numbers, _, length 1-30',
             dbName: 'Support English, Chinese, numbers, .-, and _ length 1-64',
             imageName: 'Support English, numbers, :/.-_, length 1-150',
             volumeName: 'Support English, numbers, .-_, length 2-30',
             complexityPassword:
-                'Longer than eight characters and contains at least two combinations of letters, digits, and special characters',
+                'Please enter a password combination with a length of 8-30 characters, including letters, numbers, and at least two special characters.',
             commonPassword: 'Please enter a password with more than 6 characters',
             linuxName: 'Length 1-128, the name cannot contain symbols such as {0}',
             email: 'Email format error',
@@ -345,6 +345,7 @@ const message = {
         logout: 'Logout',
     },
     database: {
+        manage: 'Management',
         database: 'database',
         deleteBackupHelper: 'Delete database backups simultaneously',
         delete: 'Delete operation cannot be rolled back, please input "',
@@ -391,6 +392,11 @@ const message = {
         address: 'DB address',
         version: 'DB version',
         userHelper: 'The root user or a database user with root privileges can access the remote database.',
+        ssl: 'Use SSL',
+        clientKey: 'Client Private Key',
+        clientCert: 'Client Certificate',
+        caCert: 'CA Certificate',
+        skipVerify: 'Ignore Certificate Validity Check',
 
         formatHelper:
             'The current database character set is {0}, the character set inconsistency may cause recovery failure',
@@ -519,6 +525,7 @@ const message = {
         unpause: 'Unpause',
         rename: 'Rename',
         remove: 'Remove',
+        removeAll: 'Remove All',
         containerPrune: 'Container prune',
         containerPruneHelper1: 'Cleaning containers will delete all containers that are in a stopped state.',
         containerPruneHelper2:
@@ -744,6 +751,13 @@ const message = {
         daemonJsonPath: 'Conf Path',
         serviceUnavailable: 'Docker service is not started at present, please click',
         startIn: ' to start',
+        sockPath: 'Socket Path',
+        sockPathHelper: 'Communication channel between Docker Daemon and the client',
+        sockPathHelper1: 'Default Path: /var/run/docker-x.sock',
+        sockPathHelper2: 'CurrentPath: {0}',
+        sockPathMsg:
+            'Saving the Socket Path setting may result in Docker service being unavailable. Do you want to continue?',
+        sockPathErr: 'Please select or enter the correct Docker sock file path',
     },
     cronjob: {
         create: 'Create Cronjob',
@@ -884,13 +898,33 @@ const message = {
         emptyTerminal: 'No terminal is currently connected',
     },
     toolbox: {
+        swap: {
+            swap: 'Swap Partition',
+            swapHelper1:
+                'The size of the swap should be 1 to 2 times the physical memory, adjustable based on specific requirements;',
+            swapHelper2:
+                'Before creating a swap file, ensure that the system disk has sufficient available space, as the swap file size will occupy the corresponding disk space;',
+            swapHelper3:
+                'Swap can help alleviate memory pressure, but it is only an alternative. Excessive reliance on swap may lead to a decrease in system performance. It is recommended to prioritize increasing memory or optimizing application memory usage;',
+            swapHelper4: 'It is advisable to regularly monitor the usage of swap to ensure normal system operation.',
+            swapDeleteHelper:
+                'This operation will remove the Swap partition {0}. For system security reasons, the corresponding file will not be automatically deleted. If deletion is required, please proceed manually!',
+            saveHelper: 'Please save the current settings first!',
+            saveSwap:
+                'Saving the current configuration will adjust the Swap partition {0} size to {1}. Do you want to continue?',
+            swapMin: 'The minimum partition size is 40 KB. Please modify and try again!',
+            swapMax: 'The maximum value for partition size is {0}. Please modify and try again!',
+            swapOff: 'The minimum partition size is 40 KB. Setting it to 0 will disable the Swap partition.',
+        },
         device: {
             dnsHelper: 'Server Address Domain Resolution',
+            dnsHelper1:
+                'When there are multiple DNS entries, they should be displayed on new lines. e.g.\n114.114.114.114\n8.8.8.8',
             hostsHelper: 'Hostname Resolution',
             hosts: 'Domain',
             toolbox: 'Toolbox',
             hostname: 'Hostname',
-            passwd: 'Host Password',
+            passwd: 'System Password',
             passwdHelper: 'Input characters cannot include $ and &',
             timeZone: 'System Time Zone',
             localTime: 'Server Time',
@@ -916,10 +950,10 @@ const message = {
             dnsTestFailed: 'DNS configuration information is not available. Please modify and try again!',
         },
         fail2ban: {
-            noFail2ban: 'Fail2Ban service not detected, please refer to the official documentation for installation',
-            unActive: 'The Fail2Ban service is not enabled at present, please enable it first!',
-            operation: 'Perform [{0}] operation on Fail2Ban service, continue?',
-            fail2banChange: 'Fail2Ban Configuration Modification',
+            noFail2ban: 'Fail2ban service not detected, please refer to the official documentation for installation',
+            unActive: 'The Fail2ban service is not enabled at present, please enable it first!',
+            operation: 'Perform [{0}] operation on Fail2ban service, continue?',
+            fail2banChange: 'Fail2ban Configuration Modification',
             ignoreHelper: 'The IP list in the whitelist will be ignored for blocking, continue?',
             bannedHelper: 'The IP list in the blacklist will be blocked by the server, continue?',
             maxRetry: 'Maximum Retry Attempts',
@@ -931,6 +965,8 @@ const message = {
             allPorts: ' (All Ports)',
             ignoreIP: 'IP Whitelist',
             bannedIP: 'IP Blacklist',
+            logPath: 'Log Path',
+            logPathHelper: 'Default is /var/log/secure or /var/log/auth.log',
         },
     },
     logs: {
@@ -1057,7 +1093,12 @@ const message = {
         clearList: 'Clear list',
         deleteRecycleHelper: 'Are you sure you want to permanently delete the following files?',
         typeErrOrEmpty: '[{0}] file type is wrong or empty folder',
-        dropHelper: 'Drag [{0}] here, or',
+        dropHelper: 'Drag the files you want to upload here',
+        fileRecycleBin: 'File Recycle Bin',
+        fileRecycleBinMsg: '{0} recycle bin',
+        wordWrap: 'Automatically wrap',
+        deleteHelper2:
+            'Are you sure you want to delete the selected file? The deletion operation cannot be rolled back',
     },
     ssh: {
         autoStart: 'Auto Start',
@@ -1120,10 +1161,10 @@ const message = {
     setting: {
         all: 'All',
         panel: 'Panel',
-        userChange: 'Change username',
-        userChangeHelper: 'Change the user name to log out. Do you want to continue?',
-        user: 'User Name',
-        passwd: 'Password',
+        user: 'Panel User',
+        userChange: 'Change Panel User',
+        userChangeHelper: 'Changing the panel user will log you out. Continue?',
+        passwd: 'Panel Password',
         emailHelper: 'For password retrieval',
         title: 'Panel Alias',
         panelPort: 'Panel Port',
@@ -1134,6 +1175,7 @@ const message = {
         theme: 'Theme',
         dark: 'Dark',
         light: 'Light',
+        auto: 'Follow System',
         language: 'Language',
         languageHelper:
             'By default, it follows the browser language. This parameter takes effect only on the current browser',
@@ -1143,6 +1185,7 @@ const message = {
             'If you do not operate the panel for more than {0} seconds, the panel automatically logs out',
         systemIP: 'System Address',
         systemIPWarning: 'The server address is not currently set. Please set it in the control panel first!',
+        systemIPWarning1: 'The current server address is set to {0}, and quick redirection is not possible!',
         defaultNetwork: 'Network Card',
         syncTime: 'Server Time',
         timeZone: 'Time Zone',
@@ -1174,6 +1217,7 @@ const message = {
         S3: 'Amazon S3',
         MINIO: 'MINIO',
         SFTP: 'SFTP',
+        WebDAV: 'WebDAV',
         OneDrive: 'Microsoft OneDrive',
         backupDir: 'Backup dir',
         codeWarning: 'The current authorization code format is incorrect, please confirm again!',
@@ -1233,11 +1277,12 @@ const message = {
             '[ {0} days ] The panel password is about to expire. After the expiration, you need to reset the password',
         complexity: 'Complexity Verification',
         complexityHelper:
-            'The password must contain at least eight characters and contain at least three uppercase letters, lowercase letters, digits, and special characters',
-
+            'After enabling, the password must have a length of 8-30 characters, including letters, numbers, and at least two special characters.',
         bindDomain: 'Bind Domain',
         unBindDomain: 'Unbind domain',
         panelSSL: 'Panel SSL',
+        panelSSLHelper:
+            'After the automatic renewal of the panel SSL, you need to manually restart the 1Panel service for the changes to take effect.',
         unBindDomainHelper:
             'The action of unbinding a domain name may cause system insecurity. Do you want to continue?',
         bindDomainHelper:
@@ -1489,6 +1534,8 @@ const message = {
         syncAllAppHelper: 'All applications are about to be synchronized. Do you want to continue? ',
         hostModeHelper:
             'The current application network mode is host mode. If you need to open the port, please open it manually on the firewall page.',
+        showLocal: 'Show Local Application',
+        reload: 'Reload',
     },
     website: {
         website: 'Website',
@@ -1540,7 +1587,7 @@ const message = {
         provider: 'Verification method',
         dnsManual: 'Manual resolution',
         expireDate: 'Expiration Time',
-        brand: 'Issuer',
+        brand: 'Organization',
         deploySSL: 'Deployment',
         deploySSLHelper: 'Are you sure to deploy the certificate? ',
         ssl: 'Certificate',
@@ -1792,12 +1839,12 @@ const message = {
         key: 'Private Key',
         startDate: 'Effective Time',
         organization: 'issuing organization',
-        renewConfirm: 'Are you sure to renew? ',
+        renewConfirm: 'Are you sure you want to apply for a certificate for domain name {0}? ',
         autoRenew: 'Automatic renewal',
-        autoRenewHelper: 'Automatic renewal 7 days from the expiration time',
-        renewSuccess: 'Renewal succeeded',
+        autoRenewHelper: 'Automatically renew 30 days before expiration',
+        renewSuccess: 'Renewal successful',
         renewWebsite:
-            'This certificate has been associated with the following websites, and the renewal will be applied to these websites simultaneously',
+            'This certificate has been associated with the following websites, and the application will be applied to these websites simultaneously',
         createAcme: 'Create Account',
         acmeHelper: 'Acme account is used to apply for free certificates',
         upload: 'Upload Certificate',
@@ -1805,6 +1852,32 @@ const message = {
         apply: 'Apply',
         applyStart: 'Certificate application starts',
         getDnsResolve: 'Getting DNS resolution value, please wait...',
+        selfSigned: 'Self-signed certificate',
+        ca: 'Certification Authority',
+        createCA: 'Create institution',
+        commonName: 'Certificate subject name (CN)',
+        caName: 'Institution name',
+        company: 'company/organization',
+        department: 'department',
+        city: 'city',
+        province: 'province',
+        country: 'country code',
+        commonNameHelper: 'For example:',
+        selfSign: 'Issue certificate',
+        days: 'validity period',
+        domainHelper: 'One domain name per line, supports * and IP address',
+        pushDir: 'Push the certificate to the local directory',
+        dir: 'directory',
+        pushDirHelper:
+            'Two files will be generated in this directory, the certificate file: fullchain.pem and the key file: privkey.pem',
+        organizationDetail: 'Organization Details',
+        fromWebsite: 'From Websites',
+        dnsMauanlHelper: '手動解析模式需要在建立完之後點選申請按鈕取得 DNS 解析值',
+        httpHelper: 'HTTP 模式需要安裝 OpenResty',
+        buypassHelper: 'Buypass 大陸地區無法訪問',
+        googleHelper:
+            "<a target=“_blank” href='https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=zh-cn'>如何取得EAB HmacKey 和EAB kid</a > ",
+        googleCloudHelper: 'Google Cloud API is not accessible in most parts of mainland China',
     },
     firewall: {
         create: 'Create rule',

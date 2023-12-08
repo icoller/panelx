@@ -69,6 +69,7 @@ func (u *BackupService) List() ([]dto.BackupInfo, error) {
 	dtobas = append(dtobas, u.loadByType("COS", ops))
 	dtobas = append(dtobas, u.loadByType("KODO", ops))
 	dtobas = append(dtobas, u.loadByType("OneDrive", ops))
+	dtobas = append(dtobas, u.loadByType("WebDAV", ops))
 	return dtobas, err
 }
 
@@ -80,15 +81,46 @@ func (u *BackupService) SearchRecordsWithPage(search dto.RecordSearch) (int64, [
 		commonRepo.WithByType(search.Type),
 		backupRepo.WithByDetailName(search.DetailName),
 	)
-	var dtobas []dto.BackupRecords
-	for _, group := range records {
+
+	var datas []dto.BackupRecords
+	clientMap := make(map[string]loadSizeHelper)
+	for i := 0; i < len(records); i++ {
 		var item dto.BackupRecords
-		if err := copier.Copy(&item, &group); err != nil {
+		if err := copier.Copy(&item, &records[i]); err != nil {
 			return 0, nil, errors.WithMessage(constant.ErrStructTransform, err.Error())
 		}
-		dtobas = append(dtobas, item)
+		itemPath := path.Join(records[i].FileDir, records[i].FileName)
+		if records[i].Source == "LOCAL" {
+			fileInfo, _ := os.Stat(itemPath)
+			item.Size = fileInfo.Size()
+			datas = append(datas, item)
+			continue
+		}
+		if _, ok := clientMap[records[i].Source]; !ok {
+			backup, err := backupRepo.Get(commonRepo.WithByType(records[i].Source))
+			if err != nil {
+				global.LOG.Errorf("load backup model %s from db failed, err: %v", records[i].Source, err)
+				return total, datas, err
+			}
+			client, err := u.NewClient(&backup)
+			if err != nil {
+				global.LOG.Errorf("load backup client %s from db failed, err: %v", records[i].Source, err)
+				return total, datas, err
+			}
+			item.Size, _ = client.Size(path.Join(strings.TrimLeft(backup.BackupPath, "/"), itemPath))
+			datas = append(datas, item)
+			clientMap[records[i].Source] = loadSizeHelper{backupPath: strings.TrimLeft(backup.BackupPath, "/"), client: client}
+			continue
+		}
+		item.Size, _ = clientMap[records[i].Source].client.Size(path.Join(clientMap[records[i].Source].backupPath, itemPath))
+		datas = append(datas, item)
 	}
-	return total, dtobas, err
+	return total, datas, err
+}
+
+type loadSizeHelper struct {
+	backupPath string
+	client     cloud_storage.CloudStorageClient
 }
 
 func (u *BackupService) LoadOneDriveInfo() (string, error) {
@@ -117,7 +149,7 @@ func (u *BackupService) DownloadRecord(info dto.DownloadRecord) (string, error) 
 	}
 	varMap["bucket"] = backup.Bucket
 	switch backup.Type {
-	case constant.Sftp:
+	case constant.Sftp, constant.WebDAV:
 		varMap["username"] = backup.AccessKey
 		varMap["password"] = backup.Credential
 	case constant.OSS, constant.S3, constant.MinIo, constant.Cos, constant.Kodo:
@@ -138,9 +170,7 @@ func (u *BackupService) DownloadRecord(info dto.DownloadRecord) (string, error) 
 	}
 	srcPath := fmt.Sprintf("%s/%s", info.FileDir, info.FileName)
 	if len(backup.BackupPath) != 0 {
-		itemPath := strings.TrimPrefix(backup.BackupPath, "/")
-		itemPath = strings.TrimSuffix(itemPath, "/") + "/"
-		srcPath = itemPath + srcPath
+		srcPath = path.Join(strings.TrimPrefix(backup.BackupPath, "/"), srcPath)
 	}
 	if exist, _ := backClient.Exist(srcPath); exist {
 		isOK, err := backClient.Download(srcPath, targetPath)
@@ -166,8 +196,7 @@ func (u *BackupService) Create(req dto.BackupOperate) error {
 		}
 	}
 	if req.Type != "LOCAL" {
-		isOk, err := u.checkBackupConn(&backup)
-		if err != nil || !isOk {
+		if _, err := u.checkBackupConn(&backup); err != nil {
 			return buserr.WithMap("ErrBackupCheck", map[string]interface{}{"err": err.Error()}, err)
 		}
 	}
@@ -183,7 +212,7 @@ func (u *BackupService) GetBuckets(backupDto dto.ForBuckets) ([]interface{}, err
 		return nil, err
 	}
 	switch backupDto.Type {
-	case constant.Sftp:
+	case constant.Sftp, constant.WebDAV:
 		varMap["username"] = backupDto.AccessKey
 		varMap["password"] = backupDto.Credential
 	case constant.OSS, constant.S3, constant.MinIo, constant.Cos, constant.Kodo:
@@ -328,7 +357,7 @@ func (u *BackupService) NewClient(backup *model.BackupAccount) (cloud_storage.Cl
 	}
 	varMap["bucket"] = backup.Bucket
 	switch backup.Type {
-	case constant.Sftp:
+	case constant.Sftp, constant.WebDAV:
 		varMap["username"] = backup.AccessKey
 		varMap["password"] = backup.Credential
 	case constant.OSS, constant.S3, constant.MinIo, constant.Cos, constant.Kodo:

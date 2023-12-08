@@ -124,10 +124,6 @@ export const ObtainSSL = (req: Website.SSLObtain) => {
     return http.post<any>(`/websites/ssl/obtain`, req);
 };
 
-export const RenewSSL = (req: Website.SSLRenew) => {
-    return http.post<any>(`/websites/ssl/renew`, req, TimeoutEnum.T_10M);
-};
-
 export const UpdateSSL = (req: Website.SSLUpdate) => {
     return http.post<any>(`/websites/ssl/update`, req);
 };
@@ -246,4 +242,35 @@ export const GetDirConfig = (req: Website.ProxyReq) => {
 
 export const UploadSSL = (req: Website.SSLUpload) => {
     return http.post<any>(`/websites/ssl/upload`, req);
+};
+
+export const SearchCAs = (req: ReqPage) => {
+    return http.post<ResPage<Website.CA>>(`/websites/ca/search`, req);
+};
+
+export const CreateCA = (req: Website.CACreate) => {
+    return http.post<Website.CA>(`/websites/ca`, req);
+};
+
+export const ObtainSSLByCA = (req: Website.SSLObtainByCA) => {
+    return http.post<any>(`/websites/ca/obtain`, req);
+};
+
+export const DeleteCA = (req: Website.DelReq) => {
+    return http.post<any>(`/websites/ca/del`, req);
+};
+
+export const RenewSSLByCA = (req: Website.RenewSSLByCA) => {
+    return http.post<any>(`/websites/ca/renew`, req);
+};
+
+export const DownloadFile = (params: Website.SSLDownload) => {
+    return http.download<BlobPart>(`/websites/ssl/download`, params, {
+        responseType: 'blob',
+        timeout: TimeoutEnum.T_40S,
+    });
+};
+
+export const GetCA = (id: number) => {
+    return http.get<Website.CADTO>(`/websites/ca/${id}`);
 };

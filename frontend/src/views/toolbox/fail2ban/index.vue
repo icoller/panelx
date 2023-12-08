@@ -3,7 +3,7 @@
         <div class="app-status" style="margin-top: 20px">
             <el-card v-if="form.isExist">
                 <div>
-                    <el-tag effect="dark" type="success">Fail2Ban</el-tag>
+                    <el-tag effect="dark" type="success">Fail2ban</el-tag>
                     <el-tag round class="status-content" v-if="form.isActive" type="success">
                         {{ $t('commons.status.running') }}
                     </el-tag>
@@ -43,7 +43,7 @@
             <el-card v-if="!form.isActive" class="mask-prompt">
                 <span>{{ $t('toolbox.fail2ban.unActive') }}</span>
             </el-card>
-            <LayoutContent title="Fail2Ban" :divider="true" :class="{ mask: !form.isActive }">
+            <LayoutContent title="Fail2ban" :divider="true" :class="{ mask: !form.isActive }">
                 <template #toolbar>
                     <el-row>
                         <el-col :span="16">
@@ -102,6 +102,15 @@
                                         </template>
                                     </el-input>
                                 </el-form-item>
+                                <el-form-item :label="$t('toolbox.fail2ban.logPath')" prop="logPath">
+                                    <el-input disabled v-model="form.logPath">
+                                        <template #append>
+                                            <el-button @click="onChangeLogPath" icon="Setting">
+                                                {{ $t('commons.button.set') }}
+                                            </el-button>
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
                             </el-form>
                         </el-col>
                     </el-row>
@@ -109,7 +118,7 @@
                     <div v-if="confShowType === 'all'">
                         <codemirror
                             :autofocus="true"
-                            placeholder="# The Fail2Ban configuration file does not exist or is empty (/etc/ssh/sshd_config)"
+                            placeholder="# The Fail2ban configuration file does not exist or is empty (/etc/ssh/sshd_config)"
                             :indent-with-tab="true"
                             :tabSize="4"
                             style="margin-top: 10px; height: calc(100vh - 460px)"
@@ -128,7 +137,7 @@
             </LayoutContent>
         </div>
         <div v-else>
-            <LayoutContent title="Fail2Ban" :divider="true">
+            <LayoutContent title="Fail2ban" :divider="true">
                 <template #main>
                     <div class="app-warn">
                         <div>
@@ -154,6 +163,7 @@
         <BanTime ref="banTimeRef" @search="search" />
         <FindTime ref="findTimeRef" @search="search" />
         <BanAction ref="banActionRef" @search="search" />
+        <LogPath ref="logPathRef" @search="search" />
 
         <IPs ref="listRef" />
     </div>
@@ -168,6 +178,7 @@ import MaxRetry from '@/views/toolbox/fail2ban/max-retry/index.vue';
 import BanTime from '@/views/toolbox/fail2ban/ban-time/index.vue';
 import FindTime from '@/views/toolbox/fail2ban/find-time/index.vue';
 import BanAction from '@/views/toolbox/fail2ban/ban-action/index.vue';
+import LogPath from '@/views/toolbox/fail2ban/log-path/index.vue';
 import IPs from '@/views/toolbox/fail2ban/ips/index.vue';
 import i18n from '@/lang';
 import { MsgSuccess } from '@/utils/message';
@@ -185,6 +196,7 @@ const banTimeRef = ref();
 const findTimeRef = ref();
 const banActionRef = ref();
 const listRef = ref();
+const logPathRef = ref();
 
 const autoStart = ref('enable');
 
@@ -242,10 +254,13 @@ const onChangeFindTime = () => {
 const onChangeBanAction = () => {
     banActionRef.value.acceptParams({ banAction: form.banAction });
 };
+const onChangeLogPath = () => {
+    logPathRef.value.acceptParams({ logPath: form.logPath });
+};
 
 const onOperate = async (operation: string) => {
     let msg = operation === 'enable' || operation === 'disable' ? 'ssh.' : 'commons.button.';
-    ElMessageBox.confirm(i18n.global.t('toolbox.fail2ban.operation', [i18n.global.t(msg + operation)]), 'Fail2Ban', {
+    ElMessageBox.confirm(i18n.global.t('toolbox.fail2ban.operation', [i18n.global.t(msg + operation)]), 'Fail2ban', {
         confirmButtonText: i18n.global.t('commons.button.confirm'),
         cancelButtonText: i18n.global.t('commons.button.cancel'),
         type: 'info',
