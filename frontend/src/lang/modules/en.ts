@@ -396,6 +396,7 @@ const message = {
         clientKey: 'Client Private Key',
         clientCert: 'Client Certificate',
         caCert: 'CA Certificate',
+        hasCA: 'Has CA Certificate',
         skipVerify: 'Ignore Certificate Validity Check',
 
         formatHelper:
@@ -950,6 +951,8 @@ const message = {
             dnsTestFailed: 'DNS configuration information is not available. Please modify and try again!',
         },
         fail2ban: {
+            sshPort: 'Listen to SSH Port',
+            sshPortHelper: 'Current Fail2ban listens to the SSH connection port of the host',
             noFail2ban: 'Fail2ban service not detected, please refer to the official documentation for installation',
             unActive: 'The Fail2ban service is not enabled at present, please enable it first!',
             operation: 'Perform [{0}] operation on Fail2ban service, continue?',
@@ -959,6 +962,8 @@ const message = {
             maxRetry: 'Maximum Retry Attempts',
             banTime: 'Ban Time',
             banTimeHelper: 'Default ban time is 10 minutes, -1 indicates permanent ban',
+            banTimeRule: 'Please enter a valid ban time or -1',
+            banAllTime: 'Permanent Ban',
             findTime: 'Discovery Period',
             banAction: 'Ban Action',
             banActionOption: 'Ban specified IP addresses using {0}',
