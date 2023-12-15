@@ -33,6 +33,7 @@
                                 <TableSetting @search="search()" />
                                 <div class="search-button">
                                     <el-input
+                                        clearable
                                         v-model="searchName"
                                         suffix-icon="Search"
                                         @change="search()"
@@ -108,14 +109,10 @@
                         <div class="app-warn">
                             <div>
                                 <span>{{ $t('firewall.notSupport') }}</span>
-                                <el-link
-                                    style="font-size: 12px; margin-left: 5px"
-                                    @click="toDoc"
-                                    icon="Position"
-                                    type="primary"
-                                >
+                                <span @click="toDoc">
+                                    <el-icon class="ml-2"><Position /></el-icon>
                                     {{ $t('firewall.quickJump') }}
-                                </el-link>
+                                </span>
                                 <div>
                                     <img src="@/assets/images/no_app.svg" />
                                 </div>

@@ -1079,7 +1079,11 @@ definitions:
         type: boolean
       isExist:
         type: boolean
+      logPath:
+        type: string
       maxRetry:
+        type: integer
+      port:
         type: integer
       version:
         type: string
@@ -1103,6 +1107,8 @@ definitions:
         - findtime
         - maxretry
         - banaction
+        - logpath
+        - port
         type: string
       value:
         type: string
@@ -1392,8 +1398,6 @@ definitions:
     type: object
   dto.ImageTag:
     properties:
-      repoID:
-        type: integer
       sourceID:
         type: string
       targetName:
@@ -2186,9 +2190,15 @@ definitions:
       sslID:
         type: integer
       sslType:
+        enum:
+        - self
+        - select
+        - import-paste
+        - import-local
         type: string
     required:
     - ssl
+    - sslType
     type: object
   dto.SearchForAnalysis:
     properties:
@@ -3288,6 +3298,8 @@ definitions:
     type: object
   request.FileWget:
     properties:
+      ignoreCertificate:
+        type: boolean
       name:
         type: string
       path:
@@ -11178,7 +11190,7 @@ paths:
         formatZH: 清理系统垃圾文件
         paramKeys: []
   /toolbox/device/base:
-    get:
+    post:
       description: 获取设备基础信息
       responses:
         "200":

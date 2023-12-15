@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,6 +27,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/gorilla/websocket"
@@ -159,7 +161,7 @@ func (u *ContainerService) Page(req dto.PageContainer) (int64, interface{}, erro
 			IsFromApp = true
 		}
 
-		ports := simplifyPort(item.Ports)
+		ports := loadContainerPort(item.Ports)
 		backDatas[i] = dto.ContainerInfo{
 			ContainerID:   item.ID,
 			CreateTime:    time.Unix(item.Created, 0).Format("2006-01-02 15:04:05"),
@@ -407,6 +409,7 @@ func (u *ContainerService) ContainerInfo(req dto.OperationWithName) (*dto.Contai
 		}
 	}
 	data.AutoRemove = oldContainer.HostConfig.AutoRemove
+	data.Privileged = oldContainer.HostConfig.Privileged
 	data.PublishAllPorts = oldContainer.HostConfig.PublishAllPorts
 	data.RestartPolicy = oldContainer.HostConfig.RestartPolicy.Name
 	if oldContainer.HostConfig.NanoCPUs != 0 {
@@ -440,7 +443,7 @@ func (u *ContainerService) ContainerUpdate(req dto.ContainerOperate) error {
 			if !req.ForcePull {
 				return err
 			}
-			global.LOG.Errorf("force pull image %s failed, err: %v", req.Image, err)
+			return fmt.Errorf("pull image %s failed, err: %v", req.Image, err)
 		}
 	}
 
@@ -483,7 +486,7 @@ func (u *ContainerService) ContainerUpgrade(req dto.ContainerUpgrade) error {
 			if !req.ForcePull {
 				return err
 			}
-			global.LOG.Errorf("force pull image %s failed, err: %v", req.Image, err)
+			return fmt.Errorf("pull image %s failed, err: %v", req.Image, err)
 		}
 	}
 	config := oldContainer.Config
@@ -804,7 +807,25 @@ func checkImageExist(client *client.Client, image string) bool {
 }
 
 func pullImages(ctx context.Context, client *client.Client, image string) error {
-	out, err := client.ImagePull(ctx, image, types.ImagePullOptions{})
+	options := types.ImagePullOptions{}
+	repos, _ := imageRepoRepo.List()
+	if len(repos) != 0 {
+		for _, repo := range repos {
+			if strings.HasPrefix(image, repo.DownloadUrl) && repo.Auth {
+				authConfig := registry.AuthConfig{
+					Username: repo.Username,
+					Password: repo.Password,
+				}
+				encodedJSON, err := json.Marshal(authConfig)
+				if err != nil {
+					return err
+				}
+				authStr := base64.URLEncoding.EncodeToString(encodedJSON)
+				options.RegistryAuth = authStr
+			}
+		}
+	}
+	out, err := client.ImagePull(ctx, image, options)
 	if err != nil {
 		return err
 	}
@@ -1012,6 +1033,22 @@ func loadVolumeBinds(binds []string) []dto.VolumeHelper {
 	return datas
 }
 
+func loadContainerPort(ports []types.Port) []string {
+	var (
+		ipv4Ports []types.Port
+		ipv6Ports []types.Port
+	)
+	for _, port := range ports {
+		if strings.Contains(port.IP, ":") {
+			ipv6Ports = append(ipv6Ports, port)
+		} else {
+			ipv4Ports = append(ipv4Ports, port)
+		}
+	}
+	list1 := simplifyPort(ipv4Ports)
+	list2 := simplifyPort(ipv6Ports)
+	return append(list1, list2...)
+}
 func simplifyPort(ports []types.Port) []string {
 	var datas []string
 	if len(ports) == 0 {
@@ -1042,13 +1079,19 @@ func simplifyPort(ports []types.Port) []string {
 				if start.PublicPort != 0 {
 					itemPortStr = fmt.Sprintf("%s:%v->%v/%s", start.IP, start.PublicPort, start.PrivatePort, start.Type)
 				}
-				datas = append(datas, strings.TrimPrefix(itemPortStr, ":"))
+				if len(start.IP) == 0 {
+					itemPortStr = strings.TrimPrefix(itemPortStr, ":")
+				}
+				datas = append(datas, itemPortStr)
 			} else {
 				itemPortStr := fmt.Sprintf("%s:%v-%v/%s", start.IP, start.PrivatePort, ports[i-1].PrivatePort, start.Type)
 				if start.PublicPort != 0 {
 					itemPortStr = fmt.Sprintf("%s:%v-%v->%v-%v/%s", start.IP, start.PublicPort, ports[i-1].PublicPort, start.PrivatePort, ports[i-1].PrivatePort, start.Type)
 				}
-				datas = append(datas, strings.TrimPrefix(itemPortStr, ":"))
+				if len(start.IP) == 0 {
+					itemPortStr = strings.TrimPrefix(itemPortStr, ":")
+				}
+				datas = append(datas, itemPortStr)
 			}
 			start = ports[i]
 		}
@@ -1058,13 +1101,19 @@ func simplifyPort(ports []types.Port) []string {
 				if start.PublicPort != 0 {
 					itemPortStr = fmt.Sprintf("%s:%v->%v/%s", start.IP, start.PublicPort, start.PrivatePort, start.Type)
 				}
-				datas = append(datas, strings.TrimPrefix(itemPortStr, ":"))
+				if len(start.IP) == 0 {
+					itemPortStr = strings.TrimPrefix(itemPortStr, ":")
+				}
+				datas = append(datas, itemPortStr)
 			} else {
 				itemPortStr := fmt.Sprintf("%s:%v-%v/%s", start.IP, start.PrivatePort, ports[i].PrivatePort, start.Type)
 				if start.PublicPort != 0 {
 					itemPortStr = fmt.Sprintf("%s:%v-%v->%v-%v/%s", start.IP, start.PublicPort, ports[i].PublicPort, start.PrivatePort, ports[i].PrivatePort, start.Type)
 				}
-				datas = append(datas, strings.TrimPrefix(itemPortStr, ":"))
+				if len(start.IP) == 0 {
+					itemPortStr = strings.TrimPrefix(itemPortStr, ":")
+				}
+				datas = append(datas, itemPortStr)
 			}
 		}
 	}

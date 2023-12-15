@@ -27,6 +27,7 @@
                         <TableSetting @search="search()" />
                         <div class="search-button">
                             <el-input
+                                clearable
                                 v-model="searchName"
                                 @clear="search()"
                                 suffix-icon="Search"
@@ -195,7 +196,7 @@ const loadRepos = async () => {
 };
 
 const onDelete = (row: Container.ImageInfo) => {
-    let names = row.tags || [row.id.replaceAll('sha256:', '').substring(0, 12)];
+    let names = [row.id.replaceAll('sha256:', '').substring(0, 12)];
     opRef.value.acceptParams({
         title: i18n.global.t('commons.button.delete'),
         names: names,
@@ -242,9 +243,9 @@ const buttons = [
         label: i18n.global.t('container.tag'),
         click: (row: Container.ImageInfo) => {
             let params = {
-                itemName: row.tags && row.tags?.length !== 0 ? row.tags[0].split(':')[0] : '',
                 repos: repos.value,
-                sourceID: row.id,
+                imageID: row.id,
+                tags: row.tags,
             };
             dialogTagRef.value!.acceptParams(params);
         },

@@ -40,17 +40,14 @@
         </div>
 
         <div v-if="form.isExist">
-            <el-card v-if="!form.isActive" class="mask-prompt">
-                <span>{{ $t('toolbox.fail2ban.unActive') }}</span>
-            </el-card>
-            <LayoutContent title="Fail2ban" :divider="true" :class="{ mask: !form.isActive }">
+            <LayoutContent title="Fail2ban" :divider="true">
                 <template #toolbar>
                     <el-row>
                         <el-col :span="16">
-                            <el-button type="primary" plain @click="onLoadList('ignore')">
+                            <el-button :disabled="!form.isActive" type="primary" plain @click="onLoadList('ignore')">
                                 {{ $t('toolbox.fail2ban.ignoreIP') }}
                             </el-button>
-                            <el-button type="primary" plain @click="onLoadList('banned')">
+                            <el-button :disabled="!form.isActive" type="primary" plain @click="onLoadList('banned')">
                                 {{ $t('toolbox.fail2ban.bannedIP') }}
                             </el-button>
                         </el-col>
@@ -152,16 +149,12 @@
                     <div class="app-warn">
                         <div>
                             <span>{{ $t('toolbox.fail2ban.noFail2ban') }}</span>
-                            <el-link
-                                style="font-size: 12px; margin-left: 5px"
-                                @click="toDoc"
-                                icon="Position"
-                                type="primary"
-                            >
+                            <span @click="toDoc">
+                                <el-icon class="ml-2"><Position /></el-icon>
                                 {{ $t('firewall.quickJump') }}
-                            </el-link>
+                            </span>
                             <div>
-                                <img alt="" src="@/assets/images/no_app.svg" />
+                                <img src="@/assets/images/no_app.svg" />
                             </div>
                         </div>
                     </div>

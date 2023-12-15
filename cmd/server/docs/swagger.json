@@ -10095,7 +10095,7 @@
             }
         },
         "/toolbox/device/base": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -14977,7 +14977,13 @@
                 "isExist": {
                     "type": "boolean"
                 },
+                "logPath": {
+                    "type": "string"
+                },
                 "maxRetry": {
+                    "type": "integer"
+                },
+                "port": {
                     "type": "integer"
                 },
                 "version": {
@@ -15013,7 +15019,9 @@
                         "bantime",
                         "findtime",
                         "maxretry",
-                        "banaction"
+                        "banaction",
+                        "logpath",
+                        "port"
                     ]
                 },
                 "value": {
@@ -15445,9 +15453,6 @@
                 "targetName"
             ],
             "properties": {
-                "repoID": {
-                    "type": "integer"
-                },
                 "sourceID": {
                     "type": "string"
                 },
@@ -16596,7 +16601,8 @@
         "dto.SSLUpdate": {
             "type": "object",
             "required": [
-                "ssl"
+                "ssl",
+                "sslType"
             ],
             "properties": {
                 "cert": {
@@ -16619,7 +16625,13 @@
                     "type": "integer"
                 },
                 "sslType": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "self",
+                        "select",
+                        "import-paste",
+                        "import-local"
+                    ]
                 }
             }
         },
@@ -18279,6 +18291,9 @@
                 "url"
             ],
             "properties": {
+                "ignoreCertificate": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },

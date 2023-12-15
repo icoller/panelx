@@ -6,6 +6,7 @@ type Fail2BanBaseInfo struct {
 	IsExist  bool   `json:"isExist"`
 	Version  string `json:"version"`
 
+	Port      int    `json:"port"`
 	MaxRetry  int    `json:"maxRetry"`
 	BanTime   string `json:"banTime"`
 	FindTime  string `json:"findTime"`
@@ -18,7 +19,7 @@ type Fail2BanSearch struct {
 }
 
 type Fail2BanUpdate struct {
-	Key   string `json:"key" validate:"required,oneof=port bantime findtime maxretry banaction logpath"`
+	Key   string `json:"key" validate:"required,oneof=port bantime findtime maxretry banaction logpath port"`
 	Value string `json:"value"`
 }
 

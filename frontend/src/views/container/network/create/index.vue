@@ -202,10 +202,10 @@ const handleClose = () => {
 const rules = reactive({
     name: [Rules.requiredInput],
     driver: [Rules.requiredSelect],
-    subnet: [{ validator: checkCidr, trigger: 'blur' }],
+    subnet: [{ validator: checkCidr, trigger: 'blur' }, Rules.requiredInput],
     gateway: [{ validator: checkGateway, trigger: 'blur' }],
     scope: [{ validator: checkCidr, trigger: 'blur' }],
-    subnetV6: [{ validator: checkFixedCidrV6, trigger: 'blur' }],
+    subnetV6: [{ validator: checkFixedCidrV6, trigger: 'blur' }, Rules.requiredInput],
     gatewayV6: [{ validator: checkGatewayV6, trigger: 'blur' }],
     scopeV6: [{ validator: checkFixedCidrV6, trigger: 'blur' }],
 });
@@ -253,7 +253,7 @@ function checkCidr(rule: any, value: any, callback: any) {
         callback();
     }
     const reg =
-        /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\/([0-9]|[1-2][0-9]|3[0-2]))?$/;
+        /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\/([0-9]|[1-2][0-9]|3[0-2]))$/;
     if (!reg.test(value)) {
         return callback(new Error(i18n.global.t('commons.rule.formatErr')));
     }

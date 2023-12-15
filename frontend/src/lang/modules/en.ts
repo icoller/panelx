@@ -184,7 +184,7 @@ const message = {
             paramUrlAndPort: 'The format is http(s)://(domain name/ip):(port)',
             nginxDoc: 'Only supports English case, numbers, and .',
             appName: 'Support English, numbers, - and _, length 2-30, and cannot start and end with -_',
-            containerName: 'Supports letters, numbers, -, _ and .; cannot start with - _ or .; length: 1-127',
+            containerName: 'Supports letters, numbers, -, _ and .; cannot start with - _ or .; length: 2-127',
             mirror: 'Support image accelerator addresses that start with http(s)://, English uppercase and lowercase letters, numbers, periods, and hyphens, and there should be no empty lines.',
             disableFunction: 'Only support letters ,underscores,and,',
             leechExts: 'Only support letters, numbers and,',
@@ -588,18 +588,13 @@ const message = {
         privilegedHelper:
             'Allows the container to perform certain privileged operations on the host, which may increase container risks. Use with caution!',
 
-        upgradeHelper: 'This operation only supports upgrading container versions.',
-        ignoreCompare: 'Force Upgrade',
-        ignoreCompareHelper:
-            'Skip the comparison between old and new versions, upgrade directly. This operation may result in service unavailability.',
-        upgradeWarning: 'The target version is lower than the original image version. Please try again!',
+        upgradeHelper: 'Repository Name/Image Name: Image Version',
         upgradeWarning2:
-            'The upgrade operation requires rebuilding the container, and any non-persistent data will be lost. Do you want to continue?',
-        oldImage: 'Current image',
-        targetImage: 'Target image',
-        targetImageHelper: 'Please enter the target image version',
-        appHelper:
-            'This container is sourced from the application store. Upgrading it may cause the service to be unavailable.',
+            'The upgrade operation requires rebuilding the container, any unpersisted data will be lost. Do you wish to continue?',
+        oldImage: 'Current Image',
+        targetImage: 'Target Image',
+        imageLoadErr: 'No image name detected for the container',
+        appHelper: 'This container is sourced from the app store; upgrading might render the service unavailable',
 
         input: 'Input',
         forcePull: 'forced image pull ',
@@ -640,6 +635,7 @@ const message = {
         imagePush: 'Image push',
         imageDelete: 'Image delete',
         imageDeleteTag: 'Image tag delete',
+        imageTagDeleteHelper: 'Remove other tags associated with this image ID',
         repoName: 'Repo Name',
         imageName: 'Image name',
         pull: 'Pull',
@@ -755,7 +751,6 @@ const message = {
         sockPath: 'Socket Path',
         sockPathHelper: 'Communication channel between Docker Daemon and the client',
         sockPathHelper1: 'Default Path: /var/run/docker-x.sock',
-        sockPathHelper2: 'CurrentPath: {0}',
         sockPathMsg:
             'Saving the Socket Path setting may result in Docker service being unavailable. Do you want to continue?',
         sockPathErr: 'Please select or enter the correct Docker sock file path',
@@ -919,11 +914,13 @@ const message = {
         },
         device: {
             dnsHelper: 'Server Address Domain Resolution',
+            dnsAlert:
+                'Attention! Modifying the configuration of /etc/resolv.conf file will restore the file to its default values after system restart.',
             dnsHelper1:
                 'When there are multiple DNS entries, they should be displayed on new lines. e.g.\n114.114.114.114\n8.8.8.8',
             hostsHelper: 'Hostname Resolution',
             hosts: 'Domain',
-            toolbox: 'Toolbox',
+            toolbox: 'Quick Setup',
             hostname: 'Hostname',
             passwd: 'System Password',
             passwdHelper: 'Input characters cannot include $ and &',
@@ -953,7 +950,7 @@ const message = {
         fail2ban: {
             sshPort: 'Listen to SSH Port',
             sshPortHelper: 'Current Fail2ban listens to the SSH connection port of the host',
-            noFail2ban: 'Fail2ban service not detected, please refer to the official documentation for installation',
+            noFail2ban: 'Fail2ban service not detected, please refer to the official documentation for installation!',
             unActive: 'The Fail2ban service is not enabled at present, please enable it first!',
             operation: 'Perform [{0}] operation on Fail2ban service, continue?',
             fail2banChange: 'Fail2ban Configuration Modification',
@@ -1104,6 +1101,9 @@ const message = {
         wordWrap: 'Automatically wrap',
         deleteHelper2:
             'Are you sure you want to delete the selected file? The deletion operation cannot be rolled back',
+        ignoreCertificate: 'Ignore Certificate',
+        ignoreCertificateHelper:
+            'Ignoring untrusted certificates during downloads may lead to data leakage or tampering. Please use this option with caution, only when trusting the download source.',
     },
     ssh: {
         autoStart: 'Auto Start',
@@ -1226,7 +1226,7 @@ const message = {
         OneDrive: 'Microsoft OneDrive',
         backupDir: 'Backup dir',
         codeWarning: 'The current authorization code format is incorrect, please confirm again!',
-        isCN: 'Domestic version',
+        isCN: 'Domestic version (not supported at the moment)',
         code: 'Auth code',
         codeHelper:
             'Please click on the "Acquire" button, then login to OneDrive and copy the content after "code" in the redirected link. Paste it into this input box. For specific instructions, please refer to the official documentation.',
@@ -1363,7 +1363,6 @@ const message = {
         rollbackHelper:
             'This recovery is about to be rolled back, which will replace all the files recovered this time. In the process, docker and panelx services may need to be restarted. Do you want to continue?',
 
-        upgrading: 'Please wait while the upgrade is underway...',
         upgradeHelper: 'The upgrade requires a service restart. Do you want to continue?',
         noUpgrade: 'It is currently the latest version',
         versionHelper:

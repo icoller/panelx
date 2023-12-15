@@ -80,12 +80,10 @@
         <template #main>
             <el-alert type="info" :closable="false" v-if="mode === 'installed'">
                 <template #default>
-                    <span>
-                        <span>{{ $t('app.installHelper') }}</span>
-                        <el-link class="text-xs scroll-ml-1" icon="Position" @click="quickJump()" type="primary">
-                            {{ $t('firewall.quickJump') }}
-                        </el-link>
-                    </span>
+                    {{ $t('app.installHelper') }}
+                    <el-link class="ml-5" icon="Position" @click="quickJump()" type="primary">
+                        {{ $t('firewall.quickJump') }}
+                    </el-link>
                 </template>
             </el-alert>
             <el-alert type="info" :title="$t('app.upgradeHelper')" :closable="false" v-if="mode === 'upgrade'" />
@@ -110,7 +108,7 @@
                         <el-card class="e-card">
                             <el-row :gutter="20">
                                 <el-col :xs="3" :sm="3" :md="3" :lg="4" :xl="4">
-                                    <div class="icon">
+                                    <div class="icon" @click.stop="openDetail(installed.app)">
                                         <el-avatar
                                             shape="square"
                                             :size="66"
@@ -300,6 +298,7 @@
     <PortJumpDialog ref="dialogPortJumpRef" />
     <AppIgnore ref="ignoreRef" @close="search" />
     <ComposeLogs ref="composeLogRef" />
+    <AppDetail ref="appDetail" />
 </template>
 
 <script lang="ts" setup>
@@ -321,6 +320,7 @@ import AppDelete from './delete/index.vue';
 import AppParams from './detail/index.vue';
 import AppUpgrade from './upgrade/index.vue';
 import AppIgnore from './ignore/index.vue';
+import AppDetail from '../detail/index.vue';
 import ComposeLogs from '@/components/compose-log/index.vue';
 import { App } from '@/api/interface/app';
 import Status from '@/components/status/index.vue';
@@ -369,6 +369,7 @@ const activeName = ref(i18n.global.t('app.installed'));
 const mode = ref('installed');
 const moreTag = ref('');
 const language = useI18n().locale.value;
+const appDetail = ref();
 
 const sync = () => {
     ElMessageBox.confirm(i18n.global.t('app.syncAllAppHelper'), i18n.global.t('app.sync'), {
@@ -433,11 +434,15 @@ const goDashboard = async (port: any, protocol: string) => {
     dialogPortJumpRef.value.acceptParams({ port: port, protocol: protocol });
 };
 
+const openDetail = (app: App.App) => {
+    appDetail.value.acceptParams(app.key, 'detail');
+};
+
 const openOperate = (row: any, op: string) => {
     operateReq.installId = row.id;
     operateReq.operate = op;
     if (op == 'upgrade' || op == 'ignore') {
-        upgradeRef.value.acceptParams(row.id, row.name, op);
+        upgradeRef.value.acceptParams(row.id, row.name, op, row.app);
     } else if (op == 'delete') {
         AppInstalledDeleteCheck(row.id).then(async (res) => {
             const items = res.data;

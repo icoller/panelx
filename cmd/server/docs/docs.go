@@ -10102,7 +10102,7 @@ const docTemplate = `{
             }
         },
         "/toolbox/device/base": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -14984,7 +14984,13 @@ const docTemplate = `{
                 "isExist": {
                     "type": "boolean"
                 },
+                "logPath": {
+                    "type": "string"
+                },
                 "maxRetry": {
+                    "type": "integer"
+                },
+                "port": {
                     "type": "integer"
                 },
                 "version": {
@@ -15020,7 +15026,9 @@ const docTemplate = `{
                         "bantime",
                         "findtime",
                         "maxretry",
-                        "banaction"
+                        "banaction",
+                        "logpath",
+                        "port"
                     ]
                 },
                 "value": {
@@ -15452,9 +15460,6 @@ const docTemplate = `{
                 "targetName"
             ],
             "properties": {
-                "repoID": {
-                    "type": "integer"
-                },
                 "sourceID": {
                     "type": "string"
                 },
@@ -16603,7 +16608,8 @@ const docTemplate = `{
         "dto.SSLUpdate": {
             "type": "object",
             "required": [
-                "ssl"
+                "ssl",
+                "sslType"
             ],
             "properties": {
                 "cert": {
@@ -16626,7 +16632,13 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sslType": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "self",
+                        "select",
+                        "import-paste",
+                        "import-local"
+                    ]
                 }
             }
         },
@@ -18286,6 +18298,9 @@ const docTemplate = `{
                 "url"
             ],
             "properties": {
+                "ignoreCertificate": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },

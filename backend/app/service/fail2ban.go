@@ -9,7 +9,7 @@ import (
 
 	"github.com/1Panel-dev/1Panel/backend/app/dto"
 	"github.com/1Panel-dev/1Panel/backend/buserr"
-	"github.com/1Panel-dev/1Panel/backend/utils/systemctl"
+	"github.com/1Panel-dev/1Panel/backend/utils/firewall"
 	"github.com/1Panel-dev/1Panel/backend/utils/toolbox"
 )
 
@@ -39,12 +39,16 @@ func (u *Fail2BanService) LoadBaseInfo() (dto.Fail2BanBaseInfo, error) {
 	baseInfo.IsEnable, baseInfo.IsActive, baseInfo.IsExist = client.Status()
 	if !baseInfo.IsActive {
 		baseInfo.Version = "-"
-		return baseInfo, nil
+	} else {
+		baseInfo.Version = client.Version()
 	}
-	baseInfo.Version = client.Version()
 	conf, err := os.ReadFile(defaultFail2BanPath)
 	if err != nil {
-		return baseInfo, fmt.Errorf("read fail2ban conf of %s failed, err: %v", defaultFail2BanPath, err)
+		if baseInfo.IsActive {
+			return baseInfo, fmt.Errorf("read fail2ban conf of %s failed, err: %v", defaultFail2BanPath, err)
+		} else {
+			return baseInfo, nil
+		}
 	}
 	lines := strings.Split(string(conf), "\n")
 
@@ -100,16 +104,21 @@ func (u *Fail2BanService) Operate(operation string) error {
 
 func (u *Fail2BanService) UpdateConf(req dto.Fail2BanUpdate) error {
 	if req.Key == "banaction" {
-		switch req.Value {
-		case "firewallcmd-ipset":
-			isActive, _ := systemctl.IsActive("firewalld")
-			if !isActive {
-				return buserr.WithName("ErrBanAction", "firewalld")
+		if req.Value == "firewallcmd-ipset" || req.Value == "ufw" {
+			itemName := "ufw"
+			if req.Value == "firewallcmd-ipset" {
+				itemName = "firewallcmd"
 			}
-		case "ufw":
-			isActive, _ := systemctl.IsActive("ufw")
-			if !isActive {
-				return buserr.WithName("ErrBanAction", "ufw")
+			client, err := firewall.NewFirewallClient()
+			if err != nil {
+				return err
+			}
+			if client.Name() != itemName {
+				return buserr.WithName("ErrBanAction", itemName)
+			}
+			status, _ := client.Status()
+			if status != "running" {
+				return buserr.WithName("ErrBanAction", itemName)
 			}
 		}
 	}
@@ -165,7 +174,7 @@ func (u *Fail2BanService) UpdateConf(req dto.Fail2BanUpdate) error {
 	if err != nil {
 		return err
 	}
-	if err := client.Operate("reload"); err != nil {
+	if err := client.Operate("restart"); err != nil {
 		return err
 	}
 	return nil
@@ -185,7 +194,7 @@ func (u *Fail2BanService) UpdateConfByFile(req dto.UpdateByFile) error {
 	if err != nil {
 		return err
 	}
-	if err := client.Operate("reload"); err != nil {
+	if err := client.Operate("restart"); err != nil {
 		return err
 	}
 	return nil
@@ -209,6 +218,11 @@ func (u *Fail2BanService) OperateSSHD(req dto.Fail2BanSet) error {
 }
 
 func loadFailValue(line string, baseInfo *dto.Fail2BanBaseInfo) {
+	if strings.HasPrefix(line, "port") {
+		itemValue := strings.ReplaceAll(line, "port", "")
+		itemValue = strings.ReplaceAll(itemValue, "=", "")
+		baseInfo.Port, _ = strconv.Atoi(strings.TrimSpace(itemValue))
+	}
 	if strings.HasPrefix(line, "maxretry") {
 		itemValue := strings.ReplaceAll(line, "maxretry", "")
 		itemValue = strings.ReplaceAll(itemValue, "=", "")

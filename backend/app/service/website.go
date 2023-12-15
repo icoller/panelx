@@ -9,7 +9,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/1Panel-dev/1Panel/backend/utils/common"
 	"os"
 	"path"
 	"reflect"
@@ -646,7 +645,7 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 	}
 	var (
 		res        response.WebsiteHTTPS
-		websiteSSL *model.WebsiteSSL
+		websiteSSL model.WebsiteSSL
 	)
 	res.Enable = req.Enable
 	res.SSLProtocol = req.SSLProtocol
@@ -691,12 +690,13 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 	}
 
 	if req.Type == constant.SSLExisted {
-		websiteSSL, err = websiteSSLRepo.GetFirst(commonRepo.WithByID(req.WebsiteSSLID))
+		websiteModel, err := websiteSSLRepo.GetFirst(commonRepo.WithByID(req.WebsiteSSLID))
 		if err != nil {
 			return nil, err
 		}
-		website.WebsiteSSLID = websiteSSL.ID
-		res.SSL = *websiteSSL
+		website.WebsiteSSLID = websiteModel.ID
+		res.SSL = *websiteModel
+		websiteSSL = *websiteModel
 	}
 	if req.Type == constant.SSLManual {
 		var (
@@ -756,16 +756,16 @@ func (w WebsiteService) OpWebsiteHTTPS(ctx context.Context, req request.WebsiteH
 		websiteSSL.PrivateKey = privateKey
 		websiteSSL.Pem = certificate
 
-		res.SSL = *websiteSSL
+		res.SSL = websiteSSL
 	}
 	website.Protocol = constant.ProtocolHTTPS
-	if err := applySSL(website, *websiteSSL, req); err != nil {
+	if err := applySSL(website, websiteSSL, req); err != nil {
 		return nil, err
 	}
 	website.HttpConfig = req.HttpConfig
 
 	if websiteSSL.ID == 0 {
-		if err := websiteSSLRepo.Create(ctx, websiteSSL); err != nil {
+		if err := websiteSSLRepo.Create(ctx, &websiteSSL); err != nil {
 			return nil, err
 		}
 		website.WebsiteSSLID = websiteSSL.ID
@@ -1210,7 +1210,7 @@ func (w WebsiteService) ChangePHPVersion(req request.WebsitePHPVersionReq) error
 	if err != nil {
 		return err
 	}
-	oldRuntime, err := runtimeRepo.GetFirst(commonRepo.WithByID(req.RuntimeID))
+	oldRuntime, err := runtimeRepo.GetFirst(commonRepo.WithByID(website.RuntimeID))
 	if err != nil {
 		return err
 	}
@@ -1248,7 +1248,6 @@ func (w WebsiteService) ChangePHPVersion(req request.WebsitePHPVersionReq) error
 		phpDir          = path.Join(constant.RuntimeDir, runtime.Type, runtime.Name, "php")
 		oldFmContent, _ = fileOp.GetContent(fpmConfDir)
 		newComposeByte  []byte
-		supervisorDir   = path.Join(appInstall.GetPath(), "supervisor")
 	)
 	envParams := make(map[string]string, len(envs))
 	handleMap(envs, envParams)
@@ -1287,21 +1286,6 @@ func (w WebsiteService) ChangePHPVersion(req request.WebsitePHPVersionReq) error
 		}
 		if busErr = fileOp.CopyFile(path.Join(phpDir, "php.ini"), confDir); busErr != nil {
 			_ = fileOp.WriteFile(fpmConfDir, bytes.NewReader(oldFmContent), 0775)
-			return busErr
-		}
-	}
-	if common.CompareVersion(appDetail.Version, "7.0") && !fileOp.Stat(supervisorDir) {
-		if appDetail.Update {
-			app, err := appRepo.GetFirst(commonRepo.WithByID(appDetail.AppId))
-			if err != nil {
-				busErr = err
-				return busErr
-			}
-			if busErr = downloadApp(app, appDetail, nil); err != nil {
-				return busErr
-			}
-		}
-		if busErr = fileOp.CopyDir(path.Join(phpDir, "supervisor"), appInstall.GetPath()); err != nil {
 			return busErr
 		}
 	}
